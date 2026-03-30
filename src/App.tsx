@@ -13,7 +13,7 @@ function App() {
       <Routes>
         <Route path='/' element={<LandingPage/>}/>
         <Route path='/apply/:jobGuid' element={<ApplyJob/>}/>
-        <Route path='/adminLogin' element={<AdminLogin/>}/>
+        <Route path='/login' element={<AdminLogin/>}/>
         <Route path='/admin' element={<Admin/>}>
           <Route path='dashboard' element={<AdminDashboard/>}/>
           <Route path='jobs' element={<AdminJobs/>}/>

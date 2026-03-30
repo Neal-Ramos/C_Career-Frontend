@@ -1,21 +1,38 @@
 import { ArrowRightOutlined, LockOutlined, SafetyCertificateOutlined } from "@ant-design/icons"
-import { Button, Flex, Input } from "antd"
+import { Button, Flex, Input, notification } from "antd"
 import Modal from "antd/es/modal/Modal"
 import Text from "antd/es/typography/Text"
 import Title from "antd/es/typography/Title"
 import { useEffect, useState } from "react"
+import { useVerifyOtp } from "../Hooks/useAuthentication"
+import type { IVerifyOtpData } from "../API/Authentication"
+import { useNavigate } from "react-router-dom"
 
 interface OtpModal{
     isModalVisible: boolean
     setIsModalVisible: Function
-    codeOwner: string
+    email: string
 }
 
-function OtpModal({isModalVisible, setIsModalVisible, codeOwner}:OtpModal){
+function OtpModal({isModalVisible, setIsModalVisible, email}:OtpModal){
+    const navigate = useNavigate()
     const [timerValue, setTimerValue] = useState(60)
+    const VerifyOtp = useVerifyOtp()
 
-    const handleSubmit = async(code: string) => {
-        console.log(code, codeOwner)
+    const handleSubmit = async(data: IVerifyOtpData) => {
+        VerifyOtp.mutate(data, {
+            onSuccess: (res) => {
+                localStorage.setItem("AccessToken", res.accessToken)
+                localStorage.setItem("AccessTokenExpiration", res.accessTokenEpiry)
+                navigate("/admin")
+            },
+            onError: (error) => {
+                const e = error.response?.data
+                if(e?.errorCode === "INVALID_CODE") notification.warning({title: "Invalid Code"})
+                else if(e?.errorCode === "EXPIRED_CODE") notification.warning({title: "Invalid Code"})
+                else notification.error({title: "Something Went Wrong!"})
+            }
+        })
     }
 
     useEffect(() => {
@@ -63,19 +80,19 @@ function OtpModal({isModalVisible, setIsModalVisible, codeOwner}:OtpModal){
                 <Input.OTP 
                     size="large" 
                     length={6} 
-                    onChange={(e) => handleSubmit(e)}
+                    onChange={(code) => handleSubmit({email, code})}
                     style={{ justifyContent: 'space-between' }}
                 />
                 
                 <Button
-                type="primary"
-                block
-                size="large"
-                // loading={loading}
-                // onClick={() => onVerify?.('')}
-                icon={<ArrowRightOutlined />}
-                iconPosition="end"
-                style={{ fontWeight: 600, boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                    type="primary"
+                    block
+                    size="large"
+                    loading={VerifyOtp.isPending}
+                    icon={<ArrowRightOutlined />}
+                    iconPlacement="end"
+                    style={{ fontWeight: 600, boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                    htmlType="submit"
                 >
                 Verify Identity
                 </Button>

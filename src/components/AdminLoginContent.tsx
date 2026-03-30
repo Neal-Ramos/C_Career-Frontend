@@ -1,10 +1,12 @@
 import { ArrowRightOutlined, LockOutlined, SafetyCertificateOutlined, UserOutlined } from "@ant-design/icons"
-import { Badge, Button, Card, Checkbox, Flex, Form, Input } from "antd"
+import { Badge, Button, Card, Checkbox, Flex, Form, Input, notification } from "antd"
 import { Content } from "antd/es/layout/layout"
 import Text from "antd/es/typography/Text"
 import Title from "antd/es/typography/Title"
 import OtpModal from "./OtpModal"
 import { useState } from "react"
+import { useLogin } from "../Hooks/useAuthentication"
+import type { ILoginData } from "../API/Authentication"
 
 interface AdminLoginContent{
   showOtpModal: Function
@@ -12,13 +14,23 @@ interface AdminLoginContent{
 
 function AdminLoginContent(){
     const [otpModal, setOtpModal] = useState(false)
-    const [codeOwner, setCodeOwner] = useState<string>("")
-    const isLoading = false
+    const [ownerEmail, setOwnerEmail] = useState<string>("")
+    const loginMutation = useLogin()
 
-    const onFinish = (value: {password: string, username: string, remember: boolean}) => {
-      console.log(value)
-      setOtpModal(true)
-      setCodeOwner(value.username)
+    const onFinish = (value: ILoginData) => {
+      loginMutation.mutate(value, {
+        onSuccess: (data) => {
+          setOtpModal(true)
+          setOwnerEmail(data.email)
+          notification.success({title: "Code Sent!", description: "Otp Code is Sent to Your Email!"})
+        },
+        onError: (error) => {
+          if(error.status == 401)notification.warning({
+            title: "Invalid Credentials!",
+            description: "Username and Password not Matched!"
+          })
+        }
+      })
     }
 
     return(
@@ -101,7 +113,7 @@ function AdminLoginContent(){
                     type="primary" 
                     htmlType="submit" 
                     block 
-                    loading={isLoading}
+                    loading={loginMutation.isPending}
                     icon={<ArrowRightOutlined />}
                     iconPlacement="end"
                     style={{ 
@@ -123,7 +135,7 @@ function AdminLoginContent(){
               </Text>
             </div>
           </div>
-          <OtpModal isModalVisible={otpModal} setIsModalVisible={setOtpModal} codeOwner={codeOwner}/>
+          <OtpModal isModalVisible={otpModal} setIsModalVisible={setOtpModal} email={ownerEmail}/>
         </Content>
     )
 }
