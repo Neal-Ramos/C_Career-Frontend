@@ -1,0 +1,187 @@
+## ASP.NET Clean Architecture .gitignore
+
+# ========================
+# .NET / Build Output
+# ========================
+bin/
+obj/
+out/
+build/
+dist/
+
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.userprefs
+
+# ========================
+# Visual Studio
+# ========================
+.vs/
+*.rsuser
+*.vsp
+*.vspx
+*.sap
+*.ncb
+*.aps
+*.pch
+*.vspscc
+*.vssscc
+
+# VS Code
+.vscode/
+!.vscode/extensions.json
+
+# Rider
+.idea/
+*.DotSettings.user
+
+# ========================
+# NuGet
+# ========================
+*.nupkg
+*.snupkg
+**/[Pp]ackages/
+!**/[Pp]ackages/build/
+*.nuget.props
+*.nuget.targets
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# ========================
+# ASP.NET / Runtime
+# ========================
+launchSettings.json
+**/Properties/launchSettings.json
+appsettings.Development.json
+appsettings.Local.json
+appsettings.Secrets.json
+appsettings.*.json
+!appsettings.json
+
+# Published output
+publish/
+**/publish/
+
+# Static web assets
+wwwroot/dist/
+wwwroot/lib/
+
+# ========================
+# Entity Framework Core
+# ========================
+# Uncomment if you don't want to commit migrations
+# **/Migrations/
+
+# ========================
+# Secrets & Credentials
+# ========================
+*.pfx
+*.p12
+*.key
+*.pem
+*.cer
+*.env
+.env
+.env.*
+!.env.example
+secrets.json
+*secrets*.json
+**/*secrets*.json
+
+# User secrets (local dev)
+# %APPDATA%\Microsoft\UserSecrets
+# ~/.microsoft/usersecrets
+
+# ========================
+# Logs
+# ========================
+logs/
+*.log
+*.txt.log
+nlog.config.bak
+Serilog/
+
+# ========================
+# Test Results & Coverage
+# ========================
+TestResults/
+coverage/
+coverage.json
+coverage.xml
+*.coverage
+*.coveragexml
+*.trx
+BenchmarkDotNet.Artifacts/
+
+# ========================
+# Docker
+# ========================
+# Keep Dockerfile and docker-compose.yml tracked
+# Ignore local overrides
+docker-compose.override.yml
+docker-compose.local.yml
+.dockerignore.local
+
+# ========================
+# Database
+# ========================
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+*.mdf
+*.ldf
+*.bak
+
+# ========================
+# OS Generated
+# ========================
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+
+# ========================
+# Node / Frontend (if any)
+# ========================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+.npm
+.yarn/cache
+.yarn/unplugged
+
+# ========================
+# Miscellaneous
+# ========================
+*.cache
+.sass-cache/
+*.tmp
+*.temp
+*.bak
+*.swp
+*.orig
