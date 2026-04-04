@@ -14,25 +14,30 @@ function FileRequirements({files}: FileRequirements) {
     };
 
     return(
-        <Row gutter={16}>
-            {
-                files.map(file => {
-                    return <Col xs={24} md={12}>
-                        <Form.Item 
-                            label={file.FileName} 
-                            name={file.FileName.replace(" ", "" )} 
-                            valuePropName="fileList" 
-                            getValueFromEvent={normFile}
-                            rules={[{ required: file.Required, message: `${file.FileName} is required` }]}
-                        >
-                            <Upload.Dragger name="resumeFile" maxCount={1} beforeUpload={() => false}>
-                                <p className="text-blue-500! text-2xl!">📜</p>
-                                <p className="ant-upload-text">Drop {file.FileName} here</p>
-                            </Upload.Dragger>
-                        </Form.Item>
-                    </Col>
-                })
-            }
+        <Row gutter={[16, 16]}>
+            {files.map((file) => (
+                <Col xs={24} md={12} key={file.FileName}>
+                <Form.Item 
+                    label={
+                    <span>
+                        {file.FileName} 
+                        <small style={{ color: file.Required ? 'red' : 'gray', marginLeft: '5px' }}>
+                        {file.Required ? "* Required" : "(Optional)"}
+                        </small>
+                    </span>
+                    } 
+                    name={file.FileName.replace(/\s/g, "")}
+                    valuePropName="fileList" 
+                    getValueFromEvent={normFile}
+                    rules={[{ required: file.Required, message: `${file.FileName} is required` }]}
+                >
+                    <Upload.Dragger name="resumeFile" maxCount={1} beforeUpload={() => false}>
+                    <p className="text-blue-500! text-2xl!">📜</p>
+                    <p className="ant-upload-text">Drop {file.FileName} here</p>
+                    </Upload.Dragger>
+                </Form.Item>
+                </Col>
+            ))}
         </Row>
     )
 }

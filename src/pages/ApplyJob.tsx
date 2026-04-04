@@ -16,9 +16,10 @@ function ApplyJob(){
     const { jobGuid } = useParams()
     const { data, isLoading, isError, error } = useJobsById(jobGuid as string)
     const [form] = Form.useForm();
-    const fileRequirements: f[] = data?.fileRequirements ? JSON.parse(data.fileRequirements) : []
+    const fileRequirements: f[] = data?.data.fileRequirements ? JSON.parse(data.data.fileRequirements) : []
     const applyMutation = AddApplication()
     const navigate = useNavigate()
+    console.log(fileRequirements)
 
     const onFinish = () => {
         const formValues = form.getFieldsValue();
@@ -77,17 +78,17 @@ function ApplyJob(){
                         <Row gutter={16}>
                             <Col xs={24} md={8}>
                                 <Form.Item label="First Name" name="firstName" rules={[{ required: true }]}>
-                                <Input placeholder="John" className="rounded-lg!" />
+                                <Input placeholder="First Name" className="rounded-lg!" />
                                 </Form.Item>
                             </Col>
                             <Col xs={24} md={8}>
                                 <Form.Item label="Middle Name" name="middleName">
-                                <Input placeholder="Quincy" className="rounded-lg!" />
+                                <Input placeholder="Middle Name" className="rounded-lg!" />
                                 </Form.Item>
                             </Col>
                             <Col xs={24} md={8}>
                                 <Form.Item label="Last Name" name="lastName" rules={[{ required: true }]}>
-                                <Input placeholder="Doe" className="rounded-lg!" />
+                                <Input placeholder="Last Name" className="rounded-lg!" />
                                 </Form.Item>
                             </Col>
                         </Row>
@@ -98,16 +99,29 @@ function ApplyJob(){
                                 name="email" 
                                 rules={[{ required: true, type: 'email' }]}
                                 >
-                                <Input placeholder="john.doe@example.com" className="rounded-lg!" />
+                                <Input placeholder="Email" className="rounded-lg!" />
                                 </Form.Item>
                             </Col>
                             <Col xs={24} md={12} className="">
                                 <Form.Item
                                 label="Contact Number" 
                                 name="contactNumber" 
-                                rules={[{ required: true }]}
+                                rules={[
+                                    { 
+                                        required: true, 
+                                        message: "Contact Number is required!" 
+                                    },
+                                    { 
+                                        len: 11, 
+                                        message: "Contact Number must be exactly 11 digits!" 
+                                    },
+                                    { 
+                                        pattern: /^[0-9]+$/, 
+                                        message: "Contact Number must contain only numbers (no letters or spaces)!" 
+                                    },
+                                ]}
                                 >
-                                <Input placeholder="+63 9000000000" className="rounded-lg!" />
+                                <Input placeholder="Phone Number" className="rounded-lg!" />
                                 </Form.Item>
                             </Col>
                         </Row>
@@ -128,7 +142,9 @@ function ApplyJob(){
                                 </Form.Item>
                             </Col>
                             <Col xs={24} md={6}>
-                                <Form.Item label="Graduation Year" name="graduationYear" rules={[{ required: true }]}>
+                                <Form.Item label="Graduation Year" name="graduationYear" rules={[
+                                    { required: true, message: "Graduation Year Required"},
+                                ]}>
                                 <DatePicker picker="year" className="w-full! rounded-lg!" />
                                 </Form.Item>
                             </Col>
@@ -138,7 +154,7 @@ function ApplyJob(){
                         <div className="border-l-4 border-blue-500 pl-3 mb-5 font-bold text-lg uppercase tracking-wider text-slate-700">
                             Required Documents
                         </div>
-                        <FileRequirements files={data?.fileRequirements ? JSON.parse(data.fileRequirements) : []}/>
+                        <FileRequirements files={fileRequirements}/>
                         <div className="mt-10!">
                         <Button
                             type="primary" 

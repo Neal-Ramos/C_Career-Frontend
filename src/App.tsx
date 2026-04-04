@@ -6,6 +6,7 @@ import Admin from './pages/Admin'
 import AdminDashboard from './pages/AdminDashboard'
 import AdminJobs from './pages/AdminJobs'
 import AdminApplications from './pages/AdminApplications'
+import ProtectedRoutes from './components/auth/ProtectedRoutes'
 
 function App() {
   return (
@@ -14,11 +15,13 @@ function App() {
         <Route path='/' element={<LandingPage/>}/>
         <Route path='/apply/:jobGuid' element={<ApplyJob/>}/>
         <Route path='/login' element={<AdminLogin/>}/>
-        <Route path='/admin' element={<Admin/>}>
-          <Route path='dashboard' element={<AdminDashboard/>}/>
-          <Route path='jobs' element={<AdminJobs/>}/>
-          <Route path='applications' element={<AdminApplications/>}/>
-          <Route path='settings' element={<>NAH</>}/>
+        <Route element={<ProtectedRoutes/>}>
+          <Route path='admin' element={<Admin/>}>
+            <Route path='dashboard' element={<AdminDashboard/>}/>
+            <Route path='jobs' element={<AdminJobs/>}/>
+            <Route path='applications' element={<AdminApplications/>}/>
+            <Route path='settings' element={<>NAH</>}/>
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>

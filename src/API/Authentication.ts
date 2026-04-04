@@ -1,27 +1,20 @@
-import axios from "axios";
+import type { AdminAccount } from "../Types/AdminAccounts";
+import apiClient from "./ApiClient";
 
 export interface ILoginResponse {
-    adminId: string
-    email: string
-    userNAme: string
+    message: string
+    data: AdminAccount
+    meta: {
+        AccessToken: string
+        AccessTokenExpiration: Date
+    }
 }
 export interface ILoginData {
     password: string
     username: string
+    otpCode?: string
     remember: boolean
 }
 export const login = async (data: ILoginData): Promise<ILoginResponse> => {
-    return (await axios.post(`${import.meta.env.VITE_API_URL}/api/Authentication/Login`, data)).data.data
-}
-
-export interface IVerifyOtpResponse {
-    accessToken: string
-    accessTokenEpiry: string
-}
-export interface IVerifyOtpData{
-    code: string
-    email: string
-}
-export const verifyOtp = async (data: IVerifyOtpData): Promise<IVerifyOtpResponse> => {
-    return (await axios.post(`${import.meta.env.VITE_API_URL}/api/Authentication/VerifyOtp`, data)).data.data
+    return (await apiClient.post("/api/Authentication/login", data)).data
 }

@@ -3,7 +3,7 @@ import AdminLoginContent from "../components/AdminLoginContent"
 import { Footer } from "antd/es/layout/layout"
 
 function AdminLogin(){
-
+    
     return(
         <ConfigProvider
             theme={{

@@ -1,12 +1,11 @@
-import axios from "axios"
+import apiClient from "./ApiClient"
 
 export const addApplication = async (formData: any) => {
-    const res = await axios.post(`${import.meta.env.VITE_API_URL}/AddApplication`, formData, {
+    return (await apiClient.post("/api/Applications", formData, {
         headers:{
             "Content-Type": "multipart/form-data"
         }
-    })
-    return res.data
+    })).data
 }
 export const GetApplications = async (
     Page: number, 
@@ -15,7 +14,7 @@ export const GetApplications = async (
     FilterJob?: string, 
     FilterStatus?: string
 ) => {
-    const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/JobApplications/GetApplications`, {
+    const res = await apiClient.get("/api/Applications", {
         params:{
             Page : Page,
             PageSize : PageSize,

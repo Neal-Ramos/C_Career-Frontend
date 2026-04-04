@@ -11,6 +11,7 @@ function LandingPage(){
     const [search, setSearch] = useState<string|undefined>(undefined)
     const { data, isLoading, isError, error } = useJobs(page, pageSize, search)
     const jobSection = useRef<HTMLDivElement>(null)
+    console.log()
 
     return(
         <Layout>
@@ -30,9 +31,9 @@ function LandingPage(){
                     isError || error? (
                         <Empty description={"No Jobs Available!"}/>
                     ):
-                    data?.jobs.length? (
+                    data?.data? (
                         <Row gutter={[24, 24]} align={"top"}>
-                            {data.jobs.map((job) => (
+                            {data.data.map((job) => (
                                 <Col xs={24} md={24}>
                                     <JobsCard
                                         key={job.jobId}
@@ -53,7 +54,7 @@ function LandingPage(){
                 <Pagination
                     responsive={true}
                     current={page} 
-                    total={data?.totalRecords} 
+                    total={data?.meta.TotalRecords} 
                     pageSize={pageSize} 
                     showSizeChanger
                     pageSizeOptions={['4', '8', '12', '20']}

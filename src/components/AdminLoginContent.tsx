@@ -14,14 +14,19 @@ interface AdminLoginContent{
 
 function AdminLoginContent(){
     const [otpModal, setOtpModal] = useState(false)
-    const [ownerEmail, setOwnerEmail] = useState<string>("")
+    const [username, setUsername] = useState("")
+    const [password, setPassword] = useState("")
+    const [remember, setRemeber] = useState(false)
     const loginMutation = useLogin()
 
-    const onFinish = (value: ILoginData) => {
-      loginMutation.mutate(value, {
-        onSuccess: (data) => {
+    const onFinish = (data: ILoginData) => {
+      console.log(data)
+      loginMutation.mutate(data, {
+        onSuccess: () => {
+          setUsername(data.username)
+          setPassword(data.password)
+          setRemeber(data.remember)
           setOtpModal(true)
-          setOwnerEmail(data.email)
           notification.success({title: "Code Sent!", description: "Otp Code is Sent to Your Email!"})
         },
         onError: (error) => {
@@ -135,7 +140,7 @@ function AdminLoginContent(){
               </Text>
             </div>
           </div>
-          <OtpModal isModalVisible={otpModal} setIsModalVisible={setOtpModal} email={ownerEmail}/>
+          <OtpModal isModalVisible={otpModal} setIsModalVisible={setOtpModal} username={username} password={password} remember={remember}/>
         </Content>
     )
 }

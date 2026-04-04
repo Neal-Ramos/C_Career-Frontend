@@ -4,26 +4,32 @@ import Modal from "antd/es/modal/Modal"
 import Text from "antd/es/typography/Text"
 import Title from "antd/es/typography/Title"
 import { useEffect, useState } from "react"
-import { useVerifyOtp } from "../Hooks/useAuthentication"
-import type { IVerifyOtpData } from "../API/Authentication"
 import { useNavigate } from "react-router-dom"
+import { useLogin } from "../Hooks/useAuthentication"
 
 interface OtpModal{
     isModalVisible: boolean
     setIsModalVisible: Function
-    email: string
+    username: string
+    password: string
+    remember: boolean
 }
 
-function OtpModal({isModalVisible, setIsModalVisible, email}:OtpModal){
+function OtpModal({isModalVisible, setIsModalVisible, username, password, remember}:OtpModal){
     const navigate = useNavigate()
     const [timerValue, setTimerValue] = useState(60)
-    const VerifyOtp = useVerifyOtp()
+    const loginMutation = useLogin()
 
-    const handleSubmit = async(data: IVerifyOtpData) => {
-        VerifyOtp.mutate(data, {
+    const handleSubmit = async(code: string) => {
+        loginMutation.mutate({
+            username: username,
+            password: password,
+            otpCode: code,
+            remember: remember
+        }, {
             onSuccess: (res) => {
-                localStorage.setItem("AccessToken", res.accessToken)
-                localStorage.setItem("AccessTokenExpiration", res.accessTokenEpiry)
+                localStorage.setItem("AccessToken", res.meta.AccessToken)
+                localStorage.setItem("AccessTokenExpiration", res.meta.AccessTokenExpiration.toString())
                 navigate("/admin")
             },
             onError: (error) => {
@@ -80,7 +86,7 @@ function OtpModal({isModalVisible, setIsModalVisible, email}:OtpModal){
                 <Input.OTP 
                     size="large" 
                     length={6} 
-                    onChange={(code) => handleSubmit({email, code})}
+                    onChange={(code) => handleSubmit(code)}
                     style={{ justifyContent: 'space-between' }}
                 />
                 
@@ -88,7 +94,7 @@ function OtpModal({isModalVisible, setIsModalVisible, email}:OtpModal){
                     type="primary"
                     block
                     size="large"
-                    loading={VerifyOtp.isPending}
+                    loading={false}
                     icon={<ArrowRightOutlined />}
                     iconPlacement="end"
                     style={{ fontWeight: 600, boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
