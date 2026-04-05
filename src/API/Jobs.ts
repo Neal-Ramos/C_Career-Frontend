@@ -1,4 +1,4 @@
-import apiClient from "./ApiClient"
+import { apiClient } from "./ApiClient"
 
 export const fetchJobs = async(Page: number, PageSize: number, Search?: string) => {
     return (await apiClient.get("/api/Jobs", {

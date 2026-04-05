@@ -1,4 +1,4 @@
-import apiClient from "./ApiClient"
+import { apiClient } from "./ApiClient"
 
 export const addApplication = async (formData: any) => {
     return (await apiClient.post("/api/Applications", formData, {

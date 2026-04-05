@@ -29,7 +29,6 @@ function OtpModal({isModalVisible, setIsModalVisible, username, password, rememb
         }, {
             onSuccess: (res) => {
                 localStorage.setItem("AccessToken", res.meta.AccessToken)
-                localStorage.setItem("AccessTokenExpiration", res.meta.AccessTokenExpiration.toString())
                 navigate("/admin")
             },
             onError: (error) => {
