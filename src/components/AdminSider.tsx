@@ -1,17 +1,27 @@
-import { ThunderboltOutlined } from "@ant-design/icons"
+import { DashboardOutlined, FileTextOutlined, SettingOutlined, TeamOutlined, ThunderboltOutlined } from "@ant-design/icons"
 import { Menu } from "antd"
 import Sider from "antd/es/layout/Sider"
 import type { ItemType, MenuItemType } from "antd/es/menu/interface"
 import Title from "antd/es/typography/Title"
+import { useState } from "react"
+import { useLocation, useNavigate } from "react-router-dom"
 
 interface AdminSider{
     collapsed: boolean
     setCollapsed: Function
-    items: ItemType<MenuItemType>[]
 }
 
-function AdminSider({collapsed, setCollapsed, items}: AdminSider){
-    return(<Sider 
+function AdminSider({collapsed, setCollapsed }: AdminSider){
+    const navigate = useNavigate()
+    const location = useLocation()
+    const items: ItemType<MenuItemType>[] = [
+        { key: '/admin/dashboard', icon: <DashboardOutlined />, label: 'Dashboard'},
+        { key: '/admin/jobs', icon: <TeamOutlined />, label: 'Jobs'},
+        { key: '/admin/applications', icon: <FileTextOutlined />, label: 'Applications'},
+        { key: '/admin/settings', icon: <SettingOutlined />, label: 'Settings'},
+    ]
+
+    return(<Sider
         collapsible 
         collapsed={collapsed} 
         onCollapse={(value) => setCollapsed(value)}
@@ -38,9 +48,12 @@ function AdminSider({collapsed, setCollapsed, items}: AdminSider){
         </div>
         <Menu
             theme="dark"
-            defaultSelectedKeys={['1']}
+            selectedKeys={[location.pathname]}
             mode="inline"
             items={items}
+            onClick={(e) => {
+                navigate(e.key)
+            }}
         />
     </Sider>)
 }

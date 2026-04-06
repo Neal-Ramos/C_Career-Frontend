@@ -20,7 +20,6 @@ function AdminLoginContent(){
     const loginMutation = useLogin()
 
     const onFinish = (data: ILoginData) => {
-      console.log(data)
       loginMutation.mutate(data, {
         onSuccess: () => {
           setUsername(data.username)

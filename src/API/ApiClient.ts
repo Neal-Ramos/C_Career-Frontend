@@ -1,7 +1,6 @@
 import axios from "axios";
 import { isTokenExpiringSoon } from "../helpers/JwtDecode";
 import { rotateToken } from "./Authentication";
-import { useNavigate } from "react-router-dom";
 
 
 export const apiClient = axios.create({
@@ -10,7 +9,6 @@ export const apiClient = axios.create({
 })
 apiClient.interceptors.request.use(async (config) => {
     const currentAccessToken = localStorage.getItem("AccessToken");
-    const navigate = useNavigate()
 
     if (currentAccessToken && isTokenExpiringSoon(currentAccessToken)) {
         try {
@@ -18,7 +16,7 @@ apiClient.interceptors.request.use(async (config) => {
             localStorage.setItem("AccessToken", newAccessToken)
         } catch (err) {
             localStorage.clear();
-            navigate("/login")
+            window.location.href = "/login"
             return Promise.reject(err);
         }
     }

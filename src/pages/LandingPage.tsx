@@ -11,7 +11,6 @@ function LandingPage(){
     const [search, setSearch] = useState<string|undefined>(undefined)
     const { data, isLoading, isError, error } = useJobs(page, pageSize, search)
     const jobSection = useRef<HTMLDivElement>(null)
-    console.log()
 
     return(
         <Layout>

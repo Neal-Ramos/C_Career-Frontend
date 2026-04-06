@@ -1,20 +1,37 @@
 import { PlusOutlined } from "@ant-design/icons"
-import { Button, Card, Table } from "antd"
+import { Button, Card, Spin, Table } from "antd"
 import { Content } from "antd/es/layout/layout"
-import type { ColumnType } from "antd/es/table"
 import Text from "antd/es/typography/Text"
 import Title from "antd/es/typography/Title"
-import type { IJob } from "../global/IJobs"
+import { useJobs } from "../Hooks/useJobs"
+import { useState } from "react"
+import type { ColumnsType } from "antd/es/table"
+import type { Jobs } from "../Types/Jobs"
+import AddJobModal from "../components/AddJobModal"
 
 function AdminJobs(){
-    const jobsColumn: ColumnType<IJob>[] = [
+    const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState(1);
+    const {data, isLoading, isError, error} = useJobs(page, pageSize);
+    const [showCreateModal, setShowCreateModal] = useState(true)
+    const jobsColumn: ColumnsType<Jobs> = [
         {
-            title: "Title",
-            dataIndex:"title",
-            key:"jobId"
+            title: "Job Title",
+            dataIndex: "title"
+        },
+        {
+            title: "Date Created",
+            dataIndex: "dateCreated",
+            render: (value) => new Date(value).toLocaleDateString()
+        },
+        {
+            
         }
     ]
 
+
+    
+    if(isLoading)return <Spin size="large" className="justify-center flex-1"/>
     return(
         <Content style={{ padding: '32px', maxWidth: '1400px', margin: '0 auto', width: '100%' }}>
             <div style={{ marginBottom: '32px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
@@ -22,18 +39,19 @@ function AdminJobs(){
                     <Title level={2} style={{ margin: 0 }}>Job Postings</Title>
                     <Text type="secondary">Manage your active, closed, and draft job listings.</Text>
                 </div>
-                <Button type="primary" size="large" icon={<PlusOutlined />}>
+                <Button type="primary" size="large" icon={<PlusOutlined />} onClick={() => setShowCreateModal(true)}>
                     Create New Job
                 </Button>
             </div>
             <Card variant="borderless" styles={{ body:{padding: 0} }}>
                 <Table 
-                columns={jobsColumn} 
-                // dataSource={} 
-                pagination={{ pageSize: 5 }}
+                    columns={jobsColumn}
+                    dataSource={isError? []:data?.data}
+                    pagination={{ pageSize: 5 }}
                 />
             </Card>
+            <AddJobModal showCreateModal={showCreateModal} setShowCreateModal={setShowCreateModal}/>
         </Content>
-    )
+    );
 }
 export default AdminJobs

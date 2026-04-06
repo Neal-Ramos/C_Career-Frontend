@@ -1,21 +1,14 @@
 import { Avatar, Badge, Button, ConfigProvider, Layout, Space } from "antd"
 import AdminSider from "../components/AdminSider"
 import { useState } from "react"
-import { BellOutlined, DashboardOutlined, FileTextOutlined, SettingOutlined, TeamOutlined } from "@ant-design/icons"
-import { Outlet, useNavigate } from "react-router-dom"
+import { BellOutlined } from "@ant-design/icons"
+import { Outlet, useLocation } from "react-router-dom"
 import { Header } from "antd/es/layout/layout"
 import Text from "antd/es/typography/Text"
-import type { ItemType, MenuItemType } from "antd/es/menu/interface"
 
 function Admin(){
-  const navigate = useNavigate()
+  const location = useLocation()
   const [collapsed, setCollapsed] = useState(false)
-  const items: ItemType<MenuItemType>[] = [
-      { key: '1', icon: <DashboardOutlined />, label: 'Dashboard', onClick: () => {navigate("/admin/dashboard")} },
-      { key: '2', icon: <TeamOutlined />, label: 'Jobs', onClick: () => {navigate("/admin/jobs")} },
-      { key: '3', icon: <FileTextOutlined />, label: 'Applications', onClick: () => {navigate("/admin/applications")} },
-      { key: '4', icon: <SettingOutlined />, label: 'Settings', onClick: () => {navigate("/admin/settings")} },
-  ]
 
   return(<ConfigProvider
     theme={{
@@ -37,9 +30,12 @@ function Admin(){
     }}
   >
     <Layout>
-        <AdminSider collapsed={collapsed} setCollapsed={setCollapsed} items={items}/>
-          <Layout>
-            <Header style={{ 
+        <AdminSider
+          setCollapsed={setCollapsed}
+          collapsed={collapsed}
+        />
+        <Layout>
+          <Header style={{ 
             padding: '0 24px', 
             display: 'flex', 
             alignItems: 'center', 

@@ -1,8 +1,14 @@
 import { ConfigProvider, Layout } from "antd"
 import AdminLoginContent from "../components/AdminLoginContent"
 import { Footer } from "antd/es/layout/layout"
+import { useNavigate } from "react-router-dom"
 
 function AdminLogin(){
+    const navigate = useNavigate()
+
+    if(localStorage.getItem("AccessToken")){
+        navigate("/admin")
+    }
     
     return(
         <ConfigProvider

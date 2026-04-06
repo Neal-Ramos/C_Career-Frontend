@@ -33,8 +33,7 @@ function OtpModal({isModalVisible, setIsModalVisible, username, password, rememb
             },
             onError: (error) => {
                 const e = error.response?.data
-                if(e?.errorCode === "INVALID_CODE") notification.warning({title: "Invalid Code"})
-                else if(e?.errorCode === "EXPIRED_CODE") notification.warning({title: "Invalid Code"})
+                if(e?.errorCode === "INVALID_INPUTS") notification.warning({title: "Invalid Code", description:"Code does not Match or Expired!"})
                 else notification.error({title: "Something Went Wrong!"})
             }
         })

@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import LandingPage from './pages/LandingPage'
 import ApplyJob from './pages/ApplyJob'
 import AdminLogin from './pages/AdminLogin'
@@ -17,6 +17,7 @@ function App() {
         <Route path='/login' element={<AdminLogin/>}/>
         <Route element={<ProtectedRoutes/>}>
           <Route path='admin' element={<Admin/>}>
+            <Route index element={<Navigate to="dashboard" replace />} />
             <Route path='dashboard' element={<AdminDashboard/>}/>
             <Route path='jobs' element={<AdminJobs/>}/>
             <Route path='applications' element={<AdminApplications/>}/>
