@@ -24,13 +24,6 @@ export interface IRotateTokenResponse {
     }
 }
 
-export const rotateToken = async(AccessToken: string): Promise<IRotateTokenResponse> => {
-    return (await authClient.post("/api/Authentication/rotateToken", {AccessToken: AccessToken},
-        {
-            withCredentials: true,
-            headers: {
-                Authorization: `bearer: ${AccessToken}`
-            }
-        },
-    )).data
+export const rotateToken = async(): Promise<IRotateTokenResponse> => {
+    return (await authClient.post("/api/Authentication/rotateToken")).data
 }

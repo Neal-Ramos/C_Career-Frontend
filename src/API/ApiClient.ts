@@ -12,7 +12,7 @@ apiClient.interceptors.request.use(async (config) => {
 
     if (currentAccessToken && isTokenExpiringSoon(currentAccessToken)) {
         try {
-            const newAccessToken = (await rotateToken(currentAccessToken)).data.newAccessToken
+            const newAccessToken = (await rotateToken()).data.newAccessToken
             localStorage.setItem("AccessToken", newAccessToken)
         } catch (err) {
             localStorage.clear();

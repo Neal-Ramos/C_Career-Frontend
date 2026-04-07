@@ -3,6 +3,7 @@ import { Button, Divider, Form, Input, Modal } from "antd"
 import TextArea from "antd/es/input/TextArea"
 import Title from "antd/es/typography/Title"
 import TagBox from "./TagBox"
+import DocumentBox from "./DocumentBox"
 
 interface AddJobModal {
     showCreateModal: boolean
@@ -93,6 +94,23 @@ function AddJobModal({ showCreateModal, setShowCreateModal }: AddJobModal){
                         ]}
                     >
                         <TagBox/>
+                    </Form.Item>
+                    <Form.Item
+                        name="fileRequirements"
+                        label="Documents Needed"
+                        rules={[
+                            {
+                                validator: (_, val) => {
+                                    const hasEmptyLabel = val.some((item: any) => !item.label || item.label.trim() === "");
+                                    if (hasEmptyLabel) {
+                                        return Promise.reject(new Error('All document names must be filled'));
+                                    }
+                                    return Promise.resolve();
+                                }
+                            }
+                        ]}
+                    >
+                        <DocumentBox/>
                     </Form.Item>
                     
                 </section>
