@@ -1,4 +1,5 @@
-import type { IJob } from "./IJobs"
+import type { Jobs } from "../Types/Jobs"
+
 
 export interface IJobApplication{
     id : number
@@ -16,7 +17,7 @@ export interface IJobApplication{
     dateSubmitted : Date
     dateReviewed : Date
     jobId : string
-    job : IJob
+    job : Jobs
 }
 export interface FetchApplications{
     applications : IJobApplication[]

@@ -8,7 +8,7 @@ const idleTimeout = 15 * 60 * 1000
 const useActivityTracker = () => {
     const rotateTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
     
-    const logout = () => {
+    const handleIdle = async () => {
         if(rotateTimerRef.current) clearTimeout(rotateTimerRef.current)
         localStorage.clear()
         window.location.href = "/login"
@@ -18,7 +18,7 @@ const useActivityTracker = () => {
             localStorage.setItem("AccessToken", (await rotateToken()).data.newAccessToken)
             rotateTimerRef.current = setTimeout(rotateAccessToken, idleTimeout - 10 * 60 * 1000)
         } catch (error) {
-            logout()
+            handleIdle()
         }
     }
 
@@ -31,7 +31,7 @@ const useActivityTracker = () => {
 
     useIdleTimer({
         timeout: idleTimeout,
-        onIdle: logout
+        onIdle: handleIdle
     })
 }
 export default useActivityTracker

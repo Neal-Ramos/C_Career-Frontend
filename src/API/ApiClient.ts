@@ -20,7 +20,6 @@ apiClient.interceptors.request.use(async (config) => {
             return Promise.reject(err);
         }
     }
-
     if (currentAccessToken) {
         config.headers.Authorization = `Bearer ${currentAccessToken}`;
     }

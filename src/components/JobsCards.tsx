@@ -8,7 +8,7 @@ const { Title, Text, Paragraph } = Typography;
 interface JobsCards {
     title: string
     dateCreated: string
-    roles: { Name: string, Level: string }[]
+    roles: string[]
     description: string
     jobGuid: string
 }
@@ -44,10 +44,10 @@ function JobsCard({ title, dateCreated, roles, description, jobGuid }: JobsCards
                 <div className="flex flex-wrap gap-2 mb-6">
                     {roles.map((r) => (
                         <Tag 
-                            key={r.Name} 
+                            key={r} 
                             className="bg-blue-50! border-blue-100! text-blue-600! rounded-lg! px-3! py-0.5! font-semibold! text-xs!"
                         >
-                            {r.Name}
+                            {r}
                         </Tag>
                     ))}
                 </div>

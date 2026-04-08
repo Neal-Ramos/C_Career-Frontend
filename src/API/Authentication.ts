@@ -27,3 +27,7 @@ export interface IRotateTokenResponse {
 export const rotateToken = async(): Promise<IRotateTokenResponse> => {
     return (await authClient.post("/api/Authentication/rotateToken")).data
 }
+
+export const logout = async () => {
+    return await authClient.post("/api/Authentication/logout")
+}

@@ -2,8 +2,8 @@ import { Col, Form, Row, Upload } from "antd"
 
 interface FileRequirements {
     files: {
-        FileName: string
-        Required: boolean
+        label: string
+        required: boolean
     }[]
 }
 
@@ -16,24 +16,24 @@ function FileRequirements({files}: FileRequirements) {
     return(
         <Row gutter={[16, 16]}>
             {files.map((file) => (
-                <Col xs={24} md={12} key={file.FileName}>
+                <Col xs={24} md={12} key={file.label}>
                 <Form.Item 
                     label={
                     <span>
-                        {file.FileName} 
-                        <small style={{ color: file.Required ? 'red' : 'gray', marginLeft: '5px' }}>
-                        {file.Required ? "* Required" : "(Optional)"}
+                        {file.label} 
+                        <small style={{ color: file.required ? 'red' : 'gray', marginLeft: '5px' }}>
+                        {file.required ? "* Required" : "(Optional)"}
                         </small>
                     </span>
                     } 
-                    name={file.FileName.replace(/\s/g, "")}
+                    name={file.label.replace(/\s/g, "")}
                     valuePropName="fileList" 
                     getValueFromEvent={normFile}
-                    rules={[{ required: file.Required, message: `${file.FileName} is required` }]}
+                    rules={[{ required: file.required, message: `${file.label} is required` }]}
                 >
                     <Upload.Dragger name="resumeFile" maxCount={1} beforeUpload={() => false}>
                     <p className="text-blue-500! text-2xl!">📜</p>
-                    <p className="ant-upload-text">Drop {file.FileName} here</p>
+                    <p className="ant-upload-text">Drop {file.label} here</p>
                     </Upload.Dragger>
                 </Form.Item>
                 </Col>

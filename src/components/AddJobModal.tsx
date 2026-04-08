@@ -1,9 +1,12 @@
 import { CloseOutlined } from "@ant-design/icons"
-import { Button, Divider, Form, Input, Modal } from "antd"
+import { Button, Divider, Form, Input, Modal, notification, Spin } from "antd"
 import TextArea from "antd/es/input/TextArea"
 import Title from "antd/es/typography/Title"
 import TagBox from "./TagBox"
 import DocumentBox from "./DocumentBox"
+import CustomFieldBox from "./CustomFieldBox"
+import { useAddJobMutation } from "../Hooks/useJobs"
+import type { IAddJobReq } from "../global/IJobs"
 
 interface AddJobModal {
     showCreateModal: boolean
@@ -12,12 +15,27 @@ interface AddJobModal {
 
 function AddJobModal({ showCreateModal, setShowCreateModal }: AddJobModal){
     const [form] = Form.useForm();
+    const postJob = useAddJobMutation()
 
     const onClose = () => {
         setShowCreateModal(false)
     }
-    const onFinish = (values: any) => {
-        console.log('Received values of form:', values);
+    const onFinish = (values: IAddJobReq) => {
+        values.roles = JSON.stringify(values.roles)
+        values.customFields = JSON.stringify(values.customFields)
+        values.fileRequirements = JSON.stringify(values.fileRequirements)
+        postJob.mutate(values, {
+            onError: () => {
+                notification.error({
+                    title: "Add Job Failed!"
+                })
+            },
+            onSuccess: () => {
+                notification.success({
+                    title: "Job Posted"
+                })
+            }
+        })
     };
 
     return (
@@ -25,15 +43,16 @@ function AddJobModal({ showCreateModal, setShowCreateModal }: AddJobModal){
             open={showCreateModal}
             onCancel={onClose}
             footer={[
-                <Button key="back" onClick={onClose}>
+                <Button key="back" onClick={onClose} disabled={postJob.isPending}>
                     Cancel
                 </Button>,
                 <Button 
                     key="submit" 
                     type="primary"
                     onClick={() => form.submit()}
+                    disabled={postJob.isPending}
                 >
-                    Create Job
+                    {postJob.isPending? <Spin/>:"Create Job"}
                 </Button>,
             ]}
             width="95%"
@@ -73,14 +92,14 @@ function AddJobModal({ showCreateModal, setShowCreateModal }: AddJobModal){
                 <section className="mb-6">
                     <Divider >Basic Job Information</Divider>
                     <Form.Item
-                        name="jobTitle"
+                        name="title"
                         label="Job Title"
                         rules={[{ required: true, message: 'Please enter the job title' }]}
                     >
                         <Input placeholder="Title" size="large"/>
                     </Form.Item>
                     <Form.Item
-                        name="jobDescription"
+                        name="description"
                         label="Job Description"
                         rules={[{ required: true, message: 'Please enter the job title' }]}
                     >
@@ -112,7 +131,12 @@ function AddJobModal({ showCreateModal, setShowCreateModal }: AddJobModal){
                     >
                         <DocumentBox/>
                     </Form.Item>
-                    
+                    <Form.Item
+                        name="customFields"
+                        label="Custom Requirements"
+                    >
+                        <CustomFieldBox/>
+                    </Form.Item>
                 </section>
             </Form>
         </Modal>

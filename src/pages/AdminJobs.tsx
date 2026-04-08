@@ -11,9 +11,9 @@ import AddJobModal from "../components/AddJobModal"
 
 function AdminJobs(){
     const [page, setPage] = useState(1);
-    const [pageSize, setPageSize] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
     const {data, isLoading, isError, error} = useJobs(page, pageSize);
-    const [showCreateModal, setShowCreateModal] = useState(true)
+    const [showCreateModal, setShowCreateModal] = useState(false)
     const jobsColumn: ColumnsType<Jobs> = [
         {
             title: "Job Title",
@@ -23,15 +23,11 @@ function AdminJobs(){
             title: "Date Created",
             dataIndex: "dateCreated",
             render: (value) => new Date(value).toLocaleDateString()
-        },
-        {
-            
         }
     ]
-
-
-    
     if(isLoading)return <Spin size="large" className="justify-center flex-1"/>
+    
+    console.log(data)
     return(
         <Content style={{ padding: '32px', maxWidth: '1400px', margin: '0 auto', width: '100%' }}>
             <div style={{ marginBottom: '32px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
@@ -47,10 +43,20 @@ function AdminJobs(){
                 <Table 
                     columns={jobsColumn}
                     dataSource={isError? []:data?.data}
-                    pagination={{ pageSize: 5 }}
+                    pagination={
+                        { 
+                            pageSize: pageSize, 
+                            total: data?.meta.TotalRecords,
+                            current: page,
+                            responsive:true
+                        }
+                    }
                 />
             </Card>
-            <AddJobModal showCreateModal={showCreateModal} setShowCreateModal={setShowCreateModal}/>
+            <AddJobModal 
+                showCreateModal={showCreateModal} 
+                setShowCreateModal={setShowCreateModal}
+            />
         </Content>
     );
 }

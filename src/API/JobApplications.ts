@@ -14,7 +14,7 @@ export const GetApplications = async (
     FilterJob?: string, 
     FilterStatus?: string
 ) => {
-    const res = await apiClient.get("/api/Applications", {
+    return (await apiClient.get("/api/Applications", {
         params:{
             Page : Page,
             PageSize : PageSize,
@@ -22,6 +22,5 @@ export const GetApplications = async (
             FilterJob : FilterJob,
             FilterStatus : FilterStatus,
         }
-    })
-    return res.data.data
+    })).data.data
 }

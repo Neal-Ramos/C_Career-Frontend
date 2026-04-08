@@ -15,3 +15,10 @@ export interface FetchJobs{
         TotalPages: number
     }
 }
+export interface IAddJobReq {
+    title: string
+    description: string
+    roles: string
+    customFields: string
+    fileRequirements: string
+}

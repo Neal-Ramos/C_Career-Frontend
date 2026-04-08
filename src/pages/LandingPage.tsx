@@ -1,4 +1,4 @@
-import { Col, Empty, Layout, Pagination, Row, Skeleton } from "antd"
+import { Col, Empty, Layout, Pagination, Row, Skeleton, Spin } from "antd"
 import JobsCard from "../components/JobsCards"
 import LandingHero from "../components/LandingHero"
 import { useJobs } from "../Hooks/useJobs"
@@ -13,59 +13,55 @@ function LandingPage(){
     const jobSection = useRef<HTMLDivElement>(null)
 
     return(
-        <Layout>
+        <Layout className="h-dvh">
             <LandingHero setSearch= {setSearch} setPage={setPage}/>
             <Layout className="max-w-7xl! mx-auto! px-6! pt-10! w-full! min-h-85!" ref={jobSection}>
                 <div className="mb-10 text-center">
                     <h2 className="text-3xl font-black text-slate-900 tracking-tight">Available Jobs</h2>
                 </div>
                 {
-                    isLoading? (<Row gutter={[24, 24]}>
-                        <Skeleton/>
-                        <Skeleton/>
-                        <Skeleton/>
-                        <Skeleton/>
-                        <Skeleton/>
-                    </Row>):
+                    isLoading? (<Skeleton className=""/>):
                     isError || error? (
                         <Empty description={"No Jobs Available!"}/>
                     ):
-                    data?.data? (
-                        <Row gutter={[24, 24]} align={"top"}>
-                            {data.data.map((job) => (
-                                <Col xs={24} md={24}>
-                                    <JobsCard
-                                        key={job.jobId}
-                                        title={job.title}
-                                        dateCreated={job.dateCreated}
-                                        roles={JSON.parse(job.roles)}
-                                        description={job.description}
-                                        jobGuid={job.jobId}
-                                    />
-                                </Col>
-                            ))}
-                        </Row>
+                    data?.data.length? (
+                        <>
+                            <Row gutter={[24, 24]} align={"top"}>
+                                {data.data.map((job) => (
+                                    <Col xs={24} md={24}>
+                                        <JobsCard
+                                            key={job.jobId}
+                                            title={job.title}
+                                            dateCreated={job.dateCreated}
+                                            roles={JSON.parse(job.roles)}
+                                            description={job.description}
+                                            jobGuid={job.jobId}
+                                        />
+                                    </Col>
+                                ))}
+                            </Row>
+                            <Pagination
+                                responsive={true}
+                                current={page} 
+                                total={data?.meta.TotalRecords} 
+                                pageSize={pageSize} 
+                                showSizeChanger
+                                pageSizeOptions={['4', '8', '12', '20']}
+                                className="justify-center py-4! pb-20!"
+                                onChange={(page, pageSize) => {
+                                    setPage(page)
+                                    setPageSize(pageSize)
+                                    jobSection.current?.scrollIntoView()
+                                }}
+                            />
+                        </>
                     ):
                     (
-                        <Empty description={"No Jobs Available!"}/>
+                        <Empty description={"No Jobs Available!"} className="flex-1 "/>
                     )
                 }
-                <Pagination
-                    responsive={true}
-                    current={page} 
-                    total={data?.meta.TotalRecords} 
-                    pageSize={pageSize} 
-                    showSizeChanger
-                    pageSizeOptions={['4', '8', '12', '20']}
-                    className="justify-center py-4! pb-20!"
-                    onChange={(page, pageSize) => {
-                        setPage(page)
-                        setPageSize(pageSize)
-                        jobSection.current?.scrollIntoView()
-                    }}
-                />
-                <BackTop/>
             </Layout>
+            <BackTop/>
         </Layout>
     )
 }
