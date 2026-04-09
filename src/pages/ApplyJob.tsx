@@ -7,19 +7,25 @@ import { useJobsById } from "../Hooks/useJobs"
 import { AddApplication } from "../Hooks/useApplications"
 import { getYear } from "../helpers/GetYear"
 
-interface f {
-    FileName: string
-    Required: boolean
+interface fileReq {
+    label: string
+    required: boolean
+}
+interface customFields {
+    label: string
+    required: boolean
 }
 
 function ApplyJob(){
-    const { jobGuid } = useParams()
-    const { data, isLoading, isError, error } = useJobsById(jobGuid as string)
-    const [form] = Form.useForm();
-    const fileRequirements: f[] = data?.data.fileRequirements ? JSON.parse(data.data.fileRequirements) : []
-    const applyMutation = AddApplication()
     const navigate = useNavigate()
-    console.log(fileRequirements)
+    const { jobGuid } = useParams()
+    const [form] = Form.useForm();
+    const applyMutation = AddApplication()
+    const { data, isLoading, isError, error } = useJobsById(jobGuid as string)
+    const fileRequirements: fileReq[] = JSON.parse(data?.data.fileRequirements||"[]")
+    const customFields: customFields[] = JSON.parse(data?.data.customFields||"[]")
+    if(isLoading)return <div className="h-dvh justify-center items-center flex"><Spin size="large"/></div>
+    if(isError || error)return <>Error!</>
 
     const onFinish = () => {
         const formValues = form.getFieldsValue();
@@ -33,9 +39,9 @@ function ApplyJob(){
         formData.append("lastName", formValues.lastName)
         formData.append("middleName", formValues.middleName)
         formData.append("universityName", formValues.universityName)
-        formData.append("JobId", jobGuid as string)
-        fileRequirements.map(f => formData.append(f.FileName, formValues[f.FileName][0].originFileObj))
-
+        formData.append("customFields", JSON.stringify(customFields.map(e => {return {[e.label]:formValues[e.label]?formValues[e.label]:""}})))
+        formData.append("jobId", jobGuid as string)
+        fileRequirements.map(f => formData.append(f.label, formValues[f.label]?formValues[f.label][0].originFileObj:""))
         applyMutation.mutate(formData, {
             onSuccess: () => {
                 notification.success({title: "Application Submitted", description: "Your Application is now Submitted!"})
@@ -45,13 +51,7 @@ function ApplyJob(){
                 notification.error({title: "Application Failed to Submitted", description: "Application Failed to Submit Try Again Later!"})
             }
         })
-        
     };
-
-    
-    if(isLoading)return <div className="h-dvh justify-center items-center flex"><Spin size="large"/></div>
-    if(isError || error)return <>Error!</>
-
     return(
         <Layout>
             <div className="bg-linear-to-b! from-[#001529]! to-[#001d3d]! text-white! pt-16! pb-24! px-6! text-center!">
@@ -64,7 +64,7 @@ function ApplyJob(){
             </div>
             
             <div className="flex! justify-center! px-4!">
-                <Card className="w-full! max-w-4xl! rounded-2xl! shadow-2xl! -mt-16! border-none!">
+                <Card className="w-full! max-w-10/12! rounded-2xl! shadow-2xl! -mt-16! border-none!">
                     <Form
                         form={form}
                         layout="vertical"
@@ -125,7 +125,26 @@ function ApplyJob(){
                                 </Form.Item>
                             </Col>
                         </Row>
-
+                        {
+                            customFields.length? 
+                            <>
+                                <Divider className="my-6!"/>
+                                <div className="border-l-4 border-blue-500 pl-3 mb-5 font-bold text-lg uppercase tracking-wider text-slate-700">
+                                    Other Information
+                                </div>
+                                <Row gutter={16}>
+                                    {
+                                        customFields.map(e => 
+                                            <Col xs={24} md={12}>
+                                                <Form.Item label={e.label} name={e.label} rules={[{ required: e.required }]}>
+                                                    <Input placeholder={e.label} className="rounded-lg!" />
+                                                </Form.Item>
+                                            </Col>
+                                        )
+                                    }
+                                </Row>
+                            </>:""
+                        }
                         <Divider className="my-6!"/>
                         <div className="border-l-4 border-blue-500 pl-3 mb-5 font-bold text-lg uppercase tracking-wider text-slate-700">
                             Education Background
@@ -155,7 +174,7 @@ function ApplyJob(){
                             Required Documents
                         </div>
                         <FileRequirements files={fileRequirements}/>
-                        <div className="mt-10!">
+                            <div className="mt-10!">
                         <Button
                             type="primary" 
                             htmlType="submit" 

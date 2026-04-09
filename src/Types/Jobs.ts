@@ -6,4 +6,5 @@ export type Jobs = {
     fileRequirements: string
     dateCreated: string
     editedBy: string
+    customFields: string
 }

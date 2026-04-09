@@ -26,7 +26,7 @@ function FileRequirements({files}: FileRequirements) {
                         </small>
                     </span>
                     } 
-                    name={file.label.replace(/\s/g, "")}
+                    name={file.label}
                     valuePropName="fileList" 
                     getValueFromEvent={normFile}
                     rules={[{ required: file.required, message: `${file.label} is required` }]}
