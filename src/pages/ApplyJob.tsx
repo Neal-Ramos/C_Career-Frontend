@@ -37,7 +37,7 @@ function ApplyJob(){
         formData.append("firstName", formValues.firstName)
         formData.append("graduationYear", getYear(formValues.graduationYear))
         formData.append("lastName", formValues.lastName)
-        formData.append("middleName", formValues.middleName)
+        formValues.middleName&& formData.append("middleName", formValues.middleName)
         formData.append("universityName", formValues.universityName)
         formData.append("customFields", JSON.stringify(customFields.map(e => {return {[e.label]:formValues[e.label]?formValues[e.label]:""}})))
         formData.append("jobId", jobGuid as string)

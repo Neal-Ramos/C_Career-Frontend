@@ -14,7 +14,6 @@ function CustomFieldBox({value = [], onChange}: CustomFieldBox){
     const handleAddField = () => {
         onChange?.([...value, {label: newFieldLabel, required: true}])
         setNewFieldLabel("")
-        console.log(value)
     }
     const handleChangeReqButton = (index: number) => {
         onChange?.(value.map((v, i) => {

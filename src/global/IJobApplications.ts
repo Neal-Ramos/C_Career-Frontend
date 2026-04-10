@@ -5,7 +5,7 @@ export interface IJobApplication{
     id : number
     applicationId : string
     firstName : string
-    middleName : string
+    middleName? : string
     lastName : string
     email : string
     contactNumber : string
@@ -20,7 +20,11 @@ export interface IJobApplication{
     job : Jobs
 }
 export interface FetchApplications{
-    applications : IJobApplication[]
-    totalPages : number
-    totalRecords : number
+    data : IJobApplication[]
+    message: string
+    error: unknown
+    meta: {
+        TotalRecord: number,
+        TotalPages: number
+    }
 }

@@ -13,6 +13,10 @@ function AdminApplications(){
     const [searchText, setSearchText] = useState("")
     const [statusFilter, setStatusFilter] = useState<string|null>()
     const [jobFilter, setJobFilter] = useState<string|null>()
+    if (isLoading) return <Spin />
+    if (isError) return <div>Error: {String(error)}</div>
+    console.log(data)
+
     const jobTitles = [
         {label: "test", key: 1},
         {label: "test", key: 2},
@@ -21,22 +25,100 @@ function AdminApplications(){
     const columns: ColumnsType<IJobApplication> = [
         {
             title: 'Applicant',
-            key: 'applicant',
+            ellipsis: true,
+            width: 200,
             render: (_, record) => (
                 <Space>
                     <Avatar>{record.email?.charAt(0)}</Avatar>
                     <div>
-                        <Text strong>{record.lastName}</Text>
-                        <Text type="secondary">{record.firstName}</Text>
+                        <Text strong>{record.lastName}, {record.firstName} {record.middleName?.charAt(0)||""}</Text>
                     </div>
+                </Space>
+            )
+        },
+        {
+            title: 'Email',
+            ellipsis: true,
+            width: 200,
+            render: (_, record) => (
+                <Space>
+                    <div>
+                        <Text strong>{record.email}</Text>
+                    </div>
+                </Space>
+            )
+        },
+        {
+            title: 'Contact #',
+            ellipsis: true,
+            width: 200,
+            render: (_, record) => (
+                <Space>
+                    <div>
+                        <Text strong>{record.contactNumber}</Text>
+                    </div>
+                </Space>
+            )
+        },
+        {
+            title: 'Degree',
+            ellipsis: true,
+            width: 200,
+            render: (_, record) => (
+                <Space>
+                    <div>
+                        <Text strong>{record.degree}</Text>
+                    </div>
+                </Space>
+            )
+        },
+        {
+            title: 'Year Graduated',
+            ellipsis: true,
+            width: 200,
+            render: (_, record) => (
+                <Space>
+                    <div>
+                        <Text strong>{record.graduationYear}</Text>
+                    </div>
+                </Space>
+            )
+        },
+        {
+            title: 'Date Submission',
+            ellipsis: true,
+            width: 200,
+            render: (_, record) => (
+                <Space>
+                    <div>
+                        <Text strong>{new Date(record.dateSubmitted).toLocaleDateString()}</Text>
+                    </div>
+                </Space>
+            )
+        },
+        {
+            title: 'Status',
+            ellipsis: true,
+            width: 200,
+            render: (_, record) => (
+                <Space>
+                    <div>
+                        <Text strong>{record.status}</Text>
+                    </div>
+                </Space>
+            )
+        },
+        {
+            title: 'Status',
+            ellipsis: true,
+            width: 200,
+            render: () => (
+                <Space>
+                    <Button variant="outlined" type="primary">View</Button>
                 </Space>
             )
         }
     ]
-
-
-    if (isLoading) return <Spin />
-    if (isError) return <div>Error: {String(error)}</div>
     return(
         <div style={{ padding: '24px' }}>
             <div style={{ marginBottom: '24px' }}>
@@ -63,7 +145,7 @@ function AdminApplications(){
                                 value={jobFilter}
                                 >
                                 {jobTitles.map(title => (
-                                    <Option key={title.key.toString()} value={title.label}>{title.label}</Option>
+                                    <Option key={title.key.toString()} value={title.label}/>
                                 ))}
                             </Select>
                         </Col>
@@ -75,14 +157,14 @@ function AdminApplications(){
                                 allowClear
                                 value={statusFilter}
                             >
-                                <Option value="Pending" key="1">Pending</Option>
-                                <Option value="Accepted" key="2">Accepted</Option>
-                                <Option value="Rejected" key="3">Rejected</Option>
+                                <Option value="Pending" key="1"/>
+                                <Option value="Accepted" key="2"/>
+                                <Option value="Rejected" key="3"/>
                             </Select>
                         </Col>
                         <Col xs={24} md={6} style={{ textAlign: 'right' }}>
                             <Space>
-                                <Badge count={data?.totalRecords} overflowCount={999} color="#1677ff">
+                                <Badge count={data?.meta.TotalRecord} overflowCount={999} color="#1677ff">
                                     <Text type="secondary" style={{ marginRight: 8 }}>Results</Text>
                                 </Badge>
                                 <Button onClick={() => {
@@ -97,13 +179,14 @@ function AdminApplications(){
                 <Card variant="borderless" styles={{ body: { padding: 0 } }} style={{ borderRadius: '12px', overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
                     <Table
                         columns={columns}
-                        dataSource={data?.applications}
+                        dataSource={data?.data}
+                        rowKey={record => record.applicationId}
                         pagination={{
-                            total: data?.totalRecords,
+                            total: data?.meta.TotalRecord,
                             pageSize: 5,
                             showSizeChanger: true,
                             showTotal: (total) => `Total ${total} applicants`,
-                            position: ['bottomRight']
+                            placement: ["bottomEnd"]
                         }}
                         scroll={{ x: 800 }}
                     />

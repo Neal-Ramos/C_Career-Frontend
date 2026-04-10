@@ -1,5 +1,5 @@
 import { PlusOutlined } from "@ant-design/icons"
-import { Button, Card, Spin, Table } from "antd"
+import { Button, Card, Spin, Table, Tag } from "antd"
 import { Content } from "antd/es/layout/layout"
 import Text from "antd/es/typography/Text"
 import Title from "antd/es/typography/Title"
@@ -23,11 +23,25 @@ function AdminJobs(){
             title: "Date Created",
             dataIndex: "dateCreated",
             render: (value) => new Date(value).toLocaleDateString()
+        },
+        {
+            title: "Roles",
+            dataIndex: "roles",
+            render: (value) => (JSON.parse(value||"[]") as string[]).map(e => <Tag variant="outlined" className=" m-1!">{e}</Tag>)
+        },
+        {
+            title: "Actions",
+            render: () => <Button type="primary" variant="dashed">View</Button>
         }
     ]
     if(isLoading)return <Spin size="large" className="justify-center flex-1"/>
-    
-    console.log(data)
+    if(isError || error)return <>Error...</>
+
+    const handleChangePage = (page: number, pageSize: number) => {
+        setPage(page)
+        setPageSize(pageSize)
+    }
+
     return(
         <Content style={{ padding: '32px', maxWidth: '1400px', margin: '0 auto', width: '100%' }}>
             <div style={{ marginBottom: '32px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
@@ -42,13 +56,14 @@ function AdminJobs(){
             <Card variant="borderless" styles={{ body:{padding: 0} }}>
                 <Table 
                     columns={jobsColumn}
-                    dataSource={isError? []:data?.data}
+                    dataSource={data?.data}
                     pagination={
                         { 
                             pageSize: pageSize, 
                             total: data?.meta.TotalRecords,
                             current: page,
-                            responsive:true
+                            responsive:true,
+                            onChange: (p, ps) => {handleChangePage(p, ps)}
                         }
                     }
                 />

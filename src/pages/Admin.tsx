@@ -2,12 +2,11 @@ import { Avatar, Badge, Button, ConfigProvider, Layout, Space } from "antd"
 import AdminSider from "../components/AdminSider"
 import { useState } from "react"
 import { BellOutlined } from "@ant-design/icons"
-import { Outlet, useLocation } from "react-router-dom"
+import { Outlet } from "react-router-dom"
 import { Header } from "antd/es/layout/layout"
 import Text from "antd/es/typography/Text"
 
 function Admin(){
-  const location = useLocation()
   const [collapsed, setCollapsed] = useState(false)
 
   return(<ConfigProvider

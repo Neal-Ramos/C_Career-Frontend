@@ -22,5 +22,5 @@ export const GetApplications = async (
             FilterJob : FilterJob,
             FilterStatus : FilterStatus,
         }
-    })).data.data
+    })).data
 }

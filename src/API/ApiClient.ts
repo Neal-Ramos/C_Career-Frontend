@@ -1,6 +1,4 @@
 import axios from "axios";
-import { isTokenExpiringSoon } from "../helpers/JwtDecode";
-import { rotateToken } from "./Authentication";
 
 
 export const apiClient = axios.create({
@@ -9,22 +7,18 @@ export const apiClient = axios.create({
 })
 apiClient.interceptors.request.use(async (config) => {
     const currentAccessToken = localStorage.getItem("AccessToken");
-
-    if (currentAccessToken && isTokenExpiringSoon(currentAccessToken)) {
-        try {
-            const newAccessToken = (await rotateToken()).data.newAccessToken
-            localStorage.setItem("AccessToken", newAccessToken)
-        } catch (err) {
-            localStorage.clear();
-            window.location.href = "/login"
-            return Promise.reject(err);
-        }
-    }
     if (currentAccessToken) {
         config.headers.Authorization = `Bearer ${currentAccessToken}`;
     }
 
     return config;
+})
+apiClient.interceptors.response.use(async (config) => {
+    if(config.status === 401){
+        window.location.href = "/login"
+    }
+
+    return config
 })
 
 export const authClient = axios.create({
@@ -38,6 +32,5 @@ authClient.interceptors.request.use((config) => {
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
     }
-
     return config;
 })
