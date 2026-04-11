@@ -7,6 +7,7 @@ import Title from "antd/es/typography/Title"
 import { useState } from "react"
 import { useApplication } from "../Hooks/useApplications"
 import type { IJobApplication } from "../global/IJobApplications"
+import { Content } from "antd/es/layout/layout"
 
 function AdminApplications(){
     const {data, isLoading, isError, error} = useApplication(1,5)
@@ -15,7 +16,6 @@ function AdminApplications(){
     const [jobFilter, setJobFilter] = useState<string|null>()
     if (isLoading) return <Spin />
     if (isError) return <div>Error: {String(error)}</div>
-    console.log(data)
 
     const jobTitles = [
         {label: "test", key: 1},
@@ -34,7 +34,8 @@ function AdminApplications(){
                         <Text strong>{record.lastName}, {record.firstName} {record.middleName?.charAt(0)||""}</Text>
                     </div>
                 </Space>
-            )
+            ),
+            align:"center"
         },
         {
             title: 'Email',
@@ -46,7 +47,8 @@ function AdminApplications(){
                         <Text strong>{record.email}</Text>
                     </div>
                 </Space>
-            )
+            ),
+            align:"center"
         },
         {
             title: 'Contact #',
@@ -58,31 +60,8 @@ function AdminApplications(){
                         <Text strong>{record.contactNumber}</Text>
                     </div>
                 </Space>
-            )
-        },
-        {
-            title: 'Degree',
-            ellipsis: true,
-            width: 200,
-            render: (_, record) => (
-                <Space>
-                    <div>
-                        <Text strong>{record.degree}</Text>
-                    </div>
-                </Space>
-            )
-        },
-        {
-            title: 'Year Graduated',
-            ellipsis: true,
-            width: 200,
-            render: (_, record) => (
-                <Space>
-                    <div>
-                        <Text strong>{record.graduationYear}</Text>
-                    </div>
-                </Space>
-            )
+            ),
+            align:"center"
         },
         {
             title: 'Date Submission',
@@ -94,7 +73,8 @@ function AdminApplications(){
                         <Text strong>{new Date(record.dateSubmitted).toLocaleDateString()}</Text>
                     </div>
                 </Space>
-            )
+            ),
+            align:"center"
         },
         {
             title: 'Status',
@@ -106,21 +86,23 @@ function AdminApplications(){
                         <Text strong>{record.status}</Text>
                     </div>
                 </Space>
-            )
+            ),
+            align:"center"
         },
         {
-            title: 'Status',
+            title: 'Action',
             ellipsis: true,
             width: 200,
             render: () => (
                 <Space>
                     <Button variant="outlined" type="primary">View</Button>
                 </Space>
-            )
+            ),
+            align:"center"
         }
     ]
     return(
-        <div style={{ padding: '24px' }}>
+        <Content style={{ padding: '32px', maxWidth: '1400px', margin: '0 auto', width: '100%' }}>
             <div style={{ marginBottom: '24px' }}>
                 <Title level={2} style={{ margin: 0 }}>Applications</Title>
                 <Text type="secondary">Review and manage candidate submissions across all active roles.</Text>
@@ -192,7 +174,7 @@ function AdminApplications(){
                     />
                 </Card>
             </div>
-        </div>
+        </Content>
     )
 }
 export default AdminApplications

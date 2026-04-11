@@ -1,15 +1,23 @@
 import { Avatar, Badge, Button, ConfigProvider, Layout, Space } from "antd"
 import AdminSider from "../components/AdminSider"
 import { useState } from "react"
-import { BellOutlined } from "@ant-design/icons"
+import { BellOutlined, DashboardOutlined, FileTextOutlined, SettingOutlined, TeamOutlined } from "@ant-design/icons"
 import { Outlet } from "react-router-dom"
 import { Header } from "antd/es/layout/layout"
 import Text from "antd/es/typography/Text"
+import type { ItemType, MenuItemType } from "antd/es/menu/interface"
 
 function Admin(){
   const [collapsed, setCollapsed] = useState(false)
+  const items: ItemType<MenuItemType>[] = [
+      { key: '/admin/dashboard', icon: <DashboardOutlined />, label: 'Dashboard'},
+      { key: '/admin/jobs', icon: <TeamOutlined />, label: 'Jobs'},
+      { key: '/admin/applications', icon: <FileTextOutlined />, label: 'Applications'},
+      { key: '/admin/settings', icon: <SettingOutlined />, label: 'Settings'},
+  ]
 
-  return(<ConfigProvider
+  return(
+  <ConfigProvider
     theme={{
       token: {
         colorPrimary: '#1677ff',
@@ -32,8 +40,9 @@ function Admin(){
         <AdminSider
           setCollapsed={setCollapsed}
           collapsed={collapsed}
+          items={items}
         />
-        <Layout>
+        <Layout  className="max-h-dvh overflow-auto">
           <Header style={{ 
             padding: '0 24px', 
             display: 'flex', 

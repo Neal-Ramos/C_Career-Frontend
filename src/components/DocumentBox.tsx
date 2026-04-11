@@ -45,7 +45,12 @@ function DocumentBox({value = [], onChange}: DocumentBox){
                                 onClick={() => handleRemoveDoc(i)}
                             />
                         </Space.Compact>
-                        <Checkbox onChange={(e) =>  handleOnchange(i, {label: val.label, required: e.target.checked})}>Required</Checkbox>
+                        <Checkbox 
+                            onChange={(e) =>  handleOnchange(i, {label: val.label, required: e.target.checked})}
+                            checked={val.required}
+                        >
+                            Required
+                        </Checkbox>
                     </div>
                 })}
                 <Button type="dashed" block icon={<PlusOutlined />} onClick={handleAddDoc}>

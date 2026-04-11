@@ -8,8 +8,11 @@ import { useState } from "react"
 import type { ColumnsType } from "antd/es/table"
 import type { Jobs } from "../Types/Jobs"
 import AddJobModal from "../components/AddJobModal"
+import { Outlet, useNavigate, useParams } from "react-router-dom"
 
 function AdminJobs(){
+    const {jobId} = useParams()
+    const navigate = useNavigate()
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
     const {data, isLoading, isError, error} = useJobs(page, pageSize);
@@ -17,21 +20,26 @@ function AdminJobs(){
     const jobsColumn: ColumnsType<Jobs> = [
         {
             title: "Job Title",
-            dataIndex: "title"
+            dataIndex: "title",
+            align:"center"
         },
         {
             title: "Date Created",
             dataIndex: "dateCreated",
-            render: (value) => new Date(value).toLocaleDateString()
+            render: (value) => new Date(value).toLocaleDateString(),
+            align:"center"
         },
         {
             title: "Roles",
             dataIndex: "roles",
-            render: (value) => (JSON.parse(value||"[]") as string[]).map(e => <Tag variant="outlined" className=" m-1!">{e}</Tag>)
+            render: (value) => (JSON.parse(value||"[]") as string[]).map(e => <Tag variant="outlined" className=" m-1!">{e}</Tag>),
+            align:"center"
         },
         {
             title: "Actions",
-            render: () => <Button type="primary" variant="dashed">View</Button>
+            dataIndex: "jobId",
+            render: (value) => <Button type="primary" variant="dashed" onClick={() => navigate(`/admin/jobs/${value}`)}>View</Button>,
+            align:"center"
         }
     ]
     if(isLoading)return <Spin size="large" className="justify-center flex-1"/>
@@ -41,9 +49,11 @@ function AdminJobs(){
         setPage(page)
         setPageSize(pageSize)
     }
-
+    if(jobId)return <Outlet/>
     return(
-        <Content style={{ padding: '32px', maxWidth: '1400px', margin: '0 auto', width: '100%' }}>
+        <Content 
+            style={{ padding: '32px', maxWidth: '1400px', margin: '0 auto', width: '100%' }}
+        >
             <div style={{ marginBottom: '32px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
                 <div>
                     <Title level={2} style={{ margin: 0 }}>Job Postings</Title>

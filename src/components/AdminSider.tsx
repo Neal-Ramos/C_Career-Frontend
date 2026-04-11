@@ -1,32 +1,27 @@
-import { DashboardOutlined, FileTextOutlined, SettingOutlined, TeamOutlined, ThunderboltOutlined } from "@ant-design/icons"
+import { ThunderboltOutlined } from "@ant-design/icons"
 import { Menu } from "antd"
 import Sider from "antd/es/layout/Sider"
 import type { ItemType, MenuItemType } from "antd/es/menu/interface"
 import Title from "antd/es/typography/Title"
-import { useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 
 interface AdminSider{
     collapsed: boolean
     setCollapsed: Function
+    items: ItemType<MenuItemType>[]
 }
 
-function AdminSider({collapsed, setCollapsed }: AdminSider){
+function AdminSider({collapsed, setCollapsed, items }: AdminSider){
     const navigate = useNavigate()
     const location = useLocation()
-    const items: ItemType<MenuItemType>[] = [
-        { key: '/admin/dashboard', icon: <DashboardOutlined />, label: 'Dashboard'},
-        { key: '/admin/jobs', icon: <TeamOutlined />, label: 'Jobs'},
-        { key: '/admin/applications', icon: <FileTextOutlined />, label: 'Applications'},
-        { key: '/admin/settings', icon: <SettingOutlined />, label: 'Settings'},
-    ]
 
-    return(<Sider
+    return(
+    <Sider
         collapsible 
         collapsed={collapsed} 
         onCollapse={(value) => setCollapsed(value)}
         width={260}
-        style={{ boxShadow: '2px 0 8px 0 rgba(29,35,41,.05)', height: '100dvh' }}
+        style={{ boxShadow: '2px 0 8px 0 rgba(29,35,41,.05)', height: '100dvh'}}
     >
         <div style={{ padding: '24px 16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
             <div style={{ 

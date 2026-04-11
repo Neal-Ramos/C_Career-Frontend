@@ -53,7 +53,9 @@ function CustomFieldBox({value = [], onChange}: CustomFieldBox){
                             <Checkbox
                                 checked={e.required}
                                 onClick={() => handleChangeReqButton(i)}
-                            >Required</Checkbox>
+                            >
+                                Required
+                            </Checkbox>
                         </Space.Compact>
                     </>
                 )

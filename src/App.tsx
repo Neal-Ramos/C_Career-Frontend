@@ -7,6 +7,7 @@ import AdminDashboard from './pages/AdminDashboard'
 import AdminJobs from './pages/AdminJobs'
 import AdminApplications from './pages/AdminApplications'
 import ProtectedRoutes from './components/auth/ProtectedRoutes'
+import AdminViewJob from './pages/AdminViewJob'
 
 function App() {
   return (
@@ -19,8 +20,12 @@ function App() {
           <Route path='admin' element={<Admin/>}>
             <Route index element={<Navigate to="dashboard" replace />} />
             <Route path='dashboard' element={<AdminDashboard/>}/>
-            <Route path='jobs' element={<AdminJobs/>}/>
-            <Route path='applications' element={<AdminApplications/>}/>
+            <Route path='jobs' element={<AdminJobs/>}>
+              <Route path=':jobId' element={<AdminViewJob/>}/>
+            </Route>
+            <Route path='applications' element={<AdminApplications/>}>
+              <Route path=':applicationId'/>
+            </Route>
             <Route path='settings' element={<>NAH</>}/>
           </Route>
         </Route>

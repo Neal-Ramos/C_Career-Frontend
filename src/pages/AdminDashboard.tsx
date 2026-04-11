@@ -108,7 +108,9 @@ function AdminDashboard(){
     ]
     
     return(
-        <Content style={{ padding: '32px', maxWidth: '1400px', margin: '0 auto', width: '100%' }}>
+        <Content 
+            style={{ padding: '32px', maxWidth: '1400px', margin: '0 auto', width: '100%' }}
+        >
             <div style={{ marginBottom: '32px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
               <div>
                 <Title level={2} style={{ margin: 0 }}>System Overview</Title>
