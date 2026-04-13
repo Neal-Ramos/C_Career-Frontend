@@ -24,3 +24,8 @@ export const GetApplications = async (
         }
     })).data
 }
+export const GetApplicationsById = async (
+    applicationId: string
+) => {
+    return (await apiClient.get(`/api/Applications/${applicationId}`)).data
+}

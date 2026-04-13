@@ -8,6 +8,7 @@ import AdminJobs from './pages/AdminJobs'
 import AdminApplications from './pages/AdminApplications'
 import ProtectedRoutes from './components/auth/ProtectedRoutes'
 import AdminViewJob from './pages/AdminViewJob'
+import AdminViewApplication from './pages/AdminViewApplication'
 
 function App() {
   return (
@@ -24,7 +25,7 @@ function App() {
               <Route path=':jobId' element={<AdminViewJob/>}/>
             </Route>
             <Route path='applications' element={<AdminApplications/>}>
-              <Route path=':applicationId'/>
+              <Route path=':applicationId' element={<AdminViewApplication/>}/>
             </Route>
             <Route path='settings' element={<>NAH</>}/>
           </Route>

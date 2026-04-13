@@ -1,30 +1,13 @@
-import type { Jobs } from "../Types/Jobs"
+import type { Application } from "../Types/Applications"
+import type { IResponse } from "./IResponse"
 
-
-export interface IJobApplication{
-    id : number
-    applicationId : string
-    firstName : string
-    middleName? : string
-    lastName : string
-    email : string
-    contactNumber : string
-    universityName : string
-    degree : string
-    graduationYear : number
-    fileSubmitted : string
-    status : string
-    dateSubmitted : Date
-    dateReviewed : Date
-    jobId : string
-    job : Jobs
-}
-export interface FetchApplications{
-    data : IJobApplication[]
-    message: string
-    error: unknown
+export interface FetchApplications extends IResponse{
+    data : Application[]
     meta: {
         TotalRecord: number,
         TotalPages: number
     }
+}
+export interface GetApplicationsByIdResponse extends IResponse{
+    data: Application
 }

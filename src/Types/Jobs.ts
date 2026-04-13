@@ -8,3 +8,12 @@ export type Jobs = {
     editedBy: string
     customFields: string
 }
+export type ParsedRolesJobs = string[]
+export type ParsedCustomFieldsJobs = {
+    label: string
+    required: boolean
+}
+export type ParsedFileRequirementsJobs = {
+    label: string
+    required: boolean
+}

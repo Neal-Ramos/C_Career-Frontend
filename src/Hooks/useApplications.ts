@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query"
-import { addApplication, GetApplications } from "../API/JobApplications"
-import type { FetchApplications } from "../global/IJobApplications"
+import { addApplication, GetApplications, GetApplicationsById } from "../API/JobApplications"
+import type { FetchApplications, GetApplicationsByIdResponse } from "../global/IJobApplications"
 
 
 export const AddApplication = () => {
@@ -31,6 +31,16 @@ export const useApplication = (
             FilterJob,
             FilterStatus,
         ),
+        staleTime: 1000 * 60 * 5,
+        refetchOnWindowFocus: false,
+    })
+}
+export const useApplicationById = (
+    applicationId: string
+) => {
+    return useQuery<GetApplicationsByIdResponse>({
+        queryKey: [["GetApplications"], applicationId],
+        queryFn: () => GetApplicationsById(applicationId),
         staleTime: 1000 * 60 * 5,
         refetchOnWindowFocus: false,
     })

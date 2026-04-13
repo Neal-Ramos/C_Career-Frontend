@@ -8,12 +8,17 @@ import { useState } from "react"
 import { useApplication } from "../Hooks/useApplications"
 import type { IJobApplication } from "../global/IJobApplications"
 import { Content } from "antd/es/layout/layout"
+import { Outlet, useNavigate, useParams } from "react-router-dom"
 
 function AdminApplications(){
+    const {applicationId} = useParams()
+    const navigate = useNavigate()
     const {data, isLoading, isError, error} = useApplication(1,5)
     const [searchText, setSearchText] = useState("")
     const [statusFilter, setStatusFilter] = useState<string|null>()
     const [jobFilter, setJobFilter] = useState<string|null>()
+
+    if (applicationId) return <Outlet/>
     if (isLoading) return <Spin />
     if (isError) return <div>Error: {String(error)}</div>
 
@@ -93,12 +98,13 @@ function AdminApplications(){
             title: 'Action',
             ellipsis: true,
             width: 200,
-            render: () => (
+            render: (value) => (
                 <Space>
-                    <Button variant="outlined" type="primary">View</Button>
+                    <Button variant="outlined" type="primary" onClick={() => navigate(`/admin/applications/${value}`)}>View</Button>
                 </Space>
             ),
-            align:"center"
+            align:"center",
+            dataIndex: "applicationId"
         }
     ]
     return(
