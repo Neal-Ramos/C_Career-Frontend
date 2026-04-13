@@ -1,4 +1,4 @@
-import { Col, Empty, Layout, Pagination, Row, Skeleton, Spin } from "antd"
+import { Col, Empty, Layout, Pagination, Row, Skeleton } from "antd"
 import JobsCard from "../components/JobsCards"
 import LandingHero from "../components/LandingHero"
 import { useJobs } from "../Hooks/useJobs"

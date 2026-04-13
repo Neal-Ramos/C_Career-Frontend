@@ -5,7 +5,7 @@ export type Jobs = {
     roles: string
     fileRequirements: string
     dateCreated: string
-    editedBy: string
+    adminId: string
     customFields: string
 }
 export type ParsedRolesJobs = string[]

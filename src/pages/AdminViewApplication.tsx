@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom"
 import { useApplicationById } from "../Hooks/useApplications"
 import { Content } from "antd/es/layout/layout"
-import { Button, Card, Descriptions, Divider, List, Tag } from "antd"
+import { Button, Card, Descriptions, Divider, List, Spin, Tag } from "antd"
 import { ArrowLeftOutlined, BookOutlined, CalendarOutlined, CheckOutlined, ClockCircleOutlined, CloseCircleOutlined, FileTextOutlined, InfoCircleOutlined, MailOutlined, PhoneOutlined, QuestionCircleOutlined, RocketOutlined, UserOutlined } from "@ant-design/icons"
 import Text from "antd/es/typography/Text"
 import Title from "antd/es/typography/Title"
@@ -12,7 +12,7 @@ function AdminViewApplication(){
     const {applicationId} = useParams()
     const {data, isLoading, isError} = useApplicationById(applicationId||"")
 
-    if(isLoading) return <>Loading...</>
+    if(isLoading) return <Spin size="large" className="flex-1 justify-center"/>
     if(isError) return <>Error...</>
 
     const files: ParsedFileSubmittedApplication[] = JSON.parse(data?.data.fileSubmitted||"[]")
@@ -21,7 +21,7 @@ function AdminViewApplication(){
     return(
         <Content
             className="min-h-screen bg-[#f9fafb] h-fit!"
-            style={{ padding: '24px 16px', maxWidth: '1200px', margin: '0 auto', width: '100%' }}
+            style={{ padding: '24px 16px', maxWidth: '1400px', margin: '0 auto', width: '100%' }}
         >
             <div className="mb-8 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
                 <div className="flex-1">

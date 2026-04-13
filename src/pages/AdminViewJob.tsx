@@ -1,33 +1,41 @@
 import { useParams } from "react-router-dom"
-import { useJobsById } from "../Hooks/useJobs"
+import { useJobsById, useUpdateJobMutation } from "../Hooks/useJobs"
 import { Content } from "antd/es/layout/layout"
 import Title from "antd/es/typography/Title"
 import Text from "antd/es/typography/Text"
-import { Button, Card, Col, Divider, Form, Input, Row, Space } from "antd"
+import { Button, Card, Col, Divider, Form, Input, Row, Space, Spin } from "antd"
 import { ArrowLeftOutlined, DeleteOutlined, EditOutlined, InfoCircleOutlined } from "@ant-design/icons"
 import TextArea from "antd/es/input/TextArea"
 import TagBox from "../components/TagBox"
 import CustomFieldBox from "../components/CustomFieldBox"
 import DocumentBox from "../components/DocumentBox"
 import { useForm } from "antd/es/form/Form"
+import type { IUpdateJobReq } from "../global/IJobs"
 
 function AdminViewJob(){
-    const {jobId} = useParams()
-    const {data, isLoading, isError} = useJobsById(jobId as string)
     const [form] = useForm()
-    if(isLoading) return <>Loading...</>
-    if(isError) return <>Error...</>
+    const {jobId} = useParams()
+    const updateJob = useUpdateJobMutation()
+    const {data, isLoading, isError} = useJobsById(jobId as string)
 
-    const handleUpdate = () => {
-        console.log(form.getFieldValue)
+    const handleOnFinish = (updatedJob: IUpdateJobReq) => {
+        updateJob.mutate({
+            ...updatedJob,
+            customFields: JSON.stringify(updatedJob.customFields),
+            fileRequirements: JSON.stringify(updatedJob.fileRequirements),
+            roles: JSON.stringify(updatedJob.roles)
+        })
     }
     const handleDelete = () => {
         console.log(form.getFieldValue)
     }
+
+    if(isLoading) return <Spin size="large" className="flex-1 justify-center"/>
+    if(isError) return <>Error...</>
     return(
         <Content
             className="min-h-screen bg-[#f9fafb] h-fit!"
-            style={{ padding: '24px 16px', maxWidth: '1200px', margin: '0 auto', width: '100%' }}
+            style={{ padding: '24px 16px', maxWidth: '1400px', margin: '0 auto', width: '100%' }}
         >
             <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div className="flex-1">
@@ -58,7 +66,7 @@ function AdminViewJob(){
                         size="large" 
                         icon={<EditOutlined />} 
                         className="flex items-center rounded-lg shadow-sm px-8"
-                        onClick={handleUpdate}
+                        onClick={() => form.submit()}
                     >
                         Save
                     </Button>
@@ -75,6 +83,7 @@ function AdminViewJob(){
                     layout="vertical"
                     scrollToFirstError
                     requiredMark="optional"
+                    onFinish={(val) => {handleOnFinish({editSummary: "Nothing",jobId: jobId, ...val})}}
                 >
                     <Divider className="mt-0!">
                         <Space className="text-blue-600">

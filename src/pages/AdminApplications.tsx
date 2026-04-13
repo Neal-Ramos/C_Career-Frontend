@@ -6,28 +6,28 @@ import Text from "antd/es/typography/Text"
 import Title from "antd/es/typography/Title"
 import { useState } from "react"
 import { useApplication } from "../Hooks/useApplications"
-import type { IJobApplication } from "../global/IJobApplications"
 import { Content } from "antd/es/layout/layout"
 import { Outlet, useNavigate, useParams } from "react-router-dom"
+import type { Application } from "../Types/Applications"
 
 function AdminApplications(){
     const {applicationId} = useParams()
     const navigate = useNavigate()
-    const {data, isLoading, isError, error} = useApplication(1,5)
+    const {data, isLoading, isError} = useApplication(1,5)
     const [searchText, setSearchText] = useState("")
     const [statusFilter, setStatusFilter] = useState<string|null>()
     const [jobFilter, setJobFilter] = useState<string|null>()
 
     if (applicationId) return <Outlet/>
-    if (isLoading) return <Spin />
-    if (isError) return <div>Error: {String(error)}</div>
+    if (isLoading) return <Spin size="large" className="flex-1 justify-center"/>
+    if (isError) return <div>Error...</div>
 
     const jobTitles = [
         {label: "test", key: 1},
         {label: "test", key: 2},
         {label: "test", key: 3},
     ]
-    const columns: ColumnsType<IJobApplication> = [
+    const columns: ColumnsType<Application> = [
         {
             title: 'Applicant',
             ellipsis: true,
@@ -172,7 +172,6 @@ function AdminApplications(){
                         pagination={{
                             total: data?.meta.TotalRecord,
                             pageSize: 5,
-                            showSizeChanger: true,
                             showTotal: (total) => `Total ${total} applicants`,
                             placement: ["bottomEnd"]
                         }}

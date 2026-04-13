@@ -1,57 +1,88 @@
 import { ArrowUpOutlined, BookOutlined, TeamOutlined, ThunderboltOutlined } from "@ant-design/icons"
-import { Button, Card, Row, Table, Tag } from "antd"
+import { Avatar, Button, Card, Row, Space, Spin, Table, Tag } from "antd"
 import { Content } from "antd/es/layout/layout"
 import Text from "antd/es/typography/Text"
 import Title from "antd/es/typography/Title"
 import AdminDashboardCards, { type IAdminDashboardCards } from "../components/AdminDashboardCards"
 import type { ColumnsType } from "antd/es/table"
-
-
-
-interface CandidateData {
-  key: string;
-  name: string;
-  status: "Pending" | "Approved" | "Declined";
-  date: string;
-  applied: string
-}
+import { useApplication } from "../Hooks/useApplications"
+import type { Application } from "../Types/Applications"
+import { useNavigate } from "react-router-dom"
 
 function AdminDashboard(){
-
-    const columns: ColumnsType<CandidateData> = [
+    const {data, isLoading, isError} = useApplication(1,10)
+    const navigate = useNavigate()
+ 
+    if(isLoading) return <Spin size="large" className="flex-1 justify-center"/>
+    if(isError) return <div>Error...</div>
+    const columns: ColumnsType<Application> = [
         {
-            title: 'Candidate',
-            dataIndex: 'name',
-            key: 'name',
+            title: 'Applicant',
+            ellipsis: true,
+            width: 200,
+            render: (_, record) => (
+                <Space>
+                    <Avatar>{record.email?.charAt(0)}</Avatar>
+                    <div>
+                        <Text strong>{record.lastName}, {record.firstName} {record.middleName?.charAt(0)||""}</Text>
+                    </div>
+                </Space>
+            ),
+            align:"center"
         },
         {
-            title: 'Applied For',
-            dataIndex: 'applied',
-            key: 'applied',
+            title: 'Email',
+            ellipsis: true,
+            width: 200,
+            render: (_, record) => (
+                <Space>
+                    <div>
+                        <Text strong>{record.email}</Text>
+                    </div>
+                </Space>
+            ),
+            align:"center"
+        },
+        {
+            title: 'Contact #',
+            ellipsis: true,
+            width: 200,
+            render: (_, record) => (
+                <Space>
+                    <div>
+                        <Text strong>{record.contactNumber}</Text>
+                    </div>
+                </Space>
+            ),
+            align:"center"
+        },
+        {
+            title: 'Date Submission',
+            ellipsis: true,
+            width: 200,
+            render: (_, record) => (
+                <Space>
+                    <div>
+                        <Text strong>{new Date(record.dateSubmitted).toLocaleDateString()}</Text>
+                    </div>
+                </Space>
+            ),
+            align:"center"
         },
         {
             title: 'Status',
-            dataIndex: 'status',
-            key: 'status',
-            render: (status) => {
-                let color = 'default';
-                if (status === 'Approved') color = 'success';
-                if (status === 'Declined') color = 'volcano';
-                if (status === 'Pending') color = 'warning';
-                return <Tag color={color}>{status.toUpperCase()}</Tag>;
-            },
-        },
-        {
-            title: 'Date',
-            dataIndex: 'date',
-            key: 'date',
-            render: (text) => <Text type="secondary">{text}</Text>,
+            ellipsis: true,
+            width: 200,
+            render: (_, record) => (
+                <Space>
+                    <div>
+                        <Text strong>{record.status}</Text>
+                    </div>
+                </Space>
+            ),
+            align:"center"
         }
-    ]
-    const candidateData: CandidateData[] = [
-        {key: "1", name: "Neal J. Ramos", status: "Pending", applied: "Frontend", date:"18-9-2004"}
-    ]
-    
+    ] 
     const cards: IAdminDashboardCards[] = [
         {
             textProps:{
@@ -139,14 +170,16 @@ function AdminDashboard(){
             <Card 
               title="Recent Applications" 
               variant="borderless" 
-              extra={<Button type="link">View All</Button>}
+              extra={<Button type="link" onClick={() => navigate("/admin/applications")}>View All</Button>}
               styles={{ body: { padding: 0 } }}
             >
                 <Table
-                    columns={columns} 
-                    dataSource={candidateData} 
-                    pagination={false}
-                />
+                        columns={columns}
+                        dataSource={data?.data}
+                        rowKey={record => record.applicationId}
+                        pagination={false}
+                        scroll={{ x: 800 }}
+                    />
             </Card>
         </Content>
     )

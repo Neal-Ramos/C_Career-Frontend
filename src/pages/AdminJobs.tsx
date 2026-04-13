@@ -42,7 +42,7 @@ function AdminJobs(){
             align:"center"
         }
     ]
-    if(isLoading)return <Spin size="large" className="justify-center flex-1"/>
+    if(isLoading)return <Spin size="large" className="flex-1 justify-center"/>
     if(isError || error)return <>Error...</>
 
     const handleChangePage = (page: number, pageSize: number) => {

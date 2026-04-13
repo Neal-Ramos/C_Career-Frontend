@@ -1,4 +1,4 @@
-import { Avatar, Badge, Button, ConfigProvider, Layout, Space } from "antd"
+import { Avatar, Badge, Button, ConfigProvider, Grid, Layout, Space } from "antd"
 import AdminSider from "../components/AdminSider"
 import { useState } from "react"
 import { BellOutlined, DashboardOutlined, FileTextOutlined, SettingOutlined, TeamOutlined } from "@ant-design/icons"
@@ -6,8 +6,10 @@ import { Outlet } from "react-router-dom"
 import { Header } from "antd/es/layout/layout"
 import Text from "antd/es/typography/Text"
 import type { ItemType, MenuItemType } from "antd/es/menu/interface"
+const { useBreakpoint } = Grid
 
 function Admin(){
+  const screen = useBreakpoint()
   const [collapsed, setCollapsed] = useState(false)
   const items: ItemType<MenuItemType>[] = [
       { key: '/admin/dashboard', icon: <DashboardOutlined />, label: 'Dashboard'},
@@ -37,11 +39,13 @@ function Admin(){
     }}
   >
     <Layout>
-        <AdminSider
+        {
+          screen.md&& <AdminSider
           setCollapsed={setCollapsed}
           collapsed={collapsed}
           items={items}
         />
+        }
         <Layout  className="max-h-dvh overflow-auto">
           <Header style={{ 
             padding: '0 24px', 

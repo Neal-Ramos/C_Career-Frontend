@@ -6,7 +6,7 @@ import FileRequirements from "../components/FileReuirements"
 import { useJobsById } from "../Hooks/useJobs"
 import { AddApplication } from "../Hooks/useApplications"
 import { getYear } from "../helpers/GetYear"
-import type { ParsedCustomFieldsJobs, ParsedFileRequirements } from "../Types/Jobs"
+import type { ParsedCustomFieldsJobs, ParsedFileRequirementsJobs } from "../Types/Jobs"
 
 function ApplyJob(){
     const navigate = useNavigate()
@@ -14,9 +14,9 @@ function ApplyJob(){
     const [form] = Form.useForm();
     const applyMutation = AddApplication()
     const { data, isLoading, isError, error } = useJobsById(jobGuid as string)
-    const fileRequirements: ParsedFileRequirements[] = JSON.parse(data?.data.fileRequirements||"[]")
+    const fileRequirements: ParsedFileRequirementsJobs[] = JSON.parse(data?.data.fileRequirements||"[]")
     const customFields: ParsedCustomFieldsJobs[] = JSON.parse(data?.data.customFields||"[]")
-    if(isLoading)return <div className="h-dvh justify-center items-center flex"><Spin size="large"/></div>
+    if(isLoading)return <Spin size="large" className="flex-1 justify-center"/>
     if(isError || error)return <>Error!</>
 
     const onFinish = () => {

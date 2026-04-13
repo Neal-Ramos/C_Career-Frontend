@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query"
-import { fetchJobs, fetchJobsById, postJob } from "../API/Jobs"
+import { fetchJobs, fetchJobsById, postJob, updateJob } from "../API/Jobs"
 import type { FetchJobs, GetJobsByIdResponse } from "../global/IJobs"
 
 
@@ -22,5 +22,10 @@ export const useJobsById = (jobGuid: string) => {
 export const useAddJobMutation = () => {
     return useMutation({
         mutationFn: postJob
+    })
+}
+export const useUpdateJobMutation = () => {
+    return useMutation({
+        mutationFn: updateJob
     })
 }

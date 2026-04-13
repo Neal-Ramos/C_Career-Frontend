@@ -21,3 +21,7 @@ export interface IAddJobReq {
     customFields: string
     fileRequirements: string
 }
+export interface IUpdateJobReq extends IAddJobReq {
+    jobId: string
+    editSummary: string
+}

@@ -1,4 +1,4 @@
-import type { IAddJobReq } from "../global/IJobs"
+import type { IAddJobReq, IUpdateJobReq } from "../global/IJobs"
 import { apiClient } from "./ApiClient"
 
 export const fetchJobs = async(Page: number, PageSize: number, Search?: string) => {
@@ -17,4 +17,7 @@ export const fetchJobsById = async(jobGuid: string) => {
 
 export const postJob = async (req: IAddJobReq) => {
     return (await apiClient.post(`/api/Jobs`, req)).data
+}
+export const updateJob = async (req: IUpdateJobReq) => {
+    return (await apiClient.put("/api/Jobs", req)).data
 }
