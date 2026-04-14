@@ -1,9 +1,9 @@
 export type AdminAccount = {
-    AdminId: string
-    Email: string
-    UserName: string
-    Password: string
-    FirstName: string
-    LastName: string
-    MiddleName: string
+    adminId: string
+    email: string
+    userName: string
+    password: string
+    firstName: string
+    lastName: string
+    middleName: string
 }

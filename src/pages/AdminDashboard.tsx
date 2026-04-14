@@ -174,12 +174,12 @@ function AdminDashboard(){
               styles={{ body: { padding: 0 } }}
             >
                 <Table
-                        columns={columns}
-                        dataSource={data?.data}
-                        rowKey={record => record.applicationId}
-                        pagination={false}
-                        scroll={{ x: 800 }}
-                    />
+                    columns={columns}
+                    dataSource={data?.data}
+                    rowKey={record => record.applicationId}
+                    pagination={false}
+                    scroll={{ x: 800 }}
+                />
             </Card>
         </Content>
     )

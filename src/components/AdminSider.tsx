@@ -1,17 +1,17 @@
 import { ThunderboltOutlined } from "@ant-design/icons"
 import { Menu } from "antd"
-import Sider from "antd/es/layout/Sider"
+import Sider, { type SiderProps } from "antd/es/layout/Sider"
 import type { ItemType, MenuItemType } from "antd/es/menu/interface"
 import Title from "antd/es/typography/Title"
 import { useLocation, useNavigate } from "react-router-dom"
 
-interface AdminSider{
+interface AdminSider extends SiderProps{
     collapsed: boolean
     setCollapsed: Function
     items: ItemType<MenuItemType>[]
 }
 
-function AdminSider({collapsed, setCollapsed, items }: AdminSider){
+function AdminSider({collapsed, setCollapsed, items, ...props }: AdminSider){
     const navigate = useNavigate()
     const location = useLocation()
 
@@ -22,6 +22,7 @@ function AdminSider({collapsed, setCollapsed, items }: AdminSider){
         onCollapse={(value) => setCollapsed(value)}
         width={260}
         style={{ boxShadow: '2px 0 8px 0 rgba(29,35,41,.05)', height: '100dvh'}}
+        {...props}
     >
         <div style={{ padding: '24px 16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
             <div style={{ 

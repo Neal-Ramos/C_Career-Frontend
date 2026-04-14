@@ -6,10 +6,11 @@ import Title from "antd/es/typography/Title"
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { useLogin } from "../Hooks/useAuthentication"
+import { useAdminStore } from "../store/useAdminStore"
 
 interface OtpModal{
     isModalVisible: boolean
-    setIsModalVisible: Function
+    setIsModalVisible: Function 
     username: string
     password: string
     remember: boolean
@@ -17,8 +18,9 @@ interface OtpModal{
 
 function OtpModal({isModalVisible, setIsModalVisible, username, password, remember}:OtpModal){
     const navigate = useNavigate()
-    const [timerValue, setTimerValue] = useState(60)
     const loginMutation = useLogin()
+    const { setAdminContext } = useAdminStore()
+    const [timerValue, setTimerValue] = useState(60)
 
     const handleSubmit = async(code: string) => {
         loginMutation.mutate({
@@ -28,6 +30,7 @@ function OtpModal({isModalVisible, setIsModalVisible, username, password, rememb
             remember: remember
         }, {
             onSuccess: (res) => {
+                setAdminContext(res.data)
                 localStorage.setItem("AccessToken", res.meta.AccessToken)
                 navigate("/admin")
             },

@@ -1,7 +1,8 @@
 import { useMutation } from "@tanstack/react-query"
-import { login, type ILoginData, type ILoginResponse } from "../API/Authentication"
+import { login } from "../API/Authentication"
 import type { AxiosError } from "axios"
 import type { IErrorInterface } from "../global/IErrorResponse"
+import type { ILoginData, ILoginResponse } from "../global/IAuthentication"
 
 export const useLogin = () => {
     return useMutation<ILoginResponse, AxiosError<IErrorInterface>, ILoginData>({

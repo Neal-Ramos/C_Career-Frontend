@@ -1,33 +1,13 @@
-import type { AdminAccount } from "../Types/AdminAccounts";
+import type { ILoginData, ILoginResponse, IRotateTokenResponse } from "../global/IAuthentication";
 import { authClient } from "./ApiClient";
 
-export interface ILoginResponse {
-    message: string
-    data: AdminAccount
-    meta: {
-        AccessToken: string
-    }
-}
-export interface ILoginData {
-    password: string
-    username: string
-    otpCode?: string
-    remember: boolean
-}
+
 export const login = async (data: ILoginData): Promise<ILoginResponse> => {
     return (await authClient.post("/api/Authentication/login", data)).data
 }
-
-export interface IRotateTokenResponse {
-    data:{
-        newAccessToken: string
-    }
-}
-
 export const rotateToken = async(): Promise<IRotateTokenResponse> => {
     return (await authClient.post("/api/Authentication/rotateToken")).data
 }
-
 export const logout = async () => {
     return await authClient.post("/api/Authentication/logout")
 }

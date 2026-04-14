@@ -15,7 +15,7 @@ function AdminJobs(){
     const navigate = useNavigate()
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
-    const {data, isLoading, isError, error} = useJobs(page, pageSize);
+    const {data, isLoading, isError, refetch} = useJobs(page, pageSize);
     const [showCreateModal, setShowCreateModal] = useState(false)
     const jobsColumn: ColumnsType<Jobs> = [
         {
@@ -43,13 +43,13 @@ function AdminJobs(){
         }
     ]
     if(isLoading)return <Spin size="large" className="flex-1 justify-center"/>
-    if(isError || error)return <>Error...</>
+    if(isError)return <>Error...</>
 
     const handleChangePage = (page: number, pageSize: number) => {
         setPage(page)
         setPageSize(pageSize)
     }
-    if(jobId)return <Outlet/>
+    if(jobId)return <Outlet context={{refetch}}/>
     return(
         <Content 
             style={{ padding: '32px', maxWidth: '1400px', margin: '0 auto', width: '100%' }}
@@ -81,6 +81,7 @@ function AdminJobs(){
             <AddJobModal 
                 showCreateModal={showCreateModal} 
                 setShowCreateModal={setShowCreateModal}
+                refetch={refetch}
             />
         </Content>
     );

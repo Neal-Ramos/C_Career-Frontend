@@ -6,14 +6,16 @@ import TagBox from "./TagBox"
 import DocumentBox from "./DocumentBox"
 import CustomFieldBox from "./CustomFieldBox"
 import { useAddJobMutation } from "../Hooks/useJobs"
-import type { IAddJobReq } from "../global/IJobs"
+import type { FetchJobs, IAddJobReq } from "../global/IJobs"
+import type { QueryObserverResult, RefetchOptions } from "@tanstack/react-query"
 
 interface AddJobModal {
     showCreateModal: boolean
     setShowCreateModal: Function
+    refetch: (options?: RefetchOptions | undefined) => Promise<QueryObserverResult<FetchJobs, Error>>
 }
 
-function AddJobModal({ showCreateModal, setShowCreateModal }: AddJobModal){
+function AddJobModal({ showCreateModal, setShowCreateModal, refetch }: AddJobModal){
     const [form] = Form.useForm();
     const postJob = useAddJobMutation()
 
@@ -27,13 +29,18 @@ function AddJobModal({ showCreateModal, setShowCreateModal }: AddJobModal){
         postJob.mutate(values, {
             onError: () => {
                 notification.error({
-                    title: "Add Job Failed!"
+                    title: "Add Job Failed!",
+                    description: "Failed to Create the Job Try Again Later"
                 })
             },
             onSuccess: () => {
                 notification.success({
-                    title: "Job Posted"
+                    title: "Job Posted",
+                    description: "Jos is now Posted and Ready for Applications"
                 })
+                setShowCreateModal(false)
+                refetch()
+                form.resetFields()
             }
         })
     };
@@ -88,6 +95,7 @@ function AddJobModal({ showCreateModal, setShowCreateModal }: AddJobModal){
                 layout="vertical"
                 onFinish={onFinish}
                 form={form}
+                disabled= {postJob.isPending}
             >
                 <section className="mb-6">
                     <Divider >Basic Job Information</Divider>

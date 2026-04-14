@@ -6,7 +6,7 @@ import Title from "antd/es/typography/Title"
 import OtpModal from "./OtpModal"
 import { useState } from "react"
 import { useLogin } from "../Hooks/useAuthentication"
-import type { ILoginData } from "../API/Authentication"
+import type { ILoginData } from "../global/IAuthentication"
 
 interface AdminLoginContent{
   showOtpModal: Function

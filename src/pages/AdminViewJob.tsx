@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom"
+import { useNavigate, useOutletContext, useParams } from "react-router-dom"
 import { useDeleteJob, useJobsById, useUpdateJobMutation } from "../Hooks/useJobs"
 import { Content } from "antd/es/layout/layout"
 import Title from "antd/es/typography/Title"
@@ -10,11 +10,18 @@ import TagBox from "../components/TagBox"
 import CustomFieldBox from "../components/CustomFieldBox"
 import DocumentBox from "../components/DocumentBox"
 import { useForm } from "antd/es/form/Form"
-import type { IUpdateJobReq } from "../global/IJobs"
+import type { FetchJobs, IUpdateJobReq } from "../global/IJobs"
+import type { RefetchOptions, QueryObserverResult } from "@tanstack/react-query"
+
+interface AdminJobsOutlet{
+    refetch: () => (options?: RefetchOptions) => Promise<QueryObserverResult<FetchJobs, Error>>
+}
 
 function AdminViewJob(){
     const [form] = useForm()
     const {jobId} = useParams()
+    const {refetch} = useOutletContext<AdminJobsOutlet>()
+
     const navigate = useNavigate()
     const deleteJob = useDeleteJob()
     const updateJob = useUpdateJobMutation()
@@ -29,6 +36,7 @@ function AdminViewJob(){
         },{
             onSuccess: () => {
                 notification.success({title: "Job Updated!", description: "Job is now Updated!"})
+                refetch()
             }
         })
     }
@@ -36,6 +44,7 @@ function AdminViewJob(){
         deleteJob.mutate(jobId!, {
             onSuccess: () => {
                 notification.success({title: "Job Deleted!", description: "Job is now Deleted and its Applications!"})
+                refetch()
                 navigate("/admin/jobs")
             }
         })
