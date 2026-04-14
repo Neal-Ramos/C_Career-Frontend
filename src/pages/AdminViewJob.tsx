@@ -1,10 +1,10 @@
-import { useParams } from "react-router-dom"
-import { useJobsById, useUpdateJobMutation } from "../Hooks/useJobs"
+import { useNavigate, useParams } from "react-router-dom"
+import { useDeleteJob, useJobsById, useUpdateJobMutation } from "../Hooks/useJobs"
 import { Content } from "antd/es/layout/layout"
 import Title from "antd/es/typography/Title"
 import Text from "antd/es/typography/Text"
-import { Button, Card, Col, Divider, Form, Input, Row, Space, Spin } from "antd"
-import { ArrowLeftOutlined, DeleteOutlined, EditOutlined, InfoCircleOutlined } from "@ant-design/icons"
+import { Button, Card, Col, Divider, Form, Input, notification, Popconfirm, Row, Space, Spin } from "antd"
+import { ArrowLeftOutlined, DeleteOutlined, EditOutlined, InfoCircleOutlined, QuestionCircleOutlined } from "@ant-design/icons"
 import TextArea from "antd/es/input/TextArea"
 import TagBox from "../components/TagBox"
 import CustomFieldBox from "../components/CustomFieldBox"
@@ -15,6 +15,8 @@ import type { IUpdateJobReq } from "../global/IJobs"
 function AdminViewJob(){
     const [form] = useForm()
     const {jobId} = useParams()
+    const navigate = useNavigate()
+    const deleteJob = useDeleteJob()
     const updateJob = useUpdateJobMutation()
     const {data, isLoading, isError} = useJobsById(jobId as string)
 
@@ -24,10 +26,19 @@ function AdminViewJob(){
             customFields: JSON.stringify(updatedJob.customFields),
             fileRequirements: JSON.stringify(updatedJob.fileRequirements),
             roles: JSON.stringify(updatedJob.roles)
+        },{
+            onSuccess: () => {
+                notification.success({title: "Job Updated!", description: "Job is now Updated!"})
+            }
         })
     }
     const handleDelete = () => {
-        console.log(form.getFieldValue)
+        deleteJob.mutate(jobId!, {
+            onSuccess: () => {
+                notification.success({title: "Job Deleted!", description: "Job is now Deleted and its Applications!"})
+                navigate("/admin/jobs")
+            }
+        })
     }
 
     if(isLoading) return <Spin size="large" className="flex-1 justify-center"/>
@@ -52,15 +63,21 @@ function AdminViewJob(){
                 </div>
                 
                 <Space size="middle" className="w-full md:w-auto flex justify-end">
-                    <Button 
-                        danger 
-                        size="large" 
-                        icon={<DeleteOutlined />} 
-                        className="flex items-center rounded-lg border-red-200 bg-white hover:bg-red-50"
-                        onClick={handleDelete}
+                    <Popconfirm
+                        title="Delete Job!"
+                        description="Deleting this will also Delete all the Application Related to this Job. Are you Sure?"
+                        onConfirm={handleDelete}
+                        icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
                     >
-                        Delete
-                    </Button>
+                        <Button 
+                            danger 
+                            size="large" 
+                            icon={<DeleteOutlined />} 
+                            className="flex items-center rounded-lg border-red-200 bg-white hover:bg-red-50"
+                        >
+                            Delete
+                        </Button>
+                    </Popconfirm>
                     <Button 
                         type="primary" 
                         size="large" 

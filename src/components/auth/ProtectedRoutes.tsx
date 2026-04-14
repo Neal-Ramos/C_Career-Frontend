@@ -7,8 +7,8 @@ const ProtectedRoutes = () => {
     if (!accessToken || isTokenExpired(accessToken)) {
         return <Navigate to="/login" replace />;
     }
-
     useActivityTracker();
+    
     return <Outlet />;
 };
 
