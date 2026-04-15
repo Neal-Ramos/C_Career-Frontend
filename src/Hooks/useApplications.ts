@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query"
-import { addApplication, GetApplications, GetApplicationsById } from "../API/JobApplications"
+import { addApplication, GetApplications, GetApplicationsById, PatchApplicationStatus } from "../API/Applications"
 import type { FetchApplications, GetApplicationsByIdResponse } from "../global/IJobApplications"
+import type { Application } from "../Types/Applications"
 
 
 export const AddApplication = () => {
@@ -43,5 +44,10 @@ export const useApplicationById = (
         queryFn: () => GetApplicationsById(applicationId),
         staleTime: 1000 * 60 * 5,
         refetchOnWindowFocus: false,
+    })
+}
+export const usePatchApplicationStatus = () => {
+    return useMutation({
+        mutationFn: PatchApplicationStatus
     })
 }

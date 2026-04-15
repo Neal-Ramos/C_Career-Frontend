@@ -11,3 +11,7 @@ export interface FetchApplications extends IResponse{
 export interface GetApplicationsByIdResponse extends IResponse{
     data: Application
 }
+export interface PatchApplicationStatusReq {
+    status: string
+    applicationId: string
+}

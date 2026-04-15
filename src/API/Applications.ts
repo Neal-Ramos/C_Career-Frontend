@@ -1,3 +1,4 @@
+import type { PatchApplicationStatusReq } from "../global/IJobApplications"
 import { apiClient } from "./ApiClient"
 
 export const addApplication = async (formData: any) => {
@@ -28,4 +29,7 @@ export const GetApplicationsById = async (
     applicationId: string
 ) => {
     return (await apiClient.get(`/api/Applications/${applicationId}`)).data
+}
+export const PatchApplicationStatus = async ({status, applicationId}: PatchApplicationStatusReq) => {
+    return (await apiClient.patch(`/api/Applications/${applicationId}`,{status})).data
 }

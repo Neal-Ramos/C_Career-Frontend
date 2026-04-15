@@ -1,7 +1,7 @@
-import { useParams } from "react-router-dom"
-import { useApplicationById } from "../Hooks/useApplications"
+import { useNavigate, useParams } from "react-router-dom"
+import { useApplicationById, usePatchApplicationStatus } from "../Hooks/useApplications"
 import { Content } from "antd/es/layout/layout"
-import { Button, Card, Descriptions, Divider, List, Spin, Tag } from "antd"
+import { Button, Card, Descriptions, Divider, List, notification, Spin, Tag } from "antd"
 import { ArrowLeftOutlined, BookOutlined, CalendarOutlined, CheckOutlined, ClockCircleOutlined, CloseCircleOutlined, FileTextOutlined, InfoCircleOutlined, MailOutlined, PhoneOutlined, QuestionCircleOutlined, RocketOutlined, UserOutlined } from "@ant-design/icons"
 import Text from "antd/es/typography/Text"
 import Title from "antd/es/typography/Title"
@@ -10,6 +10,8 @@ import type { ParsedRolesJobs } from "../Types/Jobs"
 
 function AdminViewApplication(){
     const {applicationId} = useParams()
+    const navigate = useNavigate()
+    const patchApplicationStatus = usePatchApplicationStatus()
     const {data, isLoading, isError} = useApplicationById(applicationId||"")
 
     if(isLoading) return <Spin size="large" className="flex-1 justify-center"/>
@@ -18,6 +20,19 @@ function AdminViewApplication(){
     const files: ParsedFileSubmittedApplication[] = JSON.parse(data?.data.fileSubmitted||"[]")
     const customFields: ParsedCustomFieldApplication[] = JSON.parse(data?.data.customFields||"[]")
     const roles: ParsedRolesJobs = JSON.parse(data?.data.job.roles||"[]")
+
+    const handleProcessApplication = (status: string) => {
+        patchApplicationStatus.mutate({status: status, applicationId: applicationId!}, {
+            onSuccess: () => {
+                notification.success({title: `Application is now ${status}`})
+                navigate("/admin/applications")
+            },
+            onError: () => {
+                notification.error({title: `Something Went Wrong`})
+            }
+        })
+    }
+
     return(
         <Content
             className="min-h-screen bg-[#f9fafb] h-fit!"
@@ -57,6 +72,7 @@ function AdminViewApplication(){
                         size="large" 
                         icon={<CloseCircleOutlined />} 
                         className="flex-1 sm:flex-initial flex items-center justify-center rounded-xl font-medium border-red-100 bg-white hover:bg-red-50 h-12 px-6"
+                        onClick={() => handleProcessApplication("Declined")}
                     >
                         Decline
                     </Button>
@@ -65,6 +81,7 @@ function AdminViewApplication(){
                         size="large" 
                         icon={<CheckOutlined />} 
                         className="flex-1 sm:flex-initial flex items-center justify-center rounded-xl shadow-md px-10 font-medium bg-blue-600 border-none h-12"
+                        onClick={() => handleProcessApplication("Approved")}
                     >
                         Approve
                     </Button>
