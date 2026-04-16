@@ -1,11 +1,9 @@
 import { Avatar, Badge, Button, ConfigProvider, Layout, Space } from "antd"
 import AdminSider from "../components/AdminSider"
-import { useState } from "react"
-import { BellOutlined, DashboardOutlined, FileTextOutlined, SettingOutlined, TeamOutlined } from "@ant-design/icons"
+import { BellOutlined } from "@ant-design/icons"
 import { Outlet } from "react-router-dom"
 import { Header } from "antd/es/layout/layout"
 import Text from "antd/es/typography/Text"
-import type { ItemType, MenuItemType } from "antd/es/menu/interface"
 import useActivityTracker from "../Hooks/useActivityTracker"
 import { useAdminStore } from "../store/useAdminStore"
 
@@ -13,13 +11,6 @@ function Admin(){
   useActivityTracker();
   const { adminAccountContext } = useAdminStore()
 
-  const [collapsed, setCollapsed] = useState(false)
-  const items: ItemType<MenuItemType>[] = [
-      { key: '/admin/dashboard', icon: <DashboardOutlined />, label: 'Dashboard'},
-      { key: '/admin/jobs', icon: <TeamOutlined />, label: 'Jobs'},
-      { key: '/admin/applications', icon: <FileTextOutlined />, label: 'Applications'},
-      { key: '/admin/settings', icon: <SettingOutlined />, label: 'Settings'},
-  ]
 
   return(
   <ConfigProvider
@@ -45,9 +36,6 @@ function Admin(){
         {
           <AdminSider
             className="hidden md:block"
-            setCollapsed={setCollapsed}
-            collapsed={collapsed}
-            items={items}
         />
         }
         <Layout  className="max-h-dvh overflow-auto">

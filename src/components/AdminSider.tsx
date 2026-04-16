@@ -1,19 +1,51 @@
-import { ThunderboltOutlined } from "@ant-design/icons"
-import { Menu } from "antd"
+import { DashboardOutlined, FileTextOutlined, LogoutOutlined, SettingOutlined, TeamOutlined, ThunderboltOutlined, UserOutlined } from "@ant-design/icons"
+import { Menu, notification } from "antd"
 import Sider, { type SiderProps } from "antd/es/layout/Sider"
 import type { ItemType, MenuItemType } from "antd/es/menu/interface"
 import Title from "antd/es/typography/Title"
+import { useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
+import { useLogout } from "../Hooks/useAuthentication"
 
 interface AdminSider extends SiderProps{
-    collapsed: boolean
-    setCollapsed: Function
-    items: ItemType<MenuItemType>[]
 }
 
-function AdminSider({collapsed, setCollapsed, items, ...props }: AdminSider){
+function AdminSider({...props}: AdminSider){
     const navigate = useNavigate()
     const location = useLocation()
+    const logout = useLogout()
+
+    const [collapsed, setCollapsed] = useState(false)
+    const items: ItemType<MenuItemType>[] = [
+        { key: '/admin/dashboard', icon: <DashboardOutlined />, label: 'Dashboard'},
+        { key: '/admin/jobs', icon: <TeamOutlined />, label: 'Jobs'},
+        { key: '/admin/applications', icon: <FileTextOutlined />, label: 'Applications'},
+        { key: '/admin/settings', icon: <SettingOutlined />, label: 'Settings', children: [
+                { 
+                    key: '/admin/settings/profile', 
+                    icon: <UserOutlined />, 
+                    label: 'Profile' 
+                },
+                {
+                    key: 'logout',
+                    icon: <LogoutOutlined />, 
+                    label: 'Logout',
+                }
+            ],
+        },
+    ]
+    const handleLogout = () => {
+        logout.mutate({}, {
+            onSuccess: () => {
+                localStorage.clear()
+                navigate("/login")
+            },
+            onError: () => {
+                notification.error({title: "Something went Wrong!", description: "Server Error!"})
+            }
+        })
+        console.log("Logout")
+    }
 
     return(
     <Sider
@@ -48,7 +80,15 @@ function AdminSider({collapsed, setCollapsed, items, ...props }: AdminSider){
             mode="inline"
             items={items}
             onClick={(e) => {
-                navigate(e.key)
+                switch (e.key){
+                    case "logout":{
+                        handleLogout()
+                        return
+                    }
+                    default:{
+                        navigate(e.key)
+                    }
+                }
             }}
         />
     </Sider>)

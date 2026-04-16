@@ -8,6 +8,6 @@ export const login = async (data: ILoginData): Promise<ILoginResponse> => {
 export const rotateToken = async(): Promise<IRotateTokenResponse> => {
     return (await authClient.post("/api/Authentication/rotateToken")).data
 }
-export const logout = async () => {
+export const logout = async ({}) => {
     return await authClient.post("/api/Authentication/logout")
 }
