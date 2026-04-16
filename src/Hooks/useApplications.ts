@@ -1,10 +1,9 @@
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { addApplication, GetApplications, GetApplicationsById, PatchApplicationStatus } from "../API/Applications"
 import type { FetchApplications, GetApplicationsByIdResponse } from "../global/IJobApplications"
-import type { Application } from "../Types/Applications"
 
 
-export const AddApplication = () => {
+export const useAddApplication = () => {
     return useMutation({
         mutationFn: addApplication
     }) 

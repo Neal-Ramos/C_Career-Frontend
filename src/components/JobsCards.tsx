@@ -1,7 +1,6 @@
 import { Button, Card, Tag, Typography } from 'antd';
 import { NormalizeDate } from '../helpers/NormalizeDate';
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -15,7 +14,6 @@ interface JobsCards {
 
 function JobsCard({ title, dateCreated, roles, description, jobGuid }: JobsCards) {
     const navigate = useNavigate();
-    const [expanded, setExpanded] = useState(false)
 
     return (
         <Card
@@ -60,11 +58,8 @@ function JobsCard({ title, dateCreated, roles, description, jobGuid }: JobsCards
                         className="text-slate-600! leading-relaxed! text-sm! mb-0!"
                         ellipsis={{
                             rows: 2,
-                            expandable: 'collapsible', // Allows showing more and showing less
-                            symbol: expanded? "Show Less":"Show More",
-                            onExpand:(_, info) => setExpanded(info.expanded),
-
-                            expanded: expanded
+                            expandable: "collapsible",
+                            symbol: (expanded) => expanded? "Show Less...":"Show More..."
                         }}
                     >
                         {description}

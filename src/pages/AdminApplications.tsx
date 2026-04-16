@@ -13,7 +13,9 @@ import type { Application } from "../Types/Applications"
 function AdminApplications(){
     const {applicationId} = useParams()
     const navigate = useNavigate()
-    const {data, isLoading, isError} = useApplication(1,5)
+    const [page, setPage] = useState(1)
+    const [pageSize, setPageSize] = useState(10)
+    const {data, isLoading, isError} = useApplication(page, pageSize)
     const [searchText, setSearchText] = useState("")
     const [statusFilter, setStatusFilter] = useState<string|null>()
     const [jobFilter, setJobFilter] = useState<string|null>()
@@ -173,7 +175,11 @@ function AdminApplications(){
                             total: data?.meta.TotalRecord,
                             pageSize: 5,
                             showTotal: (total) => `Total ${total} applicants`,
-                            placement: ["bottomEnd"]
+                            placement: ["bottomEnd"],
+                            onChange: (page, pageSize) => {
+                                setPage(page)
+                                setPageSize(pageSize)
+                            }
                         }}
                         scroll={{ x: 800 }}
                     />

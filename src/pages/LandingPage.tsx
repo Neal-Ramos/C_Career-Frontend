@@ -13,7 +13,7 @@ function LandingPage(){
     const jobSection = useRef<HTMLDivElement>(null)
 
     return(
-        <Layout className="h-dvh">
+        <Layout className="min-h-dvh!">
             <LandingHero setSearch= {setSearch} setPage={setPage}/>
             <Layout className="max-w-7xl! mx-auto! px-6! pt-10! w-full! min-h-85!" ref={jobSection}>
                 <div className="mb-10 text-center">
@@ -57,7 +57,7 @@ function LandingPage(){
                         </>
                     ):
                     (
-                        <Empty description={"No Jobs Available!"} className="flex-1 "/>
+                        <Empty description={"No Jobs Available!"} className="flex-1"/>
                     )
                 }
             </Layout>

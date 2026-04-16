@@ -1,186 +1,177 @@
-import { Button, Card, Col, DatePicker, Divider, Form, Input, Layout, notification, Row, Spin } from "antd"
-import Text from "antd/es/typography/Text"
-import Title from "antd/es/typography/Title"
-import { useNavigate, useParams } from "react-router-dom"
-import FileRequirements from "../components/FileReuirements"
+import { Button, Card, Descriptions, Divider, Layout, List, Space, Spin, Tag } from "antd"
 import { useJobsById } from "../Hooks/useJobs"
-import { AddApplication } from "../Hooks/useApplications"
-import { getYear } from "../helpers/GetYear"
-import type { ParsedCustomFieldsJobs, ParsedFileRequirementsJobs } from "../Types/Jobs"
+import { useParams, useNavigate } from "react-router-dom"
+import { ArrowLeftOutlined, CheckCircleOutlined, FileTextOutlined, InfoCircleOutlined, SendOutlined, UserOutlined } from "@ant-design/icons"
+import Title from "antd/es/typography/Title"
+import Text from "antd/es/typography/Text"
+import { NormalizeDate } from "../helpers/NormalizeDate"
+import Paragraph from "antd/es/typography/Paragraph"
+import type { ParsedCustomFieldsJobs, ParsedFileRequirementsJobs, ParsedRolesJobs } from "../Types/Jobs"
+import { useState } from "react"
+import ApplyJobModal from "../components/ApplyJobModal"
 
-function ApplyJob(){
+function ApplyJob() {
     const navigate = useNavigate()
     const { jobGuid } = useParams()
-    const [form] = Form.useForm();
-    const applyMutation = AddApplication()
-    const { data, isLoading, isError, error } = useJobsById(jobGuid as string)
-    const fileRequirements: ParsedFileRequirementsJobs[] = JSON.parse(data?.data.fileRequirements||"[]")
-    const customFields: ParsedCustomFieldsJobs[] = JSON.parse(data?.data.customFields||"[]")
-    if(isLoading)return <Spin size="large" className="flex-1 justify-center"/>
-    if(isError || error)return <>Error!</>
+    const { data, isLoading, isError } = useJobsById(jobGuid!)
+    const [isModalVisible, sesetIsModalVisibletIs] = useState(false)
 
-    const onFinish = () => {
-        const formValues = form.getFieldsValue();
-        const formData = new FormData();
+    const parsedFileReq: ParsedFileRequirementsJobs[] = JSON.parse(data?.data.fileRequirements || "[]")
+    const parsedCustomFields: ParsedCustomFieldsJobs[] = JSON.parse(data?.data.customFields || "[]")
+    const parsedRoles: ParsedRolesJobs = JSON.parse(data?.data.roles || "[]")
 
-        formData.append("contactNumber", formValues.contactNumber)
-        formData.append("degree", formValues.degree)
-        formData.append("email", formValues.email)
-        formData.append("firstName", formValues.firstName)
-        formData.append("graduationYear", getYear(formValues.graduationYear))
-        formData.append("lastName", formValues.lastName)
-        formValues.middleName&& formData.append("middleName", formValues.middleName)
-        formData.append("universityName", formValues.universityName)
-        formData.append("customFields", JSON.stringify(customFields.map(e => {return {[e.label]:formValues[e.label]?formValues[e.label]:""}})))
-        formData.append("jobId", jobGuid as string)
-        fileRequirements.map(f => formData.append(f.label, formValues[f.label]?formValues[f.label][0].originFileObj:""))
-        applyMutation.mutate(formData, {
-            onSuccess: () => {
-                notification.success({title: "Application Submitted", description: "Your Application is now Submitted!"})
-                navigate('/')
-            },
-            onError: () => {
-                notification.error({title: "Application Failed to Submitted", description: "Application Failed to Submit Try Again Later!"})
-            }
-        })
-    };
-    return(
-        <Layout>
-            <div className="bg-linear-to-b! from-[#001529]! to-[#001d3d]! text-white! pt-16! pb-24! px-6! text-center!">
-                <Title level={1} className="text-white! mb-2!">
-                    Complete Your <span className="text-blue-400!">Application</span>
-                </Title>
-                <Text className="text-slate-400! text-base!">
-                    Join top-tier companies globally. Please provide your academic and professional details.
-                </Text>
+    if (isLoading) return <Spin size="large" className="w-full h-dvh flex items-center justify-center" />
+    if (isError || !data) return <div className="p-10 text-center">Error loading job details...</div>
+
+    return (
+        <Layout className="min-h-screen! bg-gray-50!">
+            <ApplyJobModal 
+                isModalVisible={isModalVisible} 
+                setIsModalVisible={sesetIsModalVisibletIs} 
+                job={data}
+                parsedFileReq={parsedFileReq}
+                parsedCustomFields={parsedCustomFields}
+            />
+            <div
+                className="w-full"
+                style={{ 
+                    background: `linear-gradient(180deg, #001529 0%, #001e3c 100%)`, 
+                    padding: '40px 16px 80px 16px', 
+                }}
+            >
+                <div className="max-w-4xl mx-auto w-full">
+                    <Button 
+                        type="link" 
+                        icon={<ArrowLeftOutlined />} 
+                        onClick={() => navigate(-1)}
+                        className="p-0 mb-6 flex items-center"
+                        style={{ color: 'rgba(255,255,255,0.8)' }}
+                    >
+                        Back to Available Jobs
+                    </Button>
+                    <Title 
+                        level={1} 
+                        className="m-0 text-white! font-extrabold! wrap-break-word"
+                        style={{ fontSize: 'clamp(24px, 5vw, 36px)' }}
+                    >
+                        {data?.data.title}
+                    </Title>
+                </div>
             </div>
             
-            <div className="flex! justify-center! px-4!">
-                <Card className="w-full! max-w-10/12! rounded-2xl! shadow-2xl! -mt-16! border-none!">
-                    <Form
-                        form={form}
-                        layout="vertical"
-                        onFinish={onFinish}
-                        size="large"
-                        className="w-full!"
-                    >
-                        <div className="border-l-4! border-blue-500! pl-3! mb-5! font-bold! text-lg! uppercase! tracking-wider! text-slate-700!">
-                            Personal Information
+            <div className="max-w-400 mx-auto -mt-10 px-4 mb-10 w-full">
+                <Card 
+                    variant="borderless" 
+                    className="rounded-2xl shadow-lg overflow-hidden"
+                    styles={{ body: { padding: 'clamp(16px, 4vw, 32px)' } }}
+                >
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-8">
+                        <div className="flex flex-col">
+                            <Text type="secondary" className="text-[12px] font-semibold uppercase tracking-wider">
+                                Posted Date
+                            </Text>
+                            <Text strong className="text-lg">{NormalizeDate(data?.data.dateCreated!)}</Text>
                         </div>
-                        <Row gutter={16}>
-                            <Col xs={24} md={8}>
-                                <Form.Item label="First Name" name="firstName" rules={[{ required: true }]}>
-                                <Input placeholder="First Name" className="rounded-lg!" />
-                                </Form.Item>
-                            </Col>
-                            <Col xs={24} md={8}>
-                                <Form.Item label="Middle Name" name="middleName">
-                                <Input placeholder="Middle Name" className="rounded-lg!" />
-                                </Form.Item>
-                            </Col>
-                            <Col xs={24} md={8}>
-                                <Form.Item label="Last Name" name="lastName" rules={[{ required: true }]}>
-                                <Input placeholder="Last Name" className="rounded-lg!" />
-                                </Form.Item>
-                            </Col>
-                        </Row>
-                        <Row gutter={16}>
-                            <Col xs={24} md={12}>
-                                <Form.Item 
-                                label="Email Address" 
-                                name="email" 
-                                rules={[{ required: true, type: 'email' }]}
-                                >
-                                <Input placeholder="Email" className="rounded-lg!" />
-                                </Form.Item>
-                            </Col>
-                            <Col xs={24} md={12} className="">
-                                <Form.Item
-                                label="Contact Number" 
-                                name="contactNumber" 
-                                rules={[
-                                    { 
-                                        required: true, 
-                                        message: "Contact Number is required!" 
-                                    },
-                                    { 
-                                        len: 11, 
-                                        message: "Contact Number must be exactly 11 digits!" 
-                                    },
-                                    { 
-                                        pattern: /^[0-9]+$/, 
-                                        message: "Contact Number must contain only numbers (no letters or spaces)!" 
-                                    },
-                                ]}
-                                >
-                                <Input placeholder="Phone Number" className="rounded-lg!" />
-                                </Form.Item>
-                            </Col>
-                        </Row>
-                        {
-                            customFields.length? 
-                            <>
-                                <Divider className="my-6!"/>
-                                <div className="border-l-4 border-blue-500 pl-3 mb-5 font-bold text-lg uppercase tracking-wider text-slate-700">
-                                    Other Information
-                                </div>
-                                <Row gutter={16}>
-                                    {
-                                        customFields.map(e => 
-                                            <Col xs={24} md={12}>
-                                                <Form.Item label={e.label} name={e.label} rules={[{ required: e.required }]}>
-                                                    <Input placeholder={e.label} className="rounded-lg!" />
-                                                </Form.Item>
-                                            </Col>
-                                        )
-                                    }
-                                </Row>
-                            </>:""
-                        }
-                        <Divider className="my-6!"/>
-                        <div className="border-l-4 border-blue-500 pl-3 mb-5 font-bold text-lg uppercase tracking-wider text-slate-700">
-                            Education Background
-                        </div>
-                        <Row gutter={16}>
-                            <Col xs={24} md={12}>
-                                <Form.Item label="University Name" name="universityName" rules={[{ required: true }]}>
-                                <Input placeholder="State University" className="rounded-lg!" />
-                                </Form.Item>
-                            </Col>
-                            <Col xs={24} md={6}>
-                                <Form.Item label="Degree" name="degree" rules={[{ required: true }]}>
-                                <Input placeholder="B.S. Computer Science" className="rounded-lg!" />
-                                </Form.Item>
-                            </Col>
-                            <Col xs={24} md={6}>
-                                <Form.Item label="Graduation Year" name="graduationYear" rules={[
-                                    { required: true, message: "Graduation Year Required"},
-                                ]}>
-                                <DatePicker picker="year" className="w-full! rounded-lg!" />
-                                </Form.Item>
-                            </Col>
-                        </Row>
-
-                        <Divider className="my-6!" />
-                        <div className="border-l-4 border-blue-500 pl-3 mb-5 font-bold text-lg uppercase tracking-wider text-slate-700">
-                            Required Documents
-                        </div>
-                        <FileRequirements files={fileRequirements}/>
-                            <div className="mt-10!">
-                        <Button
+                        <Button 
                             type="primary" 
-                            htmlType="submit" 
-                            block 
-                            loading={applyMutation.isPending}
-                            className="h-12! text-lg! font-bold! rounded-lg! shadow-lg! bg-blue-600! hover:bg-blue-700! border-none!"
+                            size="large" 
+                            icon={<SendOutlined />}
+                            className="w-full sm:w-auto h-12 px-10 rounded-lg font-semibold shadow-md"
+                            onClick={() => sesetIsModalVisibletIs(true)}
                         >
-                            Submit Full Application
+                            Apply Now
                         </Button>
+                    </div>
+
+                    <Divider className="my-0 mb-8" />
+
+                    {/* Description Section */}
+                    <section className="mb-10">
+                        <Title level={4} className="font-bold">Description</Title>
+                        <Paragraph 
+                            className="text-slate-600 text-base leading-relaxed mb-4"
+                            ellipsis={{
+                                rows: 5,
+                                expandable: "collapsible",
+                                symbol: (expanded) => expanded? "Show Less...":"Show More..."
+                            }}
+                        >
+                            {data?.data.description}
+                        </Paragraph>
+                        <div className="flex flex-wrap gap-2">
+                            {parsedRoles.map((role, idx) => (
+                                <Tag 
+                                    key={idx} 
+                                    color="blue" 
+                                    className="rounded-full px-4 py-0.5 font-medium border-none bg-blue-50 text-blue-600"
+                                >
+                                    {role}
+                                </Tag>
+                            ))}
                         </div>
-                    </Form>
+                    </section>
+
+                    <section className="mb-10">
+                        <Title level={4} className="font-bold flex items-center gap-2">
+                            <UserOutlined /> Information Required
+                        </Title>
+                        <Descriptions 
+                            bordered 
+                            size="small" 
+                            column={1} 
+                            className="bg-white"
+                            labelStyle={{ background: '#f8fafc', fontWeight: 600, width: 'clamp(120px, 20%, 200px)', color: '#64748b' }}
+                        >
+                            <Descriptions.Item label="Identity">FirstName, MiddleName, LastName, BirthDate</Descriptions.Item>
+                            <Descriptions.Item label="Contact Info">Email, ContactNumber, Location</Descriptions.Item>
+                            <Descriptions.Item label="Academics">UniversityName, Degree, GraduationYear</Descriptions.Item>
+                        </Descriptions>
+                    </section>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <Card 
+                            size="small" 
+                            title={<Space><FileTextOutlined className="text-blue-500" /> <Text strong>File Requirements</Text></Space>}
+                            className="bg-slate-50 border-slate-200 rounded-xl"
+                        >
+                            <List
+                                dataSource={parsedFileReq}
+                                renderItem={(item) => (
+                                    <List.Item className="px-0 py-2 border-none">
+                                        <div className="flex items-center gap-3 w-full">
+                                            <CheckCircleOutlined className={item.required ? 'text-blue-500' : 'text-slate-400'} />
+                                            <Text className="flex-1">{item.label}</Text>
+                                            {item.required && <Tag color="error" className="text-[10px] rounded-md m-0">REQUIRED</Tag>}
+                                        </div>
+                                    </List.Item>
+                                )}
+                            />
+                        </Card>
+
+                        <Card 
+                            size="small" 
+                            title={<Space><InfoCircleOutlined className="text-blue-500" /> <Text strong>Custom Job Questions</Text></Space>}
+                            className="bg-slate-50 border-slate-200 rounded-xl"
+                        >
+                            <List
+                                dataSource={parsedCustomFields}
+                                renderItem={(item) => (
+                                    <List.Item className="px-0 py-2 border-none">
+                                        <div className="flex flex-col">
+                                            <Text strong>{item.label}</Text>
+                                            <Text type="secondary" className="text-xs">
+                                                {item.required ? 'This field is mandatory' : 'Optional'}
+                                            </Text>
+                                        </div>
+                                    </List.Item>
+                                )}
+                            />
+                        </Card>
+                    </div>
                 </Card>
             </div>
         </Layout>
     )
 }
+
 export default ApplyJob

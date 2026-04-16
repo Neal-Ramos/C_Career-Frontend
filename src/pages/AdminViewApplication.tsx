@@ -7,6 +7,7 @@ import Text from "antd/es/typography/Text"
 import Title from "antd/es/typography/Title"
 import type { ParsedCustomFieldApplication, ParsedFileSubmittedApplication } from "../Types/Applications"
 import type { ParsedRolesJobs } from "../Types/Jobs"
+import Paragraph from "antd/es/typography/Paragraph"
 
 function AdminViewApplication(){
     const {applicationId} = useParams()
@@ -177,9 +178,16 @@ function AdminViewApplication(){
                         <div className="p-6">
                             <div className="mb-6">
                                 <Text type="secondary" className="text-[11px] uppercase font-bold tracking-wider block mb-2">Description</Text>
-                                <Text className="text-gray-600 block leading-relaxed italic">
+                                <Paragraph 
+                                    className="text-gray-600 block leading-relaxed italic" 
+                                    ellipsis={{
+                                        rows: 10,
+                                        expandable: "collapsible",
+                                        symbol: (expanded) => expanded? "Show Less...":"Show More..."
+                                    }}
+                                >
                                     "{data?.data.job?.description}"
-                                </Text>
+                                </Paragraph> 
                             </div>
 
                             <div className="mb-6">
