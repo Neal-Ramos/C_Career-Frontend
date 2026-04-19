@@ -2,7 +2,7 @@ import type { PatchApplicationStatusReq } from "../global/IJobApplications"
 import { apiClient } from "./ApiClient"
 
 export const addApplication = async (formData: any) => {
-    return (await apiClient.post("/api/Applications", formData, {
+    return (await apiClient.post("", formData, {
         headers:{
             "Content-Type": "multipart/form-data"
         }

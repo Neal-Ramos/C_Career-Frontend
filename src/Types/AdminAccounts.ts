@@ -6,4 +6,5 @@ export type AdminAccount = {
     firstName: string
     lastName: string
     middleName: string
+    birthDate: string
 }

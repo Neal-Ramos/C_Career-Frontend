@@ -1,4 +1,4 @@
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Navigate, Outlet, Route, Routes } from 'react-router-dom'
 import LandingPage from './pages/LandingPage'
 import ApplyJob from './pages/ApplyJob'
 import AdminLogin from './pages/AdminLogin'
@@ -28,7 +28,7 @@ function App() {
             <Route path='applications' element={<AdminApplications/>}>
               <Route path=':applicationId' element={<AdminViewApplication/>}/>
             </Route>
-            <Route path='settings' element={<Navigate to={"profile"}/>}>
+            <Route path='settings' element={<Outlet/>}>
               <Route path='profile' element={<AdminProfile/>}/>
             </Route>
           </Route>
