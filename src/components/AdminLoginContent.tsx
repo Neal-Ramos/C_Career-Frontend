@@ -29,10 +29,12 @@ function AdminLoginContent(){
           notification.success({title: "Code Sent!", description: "Otp Code is Sent to Your Email!"})
         },
         onError: (error) => {
-          if(error.status == 401)notification.warning({
-            title: "Invalid Credentials!",
-            description: "Username and Password not Matched!"
-          })
+          switch (error.status){
+            case 400:
+              return notification.warning({title: "Invalid Credentials!", description: "Username and Password not Matched!"})
+            default:
+              notification.error({title: "Something Went Wrong!", description: "Something Went Wrong Please Try Again Later!"})
+          }
         }
       })
     }

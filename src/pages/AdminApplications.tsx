@@ -14,7 +14,7 @@ function AdminApplications(){
     const {applicationId} = useParams()
     const navigate = useNavigate()
     const [page, setPage] = useState(1)
-    const [pageSize, setPageSize] = useState(10)
+    const [pageSize, setPageSize] = useState(1)
     const {data, isLoading, isError} = useApplication(page, pageSize)
     const [searchText, setSearchText] = useState("")
     const [statusFilter, setStatusFilter] = useState<string|null>()
@@ -24,6 +24,10 @@ function AdminApplications(){
     if (isLoading) return <Spin size="large" className="flex-1 justify-center"/>
     if (isError) return <div>Error...</div>
 
+    const handleChangePage = (page: number, pageSize: number) => {
+        setPage(page)
+        setPageSize(pageSize)
+    }
     const jobTitles = [
         {label: "test", key: 1},
         {label: "test", key: 2},
@@ -173,13 +177,12 @@ function AdminApplications(){
                         rowKey={record => record.applicationId}
                         pagination={{
                             total: data?.meta.TotalRecord,
-                            pageSize: 5,
+                            current: page,
+                            pageSize: pageSize,
                             showTotal: (total) => `Total ${total} applicants`,
                             placement: ["bottomEnd"],
-                            onChange: (page, pageSize) => {
-                                setPage(page)
-                                setPageSize(pageSize)
-                            }
+                            responsive: true,
+                            onChange: (page, pageSize) => handleChangePage(page, pageSize)
                         }}
                         scroll={{ x: 800 }}
                     />

@@ -6,3 +6,8 @@ export interface IUpdateAdminAccountReq {
     middleName: string,
     birthDate: string
 }
+export interface IAdminChangePasswordReq{
+    currentPassword: string
+    newPassword: string
+    confirmNewPassword: string
+}

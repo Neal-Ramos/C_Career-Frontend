@@ -10,6 +10,7 @@ import dayjs from "dayjs"
 import type { AdminAccount } from "../Types/AdminAccounts"
 import type { IUpdateAdminAccountReq } from "../global/IAdminAccount"
 import { useUpdateAdminAccount } from "../Hooks/useAdminAccounts"
+import AdminChangePassModal from "../components/AdminChangePassModal"
 
 function AdminProfile(){
     const [form] = useForm()
@@ -37,6 +38,7 @@ function AdminProfile(){
     if(!adminAccountContext) return<></>
     return(
         <Layout style={{ background: '#f0f2f5', padding: '24px' }}>
+            <AdminChangePassModal isPasswordModalVisible={isPasswordModalVisible} setIsPasswordModalVisible={setIsPasswordModalVisible}/>
             <Content>
                 <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
                     <Row gutter={[24, 24]}>
