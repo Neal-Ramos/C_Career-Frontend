@@ -8,12 +8,17 @@ import Title from "antd/es/typography/Title"
 import type { ParsedCustomFieldApplication, ParsedFileSubmittedApplication } from "../Types/Applications"
 import type { ParsedRolesJobs } from "../Types/Jobs"
 import Paragraph from "antd/es/typography/Paragraph"
+import { useState } from "react"
+import ShowFileModal from "../components/ShowFileModal"
 
 function AdminViewApplication(){
-    const {applicationId} = useParams()
     const navigate = useNavigate()
+    const {applicationId} = useParams()
     const patchApplicationStatus = usePatchApplicationStatus()
-    const {data, isLoading, isError} = useApplicationById(applicationId||"")
+    const [showFileModal, setShowFileModal] = useState(false)
+    const [publicId, setPublicId] = useState("")
+    const {data, isLoading, isError} = useApplicationById(applicationId || "")
+
 
     if(isLoading) return <Spin size="large" className="flex-1 justify-center"/>
     if(isError) return <>Error...</>
@@ -33,12 +38,17 @@ function AdminViewApplication(){
             }
         })
     }
-
+    const handleViewFile = (filePublicId: string) => {
+        setPublicId(filePublicId);
+        setShowFileModal(true);
+    };
+    
     return(
         <Content
             className="min-h-screen bg-[#f9fafb] h-fit!"
             style={{ padding: '24px 16px', maxWidth: '1400px', margin: '0 auto', width: '100%' }}
         >
+            <ShowFileModal showFileModal={showFileModal} setShowFileModal={setShowFileModal} publicId={publicId}/>
             <div className="mb-8 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
                 <div className="flex-1">
                     <Button 
@@ -146,7 +156,7 @@ function AdminViewApplication(){
                                 <div
                                     key={index}
                                     className="flex items-center justify-between p-4 rounded-xl border border-gray-100 bg-white hover:border-blue-200 hover:shadow-sm transition-all group cursor-pointer"
-                                    onClick={() => console.log("Viewing file:", file.PublicId)}
+                                    onClick={() => handleViewFile(file.PublicId)}
                                 >
                                     <div className="flex items-center gap-3">
                                         <div className="w-10 h-10 bg-blue-50 text-blue-500 rounded-lg flex items-center justify-center">
@@ -157,7 +167,12 @@ function AdminViewApplication(){
                                             <Text type="secondary" className="text-[11px]">File Type: {file.Format}</Text>
                                         </div>
                                     </div>
-                                    <Button type="primary" className="text-blue-500 font-bold text-xs group-hover:bg-blue-50">VIEW</Button>
+                                    <Button 
+                                        type="primary" 
+                                        className="text-blue-500 font-bold text-xs group-hover:bg-blue-50"
+                                    >
+                                        VIEW
+                                    </Button>
                                 </div>
                             )) : (
                                 <Text type="secondary">No files submitted.</Text>

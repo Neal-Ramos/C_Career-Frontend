@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query"
-import { addApplication, GetApplications, GetApplicationsById, PatchApplicationStatus } from "../API/Applications"
+import { addApplication, GetApplicationFile, GetApplications, GetApplicationsById, PatchApplicationStatus } from "../API/Applications"
 import type { FetchApplications, GetApplicationsByIdResponse } from "../global/IJobApplications"
 
 
@@ -43,6 +43,15 @@ export const useApplicationById = (
         queryFn: () => GetApplicationsById(applicationId),
         staleTime: 1000 * 60 * 5,
         refetchOnWindowFocus: false,
+    })
+}
+export const useGetApplicationFile = (publicId: string, showFileModal: boolean) => {
+    return useQuery({
+        queryKey: ["file", publicId],
+        queryFn: () => GetApplicationFile(publicId),
+        staleTime: 1000 * 60 * 5,
+        refetchOnWindowFocus: false,
+        enabled: showFileModal && !!publicId
     })
 }
 export const usePatchApplicationStatus = () => {

@@ -2,7 +2,7 @@ import type { PatchApplicationStatusReq } from "../global/IJobApplications"
 import { apiClient } from "./ApiClient"
 
 export const addApplication = async (formData: any) => {
-    return (await apiClient.post("", formData, {
+    return (await apiClient.post("/api/Applications", formData, {
         headers:{
             "Content-Type": "multipart/form-data"
         }
@@ -32,4 +32,12 @@ export const GetApplicationsById = async (
 }
 export const PatchApplicationStatus = async ({status, applicationId}: PatchApplicationStatusReq) => {
     return (await apiClient.patch(`/api/Applications/${applicationId}`,{status})).data
+}
+export const GetApplicationFile = async (publicId: string): Promise<Blob> => {
+    return (await apiClient.get(`/api/Applications/File`, {
+        params: {
+            PublicId: publicId
+        },
+        responseType: "blob"
+    })).data
 }
