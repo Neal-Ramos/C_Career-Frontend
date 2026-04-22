@@ -45,13 +45,11 @@ function ApplyJobModal({
     const addApplication = useAddApplication()
 
     const handleOnFinish = (data: SubmitApplicationData) => {
-        console.log(data)
-
         const formData = new FormData()
         formData.append("jobId", job.data.jobId)
         formData.append("lastName", data.lastName)
         formData.append("firstName", data.firstName)
-        formData.append("middleName", data.middleName)
+        data.middleName&& formData.append("middleName", data.middleName)
         formData.append("contactNumber", data.contactNumber)
         formData.append("email", data.email)
         formData.append("location", data.location)
@@ -233,15 +231,49 @@ function ApplyJobModal({
                                         key={index} 
                                         name={['files', file.label]}
                                         label={file.label} 
-                                        rules={[{ required: file.required, message: `${file.label} is required` }]}
+                                        rules={[
+                                            {
+                                                required: file.required,
+                                                message: "This File is Required",
+                                            },
+                                            {
+                                                validator: (_, fileList) => {
+                                                    if(!fileList.length && !file.required){
+                                                        return Promise.resolve();
+                                                    }
+
+                                                    const fileObj = fileList[0];
+                                                    
+                                                    const mimeType = fileObj.type || fileObj.originFileObj?.type || "";
+                                                    const fileName = (fileObj.name || "").toLowerCase();
+
+                                                    const isPdf = mimeType === "application/pdf" || fileName.endsWith(".pdf");
+                                                    if (file.fileType === ".pdf") {
+                                                        return isPdf?
+                                                        Promise.resolve():
+                                                        Promise.reject(new Error("Please upload a PDF file"));
+                                                    }
+
+                                                    const isImage = mimeType.startsWith("image/");
+                                                    if (file.fileType === "image/*") {
+                                                        return isImage?
+                                                        Promise.resolve():
+                                                        Promise.reject(new Error("Please upload an image file (PNG, JPG, etc.)"));
+                                                    }
+
+                                                    return Promise.resolve();
+                                                },
+                                                message: "Upload Correct File Type"
+                                            }
+                                        ]}
                                         valuePropName="fileList"
                                         getValueFromEvent={(e: UploadChangeParam) => {
                                             return e.fileList
                                         }}
                                     >
-                                        <Upload maxCount={1} beforeUpload={() => false}>
+                                        <Upload maxCount={1} beforeUpload={() => false} accept={file.fileType}>
                                             <Button icon={<UploadOutlined />} className="w-full text-left flex items-center justify-between">
-                                                Upload {file.label}
+                                                Upload {file.label} {file.fileType}
                                             </Button>
                                         </Upload>
                                     </Form.Item>

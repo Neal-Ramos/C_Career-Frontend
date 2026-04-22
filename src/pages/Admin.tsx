@@ -1,16 +1,18 @@
 import { Avatar, Badge, Button, ConfigProvider, Layout, Space } from "antd"
 import AdminSider from "../components/AdminSider"
-import { BellOutlined } from "@ant-design/icons"
+import { BellOutlined, MenuUnfoldOutlined } from "@ant-design/icons"
 import { Outlet } from "react-router-dom"
 import { Header } from "antd/es/layout/layout"
 import Text from "antd/es/typography/Text"
 import useActivityTracker from "../Hooks/useActivityTracker"
 import { useAdminStore } from "../store/useAdminStore"
+import { useState } from "react"
+import AdminDrawer from "../components/AdminDrawer"
 
 function Admin(){
   useActivityTracker();
   const { adminAccountContext } = useAdminStore()
-
+  const [showDrawer, setShowdrawer] = useState(false)
 
   return(
   <ConfigProvider
@@ -33,22 +35,28 @@ function Admin(){
     }}
   >
     <Layout>
-        {
-          <AdminSider
+        <AdminSider
             className="hidden md:block"
         />
-        }
+        <AdminDrawer showDrawer={showDrawer} setShowdrawer={setShowdrawer}/>
         <Layout  className="max-h-dvh overflow-auto">
           <Header 
             style={{ 
               padding: '0 24px', 
               display: 'flex', 
               alignItems: 'center', 
-              justifyContent: 'flex-end', 
               borderBottom: '1px solid #f0f0f0',
             }
           }>
-            <Space size={24}>
+            <div className="block md:hidden">
+              <Button onClick={() => setShowdrawer(true)}>
+                <MenuUnfoldOutlined />
+              </Button>
+            </div>
+            <Space size={24} style={{
+              justifyContent: 'flex-end',
+              flexGrow: 1, 
+            }}>
               <Badge count={3} size="small">
                 <Button type="text" icon={<BellOutlined style={{ fontSize: '18px' }} />} />
               </Badge>

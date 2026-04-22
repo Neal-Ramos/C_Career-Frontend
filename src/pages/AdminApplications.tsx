@@ -14,7 +14,7 @@ function AdminApplications(){
     const {applicationId} = useParams()
     const navigate = useNavigate()
     const [page, setPage] = useState(1)
-    const [pageSize, setPageSize] = useState(1)
+    const [pageSize, setPageSize] = useState(10)
     const {data, isLoading, isError} = useApplication(page, pageSize)
     const [searchText, setSearchText] = useState("")
     const [statusFilter, setStatusFilter] = useState<string|null>()

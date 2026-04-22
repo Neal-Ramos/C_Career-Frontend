@@ -32,8 +32,8 @@ function FileRequirements({files}: FileRequirements) {
                     rules={[{ required: file.required, message: `${file.label} is required` }]}
                 >
                     <Upload.Dragger name="resumeFile" maxCount={1} beforeUpload={() => false}>
-                    <p className="text-blue-500! text-2xl!">📜</p>
-                    <p className="ant-upload-text">Drop {file.label} here</p>
+                        <p className="text-blue-500! text-2xl!">📜</p>
+                        <p className="ant-upload-text">Drop {file.label} here</p>
                     </Upload.Dragger>
                 </Form.Item>
                 </Col>

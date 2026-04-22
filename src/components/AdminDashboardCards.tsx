@@ -15,7 +15,7 @@ function AdminDashboardCards({title, value, prefix, textProps, textValue, TextIc
             title={title}
             value={value}
             prefix={prefix}
-            valueStyle={{ fontWeight: 700 }}
+            styles={{content:{fontWeight: 700}}}
         />
             <Text {...textProps}>
                 {TextIcon}{textValue}

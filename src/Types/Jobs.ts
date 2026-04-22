@@ -16,4 +16,5 @@ export type ParsedCustomFieldsJobs = {
 export type ParsedFileRequirementsJobs = {
     label: string
     required: boolean
+    fileType: string
 }

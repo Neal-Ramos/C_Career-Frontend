@@ -54,6 +54,11 @@ function AdminJobs(){
         <Content 
             style={{ padding: '32px', maxWidth: '1400px', margin: '0 auto', width: '100%' }}
         >
+            <AddJobModal 
+                showCreateModal={showCreateModal} 
+                setShowCreateModal={setShowCreateModal}
+                refetch={refetch}
+            />
             <div style={{ marginBottom: '32px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
                 <div>
                     <Title level={2} style={{ margin: 0 }}>Job Postings</Title>
@@ -63,7 +68,7 @@ function AdminJobs(){
                     Create New Job
                 </Button>
             </div>
-            <Card variant="borderless" styles={{ body:{padding: 0} }}>
+            <Card variant="borderless" styles={{ body: { padding: 0 } }} style={{ borderRadius: '12px', overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
                 <Table 
                     columns={jobsColumn}
                     dataSource={data?.data}
@@ -76,13 +81,9 @@ function AdminJobs(){
                             onChange: (p, ps) => {handleChangePage(p, ps)}
                         }
                     }
+                    scroll={{ x: 800 }}
                 />
             </Card>
-            <AddJobModal 
-                showCreateModal={showCreateModal} 
-                setShowCreateModal={setShowCreateModal}
-                refetch={refetch}
-            />
         </Content>
     );
 }
