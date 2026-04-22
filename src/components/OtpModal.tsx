@@ -7,6 +7,7 @@ import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { useLogin } from "../Hooks/useAuthentication"
 import { useAdminStore } from "../store/useAdminStore"
+import { handleError } from "../global/ErrorHandler"
 
 interface OtpModal{
     isModalVisible: boolean
@@ -35,9 +36,7 @@ function OtpModal({isModalVisible, setIsModalVisible, username, password, rememb
                 navigate("/admin")
             },
             onError: (error) => {
-                const e = error.response?.data
-                if(e?.errorCode === "INVALID_INPUTS") notification.warning({title: "Invalid Code", description:"Code does not Match or Expired!"})
-                else notification.error({title: "Something Went Wrong!"})
+                handleError(error)
             }
         })
     }

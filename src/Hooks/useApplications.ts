@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { addApplication, GetApplicationFile, GetApplications, GetApplicationsById, PatchApplicationStatus } from "../API/Applications"
-import type { FetchApplications, GetApplicationsByIdResponse } from "../global/IJobApplications"
+import type { FetchApplications, GetApplicationsByIdResponse, PatchApplicationStatusReq } from "../global/IJobApplications"
+import type { AxiosError } from "axios"
 
 
 export const useAddApplication = () => {
@@ -55,7 +56,7 @@ export const useGetApplicationFile = (publicId: string, showFileModal: boolean) 
     })
 }
 export const usePatchApplicationStatus = () => {
-    return useMutation({
+    return useMutation<void, AxiosError, PatchApplicationStatusReq>({
         mutationFn: PatchApplicationStatus
     })
 }

@@ -12,6 +12,7 @@ export interface GetApplicationsByIdResponse extends IResponse{
     data: Application
 }
 export interface PatchApplicationStatusReq {
-    status: string
     applicationId: string
+    status: string
+    dateInterview?: string
 }

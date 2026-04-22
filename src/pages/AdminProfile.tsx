@@ -11,6 +11,7 @@ import type { AdminAccount } from "../Types/AdminAccounts"
 import type { IUpdateAdminAccountReq } from "../global/IAdminAccount"
 import { useUpdateAdminAccount } from "../Hooks/useAdminAccounts"
 import AdminChangePassModal from "../components/AdminChangePassModal"
+import { handleError } from "../global/ErrorHandler"
 
 function AdminProfile(){
     const [form] = useForm()
@@ -28,8 +29,8 @@ function AdminProfile(){
                 setAdminContext(data.data)
                 setIsEditing(false)
             },
-            onError: () => {
-                notification.error({title: "Something Went Wrong", description: "Please Try Again Later!"})
+            onError: (error) => {
+                handleError(error)
             }
         })
 

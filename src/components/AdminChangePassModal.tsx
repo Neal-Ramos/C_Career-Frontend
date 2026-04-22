@@ -3,6 +3,7 @@ import { Button, Form, Input, Modal, notification } from "antd"
 import { useForm } from "antd/es/form/Form"
 import type { IAdminChangePasswordReq } from "../global/IAdminAccount"
 import { useAdminChangePassword } from "../Hooks/useAdminAccounts"
+import { handleError } from "../global/ErrorHandler"
 
 interface AdminChangePassModal{
     isPasswordModalVisible: boolean
@@ -19,12 +20,7 @@ function AdminChangePassModal({isPasswordModalVisible, setIsPasswordModalVisible
                 notification.success({title: "Password Changed!", description: "Your Password is now Changed!"})
             },
             onError: (error) => {
-                switch (error.status){
-                    case 400:
-                        return notification.warning({title: "Current Password Not Match!", description: "Your Current Password is not Match from Database!"})
-                    default: 
-                        notification.error({title: "Something Went Wrong!", description: "Something went Wrong Please Try Again Later!"})
-                }
+                handleError(error)
             }
         })
     }

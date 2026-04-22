@@ -9,6 +9,7 @@ import type { UploadChangeParam, UploadFile } from "antd/es/upload"
 import { useAddApplication } from "../Hooks/useApplications"
 import { getYear } from "../helpers/GetYear"
 import { useNavigate } from "react-router-dom"
+import { handleError } from "../global/ErrorHandler"
 
 interface ApplyJobModal {
     isModalVisible: boolean
@@ -69,8 +70,8 @@ function ApplyJobModal({
                 notification.success({title: "Application Submitted", description: "Your Application is now Submitted and Waiting for Review"})
                 navigate("/")
             },
-            onError: () => {
-                notification.error({title: "Something Went Wrong", description: "Try Again Later"})
+            onError: (error) => {
+                handleError(error)
             }
         })
     }

@@ -3,6 +3,7 @@ import { Drawer, Menu, notification } from "antd"
 import type { ItemType, MenuItemType } from "antd/es/menu/interface"
 import { useNavigate, useLocation } from "react-router-dom"
 import { useLogout } from "../Hooks/useAuthentication"
+import { handleError } from "../global/ErrorHandler"
 
 interface AdminDrawer{
     showDrawer: boolean
@@ -38,8 +39,8 @@ function AdminDrawer({showDrawer, setShowdrawer}: AdminDrawer){
                 localStorage.clear()
                 navigate("/login")
             },
-            onError: () => {
-                notification.error({title: "Something went Wrong!", description: "Server Error!"})
+            onError: (error) => {
+                handleError(error)
             }
         })
         console.log("Logout")

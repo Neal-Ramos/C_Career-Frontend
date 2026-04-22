@@ -9,18 +9,19 @@ import { useApplication } from "../Hooks/useApplications"
 import { Content } from "antd/es/layout/layout"
 import { Outlet, useNavigate, useParams } from "react-router-dom"
 import type { Application } from "../Types/Applications"
+import type { AdminApplicationOutletContextType } from "../Types/OutletContextType/AdminApplicationOutletContextType"
 
 function AdminApplications(){
     const {applicationId} = useParams()
     const navigate = useNavigate()
     const [page, setPage] = useState(1)
     const [pageSize, setPageSize] = useState(10)
-    const {data, isLoading, isError} = useApplication(page, pageSize)
+    const {data, isLoading, isError, refetch} = useApplication(page, pageSize)
     const [searchText, setSearchText] = useState("")
     const [statusFilter, setStatusFilter] = useState<string|null>()
     const [jobFilter, setJobFilter] = useState<string|null>()
 
-    if (applicationId) return <Outlet/>
+    if (applicationId) return <Outlet context={{refetchAppTable: refetch} satisfies AdminApplicationOutletContextType}/>
     if (isLoading) return <Spin size="large" className="flex-1 justify-center"/>
     if (isError) return <div>Error...</div>
 

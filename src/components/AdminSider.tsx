@@ -6,6 +6,7 @@ import Title from "antd/es/typography/Title"
 import { useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { useLogout } from "../Hooks/useAuthentication"
+import { handleError } from "../global/ErrorHandler"
 
 interface AdminSider extends SiderProps{
 }
@@ -40,8 +41,8 @@ function AdminSider({...props}: AdminSider){
                 localStorage.clear()
                 navigate("/login")
             },
-            onError: () => {
-                notification.error({title: "Something went Wrong!", description: "Server Error!"})
+            onError: (error) => {
+                handleError(error)
             }
         })
         console.log("Logout")

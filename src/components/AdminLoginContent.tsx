@@ -7,6 +7,7 @@ import OtpModal from "./OtpModal"
 import { useState } from "react"
 import { useLogin } from "../Hooks/useAuthentication"
 import type { ILoginData } from "../global/IAuthentication"
+import { handleError } from "../global/ErrorHandler"
 
 interface AdminLoginContent{
   showOtpModal: Function
@@ -29,12 +30,7 @@ function AdminLoginContent(){
           notification.success({title: "Code Sent!", description: "Otp Code is Sent to Your Email!"})
         },
         onError: (error) => {
-          switch (error.status){
-            case 400:
-              return notification.warning({title: "Invalid Credentials!", description: "Username and Password not Matched!"})
-            default:
-              notification.error({title: "Something Went Wrong!", description: "Something Went Wrong Please Try Again Later!"})
-          }
+          handleError(error)
         }
       })
     }

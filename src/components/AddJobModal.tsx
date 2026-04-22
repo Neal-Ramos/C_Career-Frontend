@@ -8,6 +8,7 @@ import CustomFieldBox from "./CustomFieldBox"
 import { useAddJobMutation } from "../Hooks/useJobs"
 import type { FetchJobs, IAddJobReq } from "../global/IJobs"
 import type { QueryObserverResult, RefetchOptions } from "@tanstack/react-query"
+import { handleError } from "../global/ErrorHandler"
 
 interface AddJobModal {
     showCreateModal: boolean
@@ -27,11 +28,8 @@ function AddJobModal({ showCreateModal, setShowCreateModal, refetch }: AddJobMod
         values.customFields = JSON.stringify(values.customFields)
         values.fileRequirements = JSON.stringify(values.fileRequirements)
         postJob.mutate(values, {
-            onError: () => {
-                notification.error({
-                    title: "Add Job Failed!",
-                    description: "Failed to Create the Job Try Again Later"
-                })
+            onError: (error) => {
+                handleError(error)
             },
             onSuccess: () => {
                 notification.success({

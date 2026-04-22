@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom"
+import { useNavigate, useOutletContext, useParams } from "react-router-dom"
 import { useApplicationById, usePatchApplicationStatus } from "../Hooks/useApplications"
 import { Content } from "antd/es/layout/layout"
 import { Button, Card, Descriptions, Divider, List, notification, Spin, Tag } from "antd"
@@ -10,19 +10,23 @@ import type { ParsedRolesJobs } from "../Types/Jobs"
 import Paragraph from "antd/es/typography/Paragraph"
 import { useState } from "react"
 import ShowFileModal from "../components/ShowFileModal"
+import { handleError } from "../global/ErrorHandler"
+import AdminSetInterviewModal from "../components/AdminSetInterviewModal"
+import type { AdminApplicationOutletContextType } from "../Types/OutletContextType/AdminApplicationOutletContextType"
 
 function AdminViewApplication(){
     const navigate = useNavigate()
+    const { refetchAppTable } = useOutletContext<AdminApplicationOutletContextType>()
     const {applicationId} = useParams()
     const patchApplicationStatus = usePatchApplicationStatus()
     const [showFileModal, setShowFileModal] = useState(false)
+    const [showAdminSetInterviewModal, setShowAdminSetInterviewModal] = useState(false)
     const [publicId, setPublicId] = useState("")
     const {data, isLoading, isError} = useApplicationById(applicationId || "")
-
-
     if(isLoading) return <Spin size="large" className="flex-1 justify-center"/>
-    if(isError) return <>Error...</>
+    if(isError || !applicationId || !data) return <>Error...</>
 
+    const applicationStatus = data.data.status
     const files: ParsedFileSubmittedApplication[] = JSON.parse(data?.data.fileSubmitted||"[]")
     const customFields: ParsedCustomFieldApplication[] = JSON.parse(data?.data.customFields||"[]")
     const roles: ParsedRolesJobs = JSON.parse(data?.data.job.roles||"[]")
@@ -31,10 +35,11 @@ function AdminViewApplication(){
         patchApplicationStatus.mutate({status: status, applicationId: applicationId!}, {
             onSuccess: () => {
                 notification.success({title: `Application is now ${status}`})
+                refetchAppTable()
                 navigate("/admin/applications")
             },
-            onError: () => {
-                notification.error({title: `Something Went Wrong`})
+            onError: (error) => {
+                handleError(error)
             }
         })
     }
@@ -49,6 +54,12 @@ function AdminViewApplication(){
             style={{ padding: '24px 16px', maxWidth: '1400px', margin: '0 auto', width: '100%' }}
         >
             <ShowFileModal showFileModal={showFileModal} setShowFileModal={setShowFileModal} publicId={publicId}/>
+            <AdminSetInterviewModal 
+                showAdminSetInterviewModal={showAdminSetInterviewModal} 
+                setShowAdminSetInterviewModal={setShowAdminSetInterviewModal}
+                applicationId={applicationId}
+                refetchAppTable={refetchAppTable}
+            />
             <div className="mb-8 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
                 <div className="flex-1">
                     <Button 
@@ -78,24 +89,42 @@ function AdminViewApplication(){
                 </div>
                 
                 <div className="w-full lg:w-auto flex flex-col sm:flex-row gap-3">
-                    <Button 
-                        danger 
-                        size="large" 
-                        icon={<CloseCircleOutlined />} 
-                        className="flex-1 sm:flex-initial flex items-center justify-center rounded-xl font-medium border-red-100 bg-white hover:bg-red-50 h-12 px-6"
-                        onClick={() => handleProcessApplication("Declined")}
-                    >
-                        Decline
-                    </Button>
-                    <Button 
-                        type="primary" 
-                        size="large" 
-                        icon={<CheckOutlined />} 
-                        className="flex-1 sm:flex-initial flex items-center justify-center rounded-xl shadow-md px-10 font-medium bg-blue-600 border-none h-12"
-                        onClick={() => handleProcessApplication("Approved")}
-                    >
-                        Approve
-                    </Button>
+                    {
+                        applicationStatus == "Pending"?
+                        <>
+                            <Button
+                                type="primary"
+                                size="large" 
+                                icon={<CalendarOutlined />} 
+                                className="flex-1 sm:flex-initial flex items-center justify-center rounded-xl font-medium border-red-100 bg-white hover:bg-red-50 h-12 px-6"
+                                onClick={() => setShowAdminSetInterviewModal(true)}
+                            >
+                                Set Interview
+                            </Button>
+                        </>:
+                        <>
+                            <Button 
+                                disabled={applicationStatus != "Interview"}
+                                danger 
+                                size="large" 
+                                icon={<CloseCircleOutlined />} 
+                                className="flex-1 sm:flex-initial flex items-center justify-center rounded-xl font-medium border-red-100 bg-white hover:bg-red-50 h-12 px-6"
+                                onClick={() => handleProcessApplication("Declined")}
+                            >
+                                Decline
+                            </Button>
+                            <Button 
+                                disabled={applicationStatus != "Interview"}
+                                type="primary" 
+                                size="large" 
+                                icon={<CheckOutlined />} 
+                                className="flex-1 sm:flex-initial flex items-center justify-center rounded-xl shadow-md px-10 font-medium bg-blue-600 border-none h-12"
+                                onClick={() => handleProcessApplication("Approved")}
+                            >
+                                Approve
+                            </Button>
+                        </>
+                    }
                 </div>
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
