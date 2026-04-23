@@ -12,6 +12,7 @@ import DocumentBox from "../components/DocumentBox"
 import { useForm } from "antd/es/form/Form"
 import type { FetchJobs, IUpdateJobReq } from "../global/IJobs"
 import type { RefetchOptions, QueryObserverResult } from "@tanstack/react-query"
+import QuillEditor from "../components/QuillEditor"
 
 interface AdminJobsOutlet{
     refetch: () => (options?: RefetchOptions) => Promise<QueryObserverResult<FetchJobs, Error>>
@@ -135,11 +136,7 @@ function AdminViewJob(){
                                 rules={[{ required: true, message: 'Please enter the job title' }]}
                                 initialValue={data?.data.description}
                             >
-                                <TextArea 
-                                    rows={6} 
-                                    placeholder="Enter full job description here..." 
-                                    className="rounded-md border-gray-200"
-                                />
+                                <QuillEditor/>
                             </Form.Item>
                         </Col>
                     </Row>

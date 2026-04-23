@@ -14,15 +14,15 @@ import type { AdminApplicationOutletContextType } from "../Types/OutletContextTy
 function AdminApplications(){
     const {applicationId} = useParams()
     const navigate = useNavigate()
+
     const [page, setPage] = useState(1)
     const [pageSize, setPageSize] = useState(10)
-    const {data, isLoading, isError, refetch} = useApplication(page, pageSize)
-    const [searchText, setSearchText] = useState("")
-    const [statusFilter, setStatusFilter] = useState<string|null>()
-    const [jobFilter, setJobFilter] = useState<string|null>()
+    const [search, setSearch] = useState<string|undefined>(undefined)
+    const [filterStatus, setFilterStatus] = useState<string|undefined>(undefined)
+
+    const {data, isLoading, isError, refetch} = useApplication(page, pageSize, search, filterStatus)
 
     if (applicationId) return <Outlet context={{refetchAppTable: refetch} satisfies AdminApplicationOutletContextType}/>
-    if (isLoading) return <Spin size="large" className="flex-1 justify-center"/>
     if (isError) return <div>Error...</div>
 
     const handleChangePage = (page: number, pageSize: number) => {
@@ -120,41 +120,28 @@ function AdminApplications(){
                 <Title level={2} style={{ margin: 0 }}>Applications</Title>
                 <Text type="secondary">Review and manage candidate submissions across all active roles.</Text>
                 <Card variant="borderless" style={{ marginBottom: '24px', borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
-                    <Row gutter={[16, 16]} align="middle">
+                    <Row gutter={[16, 16]} align="middle" justify="space-between">
                         <Col xs={24} md={8}>
                             <Input
-                                placeholder="Search by name or email..."
+                                placeholder="Search Applicant Email..."
                                 prefix={<SearchOutlined style={{ color: '#bfbfbf' }} />}
-                                value={searchText}
-                                onChange={e => setSearchText(e.target.value)}
+                                value={search}
+                                onChange={e => setSearch(e.target.value)}
                                 allowClear
                             />
                         </Col>
                         <Col xs={12} md={5}>
                             <Select
-                                placeholder="Filter by Job"
-                                style={{ width: '100%' }}
-                                onChange={value => setJobFilter(value)}
-                                allowClear
-                                suffixIcon={<FilterOutlined />}
-                                value={jobFilter}
-                                >
-                                {jobTitles.map(title => (
-                                    <Option key={title.key.toString()} value={title.label}/>
-                                ))}
-                            </Select>
-                        </Col>
-                        <Col xs={12} md={5}>
-                            <Select
                                 placeholder="Status"
                                 style={{ width: '100%' }}
-                                onChange={value => setStatusFilter(value)}
+                                onChange={value => setFilterStatus(value)}
                                 allowClear
-                                value={statusFilter}
+                                value={filterStatus}
                             >
                                 <Option value="Pending" key="1"/>
-                                <Option value="Accepted" key="2"/>
-                                <Option value="Rejected" key="3"/>
+                                <Option value="Interview" key="2"/>
+                                <Option value="Approved" key="3"/>
+                                <Option value="Declined" key="4"/>
                             </Select>
                         </Col>
                         <Col xs={24} md={6} style={{ textAlign: 'right' }}>
@@ -163,9 +150,8 @@ function AdminApplications(){
                                     <Text type="secondary" style={{ marginRight: 8 }}>Results</Text>
                                 </Badge>
                                 <Button onClick={() => {
-                                    setSearchText('');
-                                    setJobFilter(null);
-                                    setStatusFilter(null);
+                                    setSearch('');
+                                    setFilterStatus(undefined);
                                 }}>Reset</Button>
                             </Space>
                         </Col>
@@ -173,6 +159,7 @@ function AdminApplications(){
                 </Card>
                 <Card variant="borderless" styles={{ body: { padding: 0 } }} style={{ borderRadius: '12px', overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
                     <Table
+                        loading={isLoading}
                         columns={columns}
                         dataSource={data?.data}
                         rowKey={record => record.applicationId}

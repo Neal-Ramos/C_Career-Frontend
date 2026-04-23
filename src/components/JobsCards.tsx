@@ -1,6 +1,8 @@
 import { Button, Card, Tag, Typography } from 'antd';
 import { NormalizeDate } from '../helpers/NormalizeDate';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import QuillViewer from './QuillViewer';
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -14,6 +16,7 @@ interface JobsCards {
 
 function JobsCard({ title, dateCreated, roles, description, jobGuid }: JobsCards) {
     const navigate = useNavigate();
+    const [isExpanded, setIsExpanded] = useState(false)
 
     return (
         <Card
@@ -54,16 +57,7 @@ function JobsCard({ title, dateCreated, roles, description, jobGuid }: JobsCards
                     <Text className="text-slate-900! font-bold! block! mb-1!">
                         Description
                     </Text>
-                    <Paragraph
-                        className="text-slate-600! leading-relaxed! text-sm! mb-0!"
-                        ellipsis={{
-                            rows: 2,
-                            expandable: "collapsible",
-                            symbol: (expanded) => expanded? "Show Less...":"Show More..."
-                        }}
-                    >
-                        {description}
-                    </Paragraph>
+                    <QuillViewer value={description}/>
                 </div>
             </div>
 

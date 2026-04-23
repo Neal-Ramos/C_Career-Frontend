@@ -5,23 +5,23 @@ import { ArrowLeftOutlined, CheckCircleOutlined, FileTextOutlined, InfoCircleOut
 import Title from "antd/es/typography/Title"
 import Text from "antd/es/typography/Text"
 import { NormalizeDate } from "../helpers/NormalizeDate"
-import Paragraph from "antd/es/typography/Paragraph"
 import type { ParsedCustomFieldsJobs, ParsedFileRequirementsJobs, ParsedRolesJobs } from "../Types/Jobs"
 import { useState } from "react"
 import ApplyJobModal from "../components/ApplyJobModal"
+import QuillViewer from "../components/QuillViewer"
 
 function ApplyJob() {
     const navigate = useNavigate()
     const { jobGuid } = useParams()
     const { data, isLoading, isError } = useJobsById(jobGuid!)
     const [isModalVisible, sesetIsModalVisibletIs] = useState(false)
-
-    const parsedFileReq: ParsedFileRequirementsJobs[] = JSON.parse(data?.data.fileRequirements || "[]")
-    const parsedCustomFields: ParsedCustomFieldsJobs[] = JSON.parse(data?.data.customFields || "[]")
-    const parsedRoles: ParsedRolesJobs = JSON.parse(data?.data.roles || "[]")
-
     if (isLoading) return <Spin size="large" className="w-full h-dvh flex items-center justify-center" />
     if (isError || !data) return <div className="p-10 text-center">Error loading job details...</div>
+
+    const parsedFileReq: ParsedFileRequirementsJobs[] = JSON.parse(data.data.fileRequirements || "[]")
+    const parsedCustomFields: ParsedCustomFieldsJobs[] = JSON.parse(data.data.customFields || "[]")
+    const parsedRoles: ParsedRolesJobs = JSON.parse(data.data.roles || "[]")
+
 
     return (
         <Layout className="min-h-screen! bg-gray-50!">
@@ -54,7 +54,7 @@ function ApplyJob() {
                         className="m-0 text-white! font-extrabold! wrap-break-word"
                         style={{ fontSize: 'clamp(24px, 5vw, 36px)' }}
                     >
-                        {data?.data.title}
+                        {data.data.title}
                     </Title>
                 </div>
             </div>
@@ -70,7 +70,7 @@ function ApplyJob() {
                             <Text type="secondary" className="text-[12px] font-semibold uppercase tracking-wider">
                                 Posted Date
                             </Text>
-                            <Text strong className="text-lg">{NormalizeDate(data?.data.dateCreated!)}</Text>
+                            <Text strong className="text-lg">{NormalizeDate(data.data.dateCreated!)}</Text>
                         </div>
                         <Button 
                             type="primary" 
@@ -88,17 +88,8 @@ function ApplyJob() {
                     {/* Description Section */}
                     <section className="mb-10">
                         <Title level={4} className="font-bold">Description</Title>
-                        <Paragraph 
-                            className="text-slate-600 text-base leading-relaxed mb-4"
-                            ellipsis={{
-                                rows: 5,
-                                expandable: "collapsible",
-                                symbol: (expanded) => expanded? "Show Less...":"Show More..."
-                            }}
-                        >
-                            {data?.data.description}
-                        </Paragraph>
-                        <div className="flex flex-wrap gap-2">
+                        <QuillViewer value={data.data.description}/>
+                        <div className="flex flex-wrap gap-2 pt-2">
                             {parsedRoles.map((role, idx) => (
                                 <Tag 
                                     key={idx} 

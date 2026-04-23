@@ -12,8 +12,7 @@ export const useAddApplication = () => {
 export const useApplication = (
     Page: number, 
     PageSize: number, 
-    FilterEmail?: string, 
-    FilterJob?: string, 
+    Search?: string,
     FilterStatus?: string
 ) => {
     return useQuery<FetchApplications>({
@@ -21,15 +20,13 @@ export const useApplication = (
             ["GetApplications"],
             Page,
             PageSize,
-            FilterEmail,
-            FilterJob,
+            Search,
             FilterStatus,
         ],
         queryFn: () => GetApplications(
             Page,
             PageSize,
-            FilterEmail,
-            FilterJob,
+            Search,
             FilterStatus,
         ),
         staleTime: 1000 * 60 * 5,

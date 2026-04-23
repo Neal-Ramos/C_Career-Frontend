@@ -13,6 +13,7 @@ import ShowFileModal from "../components/ShowFileModal"
 import { handleError } from "../global/ErrorHandler"
 import AdminSetInterviewModal from "../components/AdminSetInterviewModal"
 import type { AdminApplicationOutletContextType } from "../Types/OutletContextType/AdminApplicationOutletContextType"
+import QuillViewer from "../components/QuillViewer"
 
 function AdminViewApplication(){
     const navigate = useNavigate()
@@ -222,16 +223,7 @@ function AdminViewApplication(){
                         <div className="p-6">
                             <div className="mb-6">
                                 <Text type="secondary" className="text-[11px] uppercase font-bold tracking-wider block mb-2">Description</Text>
-                                <Paragraph 
-                                    className="text-gray-600 block leading-relaxed italic" 
-                                    ellipsis={{
-                                        rows: 10,
-                                        expandable: "collapsible",
-                                        symbol: (expanded) => expanded? "Show Less...":"Show More..."
-                                    }}
-                                >
-                                    "{data?.data.job?.description}"
-                                </Paragraph> 
+                                <QuillViewer value={data?.data.job?.description}/>
                             </div>
 
                             <div className="mb-6">

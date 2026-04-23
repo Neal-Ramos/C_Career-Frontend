@@ -1,6 +1,5 @@
 import { CloseOutlined } from "@ant-design/icons"
 import { Button, Divider, Form, Input, Modal, notification, Spin } from "antd"
-import TextArea from "antd/es/input/TextArea"
 import Title from "antd/es/typography/Title"
 import TagBox from "./TagBox"
 import DocumentBox from "./DocumentBox"
@@ -9,6 +8,7 @@ import { useAddJobMutation } from "../Hooks/useJobs"
 import type { FetchJobs, IAddJobReq } from "../global/IJobs"
 import type { QueryObserverResult, RefetchOptions } from "@tanstack/react-query"
 import { handleError } from "../global/ErrorHandler"
+import QuillEditor from "./QuillEditor"
 
 interface AddJobModal {
     showCreateModal: boolean
@@ -109,7 +109,7 @@ function AddJobModal({ showCreateModal, setShowCreateModal, refetch }: AddJobMod
                         label="Job Description"
                         rules={[{ required: true, message: 'Please enter the job title' }]}
                     >
-                        <TextArea rows={4}/>
+                        <QuillEditor/>
                     </Form.Item>
                     <Form.Item
                         name="roles"

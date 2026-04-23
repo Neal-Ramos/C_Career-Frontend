@@ -11,16 +11,14 @@ export const addApplication = async (formData: any) => {
 export const GetApplications = async (
     Page: number, 
     PageSize: number, 
-    FilterEmail?: string, 
-    FilterJob?: string, 
+    Search?: string, 
     FilterStatus?: string
 ) => {
     return (await apiClient.get("/api/Applications", {
         params:{
             Page : Page,
             PageSize : PageSize,
-            FilterEmail : FilterEmail,
-            FilterJob : FilterJob,
+            Search : Search,
             FilterStatus : FilterStatus,
         }
     })).data
