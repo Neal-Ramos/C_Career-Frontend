@@ -55,9 +55,9 @@ function AddJobModal({ showCreateModal, setShowCreateModal, refetch }: AddJobMod
                     key="submit" 
                     type="primary"
                     onClick={() => form.submit()}
-                    disabled={postJob.isPending}
+                    loading={postJob.isPending}
                 >
-                    {postJob.isPending? <Spin/>:"Create Job"}
+                    "Create Job"
                 </Button>,
             ]}
             width="95%"
@@ -109,7 +109,7 @@ function AddJobModal({ showCreateModal, setShowCreateModal, refetch }: AddJobMod
                         label="Job Description"
                         rules={[{ required: true, message: 'Please enter the job title' }]}
                     >
-                        <QuillEditor/>
+                        <QuillEditor />
                     </Form.Item>
                     <Form.Item
                         name="roles"

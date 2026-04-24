@@ -15,7 +15,7 @@ import { handleError } from "../global/ErrorHandler"
 
 function AdminProfile(){
     const [form] = useForm()
-    const updateAdminAccount = useUpdateAdminAccount()
+    const {mutate, isPending} = useUpdateAdminAccount()
     const { adminAccountContext, setAdminContext } = useAdminStore()
     const [isEditing, setIsEditing] = useState(false)
     const [isPasswordModalVisible, setIsPasswordModalVisible] = useState(false)
@@ -23,7 +23,7 @@ function AdminProfile(){
     const handleOnFinish = (data: IUpdateAdminAccountReq) => {
         data.birthDate = new Date(data.birthDate).toISOString()
 
-        updateAdminAccount.mutate(data, {
+        mutate(data, {
             onSuccess: (data) => {
                 notification.success({title: "Account Updated", description: "Your Account in Now Updated!"})
                 setAdminContext(data.data)
@@ -84,6 +84,7 @@ function AdminProfile(){
                                                     icon={<CloseOutlined />} 
                                                     onClick={() => setIsEditing(false)}
                                                     style={{ flex: 1 }}
+                                                    disabled={isPending}
                                                 >
                                                     Cancel
                                                 </Button>
@@ -92,6 +93,7 @@ function AdminProfile(){
                                                     icon={<SaveOutlined />}
                                                     style={{ flex: 1 }}
                                                     onClick={() => form.submit()}
+                                                    loading={isPending}
                                                 >
                                                     Save
                                                 </Button>
@@ -133,6 +135,7 @@ function AdminProfile(){
                                         birthDate: dayjs(adminAccountContext.birthDate)
                                     }}
                                     onFinish={(val: AdminAccount) => handleOnFinish(val)}
+                                    disabled={isPending}
                                 >
                                 <Row gutter={16}>
                                     <Col xs={24} sm={12}>

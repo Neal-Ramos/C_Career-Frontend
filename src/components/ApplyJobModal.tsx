@@ -43,7 +43,7 @@ function ApplyJobModal({
 }: ApplyJobModal){
     const [form] = useForm()
     const navigate = useNavigate()
-    const addApplication = useAddApplication()
+    const {mutate, isPending} = useAddApplication()
 
     const handleOnFinish = (data: SubmitApplicationData) => {
         const formData = new FormData()
@@ -65,7 +65,7 @@ function ApplyJobModal({
             }
         }
 
-        addApplication.mutate(formData, {
+        mutate(formData, {
             onSuccess: () => {
                 notification.success({title: "Application Submitted", description: "Your Application is now Submitted and Waiting for Review"})
                 navigate("/")
@@ -93,13 +93,13 @@ function ApplyJobModal({
                         size="large" 
                         className="bg-blue-600 font-semibold px-8" 
                         onClick={() => form.submit()}
-                        loading={addApplication.isPending}
+                        loading={isPending}
                     >
                         Submit Application
                     </Button>
                     <Button 
                         onClick={() => setIsModalVisible(false)}
-                        disabled={addApplication.isPending}
+                        disabled={isPending}
                         size="large"
                         danger
                     >
@@ -119,7 +119,7 @@ function ApplyJobModal({
                     layout="vertical"
                     requiredMark="optional"
                     onFinish={handleOnFinish}
-                    disabled={addApplication.isPending}
+                    disabled={isPending}
                 >
                     <Divider className="text-blue-600! m-0! mb-4!">Personal Information</Divider>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4">

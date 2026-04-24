@@ -18,10 +18,10 @@ function AdminLoginContent(){
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
     const [remember, setRemeber] = useState(false)
-    const loginMutation = useLogin()
+    const {mutate, isPending} = useLogin()
 
     const onFinish = (data: ILoginData) => {
-      loginMutation.mutate(data, {
+      mutate(data, {
         onSuccess: () => {
           setUsername(data.username)
           setPassword(data.password)
@@ -58,7 +58,7 @@ function AdminLoginContent(){
               </Text>
             </Flex>
             <Card 
-              bordered={false} 
+              variant="borderless"
               style={{ 
                 boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
                 borderRadius: '12px'
@@ -74,6 +74,7 @@ function AdminLoginContent(){
                 layout="vertical"
                 onFinish={(e) => onFinish(e)}
                 size="large"
+                disabled={isPending}
               >
                 <Form.Item
                   label={<Text strong style={{ fontSize: '13px' }}>Admin Username</Text>}
@@ -115,7 +116,7 @@ function AdminLoginContent(){
                     type="primary" 
                     htmlType="submit" 
                     block 
-                    loading={loginMutation.isPending}
+                    loading={isPending}
                     icon={<ArrowRightOutlined />}
                     iconPlacement="end"
                     style={{ 

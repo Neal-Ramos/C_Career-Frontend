@@ -1,29 +1,37 @@
-import { useNavigate, useOutletContext, useParams } from "react-router-dom"
-import { useApplicationById, usePatchApplicationStatus } from "../Hooks/useApplications"
+import { useOutletContext, useParams } from "react-router-dom"
+import { useApplicationById } from "../Hooks/useApplications"
 import { Content } from "antd/es/layout/layout"
-import { Button, Card, Descriptions, Divider, List, notification, Spin, Tag } from "antd"
-import { ArrowLeftOutlined, BookOutlined, CalendarOutlined, CheckOutlined, ClockCircleOutlined, CloseCircleOutlined, FileTextOutlined, InfoCircleOutlined, MailOutlined, PhoneOutlined, QuestionCircleOutlined, RocketOutlined, UserOutlined } from "@ant-design/icons"
+import { Button, Card, Descriptions, Divider, Dropdown, Empty, List, notification, Popconfirm, Spin, Tag } from "antd"
+import { ArrowLeftOutlined, AuditOutlined, BookOutlined, CalendarOutlined, ClockCircleOutlined, EditOutlined, FileTextOutlined, InfoCircleOutlined, MailOutlined, MoreOutlined, PhoneOutlined, QuestionCircleOutlined, RocketOutlined, UserDeleteOutlined, UserOutlined } from "@ant-design/icons"
 import Text from "antd/es/typography/Text"
 import Title from "antd/es/typography/Title"
 import type { ParsedCustomFieldApplication, ParsedFileSubmittedApplication } from "../Types/Applications"
 import type { ParsedRolesJobs } from "../Types/Jobs"
-import Paragraph from "antd/es/typography/Paragraph"
 import { useState } from "react"
 import ShowFileModal from "../components/ShowFileModal"
 import { handleError } from "../global/ErrorHandler"
 import AdminSetInterviewModal from "../components/AdminSetInterviewModal"
 import type { AdminApplicationOutletContextType } from "../Types/OutletContextType/AdminApplicationOutletContextType"
 import QuillViewer from "../components/QuillViewer"
+import { DestructureDate } from "../helpers/DestructureDate"
+import AdminReschedInterviewModal from "../components/AdminRescheduleIneterviewModal"
+import { useNoShowInterview } from "../Hooks/useApplicantInterview"
+import AdminInterviewRemarksModal from "../components/AdminInterviewRemarksModal"
+import AdminViewRemarks from "../components/AdminViewRemarks"
 
 function AdminViewApplication(){
-    const navigate = useNavigate()
-    const { refetchAppTable } = useOutletContext<AdminApplicationOutletContextType>()
-    const {applicationId} = useParams()
-    const patchApplicationStatus = usePatchApplicationStatus()
+    const [publicId, setPublicId] = useState("")
     const [showFileModal, setShowFileModal] = useState(false)
     const [showAdminSetInterviewModal, setShowAdminSetInterviewModal] = useState(false)
-    const [publicId, setPublicId] = useState("")
-    const {data, isLoading, isError} = useApplicationById(applicationId || "")
+    const [showAdminReschedInterviewModal, setShowAdminReschedInterviewModal] = useState(false)
+    const [adminInterviewRemarksModalVisible, setAdminInterviewRemarksModalVisible] = useState(false)
+    const [adminViewRemarksModalVisible, setAdminViewRemarksModalVisible] = useState(false)
+    const { refetchAppTable } = useOutletContext<AdminApplicationOutletContextType>()
+    const useSetNoShow = useNoShowInterview()
+    const {applicationId} = useParams()
+
+    const {data, isLoading, isError, refetch} = useApplicationById(applicationId || "")
+
     if(isLoading) return <Spin size="large" className="flex-1 justify-center"/>
     if(isError || !applicationId || !data) return <>Error...</>
 
@@ -32,23 +40,44 @@ function AdminViewApplication(){
     const customFields: ParsedCustomFieldApplication[] = JSON.parse(data?.data.customFields||"[]")
     const roles: ParsedRolesJobs = JSON.parse(data?.data.job.roles||"[]")
 
-    const handleProcessApplication = (status: string) => {
-        patchApplicationStatus.mutate({status: status, applicationId: applicationId!}, {
-            onSuccess: () => {
-                notification.success({title: `Application is now ${status}`})
-                refetchAppTable()
-                navigate("/admin/applications")
-            },
-            onError: (error) => {
-                handleError(error)
-            }
-        })
-    }
     const handleViewFile = (filePublicId: string) => {
         setPublicId(filePublicId);
         setShowFileModal(true);
-    };
+    }
     
+    const items = [
+        {
+            key: "1",
+            label: 'Reschedule',
+            icon: <EditOutlined />,
+            onClick: () => setShowAdminReschedInterviewModal(true)
+        },
+        {
+            key: '2',
+            label: (
+                <Popconfirm
+                    title="Mark as No Show"
+                    description="Are you sure you want to mark this applicant as a no-show this will also Decline the Applicant?"
+                    onConfirm={() => {
+                        useSetNoShow.mutate({applicationId}, {
+                            onSuccess: () => {
+                                notification.success({title: "Interview Set to No Show", description: "The Inteview is now No Show Status You can now Approve or Decline the Applicant"})
+                                refetchAppTable()
+                                refetch()
+                                setShowAdminReschedInterviewModal(false)
+                            },
+                            onError: (error) => {
+                                handleError(error)
+                            }
+                        })
+                    }}
+                >
+                    <span className="w-full inline-block">Mark as No Show</span>
+                </Popconfirm>
+            ),
+            icon: <UserDeleteOutlined />
+        }
+    ]
     return(
         <Content
             className="min-h-screen bg-[#f9fafb] h-fit!"
@@ -60,7 +89,27 @@ function AdminViewApplication(){
                 setShowAdminSetInterviewModal={setShowAdminSetInterviewModal}
                 applicationId={applicationId}
                 refetchAppTable={refetchAppTable}
+                refetchApplication={refetch}
             />
+            <AdminReschedInterviewModal 
+                showAdminReschedInterviewModal={showAdminReschedInterviewModal} 
+                setShowAdminReschedInterviewModal={setShowAdminReschedInterviewModal}
+                applicationId={applicationId}
+                refetchAppTable={refetchAppTable}
+                refetch={refetch}
+            />
+            <AdminInterviewRemarksModal
+                adminInterviewRemarksModalVisible={adminInterviewRemarksModalVisible}
+                setAdminInterviewRemarksModalVisible={setAdminInterviewRemarksModalVisible}
+                applicationId={applicationId}
+                refetchAppTable={refetchAppTable}
+            />
+            <AdminViewRemarks
+                adminViewRemarksModalVisible={adminViewRemarksModalVisible}
+                setAdminViewRemarksModalVisible={setAdminViewRemarksModalVisible}
+                remarksValue={data.data.interviewRemarks}
+            />
+            
             <div className="mb-8 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
                 <div className="flex-1">
                     <Button 
@@ -103,26 +152,29 @@ function AdminViewApplication(){
                                 Set Interview
                             </Button>
                         </>:
+                        applicationStatus == "Interview"?
                         <>
-                            <Button 
-                                disabled={applicationStatus != "Interview"}
-                                danger 
-                                size="large" 
-                                icon={<CloseCircleOutlined />} 
-                                className="flex-1 sm:flex-initial flex items-center justify-center rounded-xl font-medium border-red-100 bg-white hover:bg-red-50 h-12 px-6"
-                                onClick={() => handleProcessApplication("Declined")}
-                            >
-                                Decline
-                            </Button>
                             <Button 
                                 disabled={applicationStatus != "Interview"}
                                 type="primary" 
                                 size="large" 
-                                icon={<CheckOutlined />} 
+                                icon={<AuditOutlined />} 
                                 className="flex-1 sm:flex-initial flex items-center justify-center rounded-xl shadow-md px-10 font-medium bg-blue-600 border-none h-12"
-                                onClick={() => handleProcessApplication("Approved")}
+                                onClick={() => setAdminInterviewRemarksModalVisible(true)}
                             >
-                                Approve
+                                Start Interview
+                            </Button>
+                        </>:
+                        <>
+                            <Button 
+                                disabled={data.data.interviewRemarks? false : true}
+                                type="primary" 
+                                size="large" 
+                                icon={<AuditOutlined />} 
+                                className="flex-1 sm:flex-initial flex items-center justify-center rounded-xl shadow-md px-10 font-medium bg-blue-600 border-none h-12"
+                                onClick={() => setAdminViewRemarksModalVisible(true)}
+                            >
+                                View Remarks
                             </Button>
                         </>
                     }
@@ -259,15 +311,52 @@ function AdminViewApplication(){
                     </Card>
 
                     <Card 
-                        title={<span className="flex items-center gap-2"><InfoCircleOutlined /> Review Status</span>} 
+                        title={<span className="flex items-center gap-2"><InfoCircleOutlined />Interviews</span>} 
                         className="shadow-sm border-none rounded-2xl"
                     >
-                        <div className="bg-orange-50 border border-orange-100 p-4 rounded-xl">
-                            <Text className="text-orange-700 text-sm font-medium block mb-1">Action Required</Text>
-                            <Text className="text-orange-600/80 text-[13px] leading-snug">
-                                This application is currently pending review. Please verify the attachments and custom responses before making a decision.
-                            </Text>
-                        </div>
+                        {
+                            data.data.interviews?.length?
+                            data.data.interviews.map(e => {
+                                const {year, month, date, hour, minutes} = DestructureDate(new Date(e.dateInterview))
+                                return (
+                                    <div key={e.id}>
+                                        <div className="py-4 flex items-center justify-between transition-all hover:bg-gray-50/50 rounded-lg px-2 -mx-2">
+                                            <div className="flex flex-col gap-1">
+                                                <Tag 
+                                                    variant="outlined"
+                                                    color={e.status == "Pending"? "#afaf1e":"#3b7cfd"}
+                                                >
+                                                    <Text strong>{e.status}</Text>
+                                                </Tag>
+                                            </div>
+                                            <div className="flex items-center gap-4">
+                                                <div className="flex items-center gap-2">
+                                                    <CalendarOutlined className="text-gray-400" />
+                                                    <Text strong>{year}/{month}/{date}</Text>
+                                                </div>
+                                                <div className="flex items-center gap-2">
+                                                    <ClockCircleOutlined className="text-gray-400" />
+                                                    <Text>{hour<10? `0${hour}`:hour}:{minutes<10?`0${minutes}`:minutes}</Text>
+                                                </div>
+                                            </div>
+                                            <Dropdown
+                                                menu={{items}}
+                                                disabled={!(e.status == "Pending")}
+                                            >
+                                                <Button 
+                                                    type="text" 
+                                                    shape="circle" 
+                                                    icon={<MoreOutlined style={{ fontSize: '18px' }} />} 
+                                                    className="flex items-center justify-center hover:bg-gray-100"
+                                                />
+                                            </Dropdown>
+                                        </div>
+
+                                    </div>
+                                )
+                            }):
+                            <Empty/>
+                        }
                     </Card>
                 </div>
             </div>

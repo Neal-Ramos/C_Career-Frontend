@@ -1,7 +1,8 @@
 import ReactQuill from "react-quill-new"
 import "react-quill-new/dist/quill.snow.css"
 
-interface QuillEditor{
+type ReactQuillProps = React.ComponentProps<typeof ReactQuill>;
+interface QuillEditor extends ReactQuillProps {
     value?: string
     onChange?: (value: string) => void
 }
@@ -16,17 +17,17 @@ const formats = [
     "header",
     "bold", "italic", "underline", "strike",
     "list",
-    "link", "image",
+    "link", "image"
 ]
 
-function QuillEditor({value, onChange}:QuillEditor){
+function QuillEditor({value, onChange, ...props}:QuillEditor){
 
     const handleOnchange = (val: string) => {
         onChange?.(val)
     }
 
     return(
-        <div className="h-50">
+        <div className={"h-50 border p-2 border-gray-400 rounded-[5px]"}>
             <ReactQuill
                 theme="snow"
                 value={value}
@@ -35,6 +36,7 @@ function QuillEditor({value, onChange}:QuillEditor){
                 formats={formats}
                 placeholder="Write something..."
                 className="h-full"
+                {...props}
             />
         </div>
     )

@@ -4,32 +4,32 @@ import { useForm } from "antd/es/form/Form"
 import Text from "antd/es/typography/Text"
 import Title from "antd/es/typography/Title"
 import dayjs from "dayjs"
-import { usePatchApplicationStatus } from "../Hooks/useApplications"
-import { handleError } from "../global/ErrorHandler"
 import { useNavigate } from "react-router-dom"
+import { useReschedInterview } from "../Hooks/useApplicantInterview"
+import { handleError } from "../global/ErrorHandler"
 
 interface AdminSetInterviewModal{
-    showAdminSetInterviewModal: boolean
-    setShowAdminSetInterviewModal: (showAdminSetInterviewModal: boolean) => void
+    showAdminReschedInterviewModal: boolean
+    setShowAdminReschedInterviewModal: (showAdminSetInterviewModal: boolean) => void
     applicationId: string
     refetchAppTable: () => void
-    refetchApplication: () => void
+    refetch: () => void
 }
 
-function AdminSetInterviewModal({ showAdminSetInterviewModal, setShowAdminSetInterviewModal, applicationId, refetchAppTable, refetchApplication }: AdminSetInterviewModal){
+function AdminReschedInterviewModal({ showAdminReschedInterviewModal, setShowAdminReschedInterviewModal, applicationId, refetchAppTable, refetch }: AdminSetInterviewModal){
     const [form] = useForm()
     const navigate = useNavigate()
-    const {mutate, isPending} = usePatchApplicationStatus()
+    const {mutate, isPending} = useReschedInterview()
     const handleOnFinish = (data: {interviewDate: dayjs.Dayjs}) => {
         const formattedDate = data.interviewDate.format("YYYY-MM-DDTHH:mm:ss")
-        mutate({applicationId: applicationId, status: "Interview", dateInterview: formattedDate}, {
+        mutate({applicationId: applicationId, newSchedule: formattedDate},{
             onSuccess: () => {
-                notification.success({title: "Interview Is now Scheduled", description: "The Inteview is now Scheduled"})
+                notification.success({title: "Interview Rescheduled", description: "The Inteview is now Rescheduled"})
                 refetchAppTable()
-                refetchApplication()
+                refetch()
                 form.resetFields()
                 navigate("/admin/applications")
-                setShowAdminSetInterviewModal(false)
+                setShowAdminReschedInterviewModal(false)
             },
             onError: (error) => {
                 handleError(error)
@@ -39,23 +39,22 @@ function AdminSetInterviewModal({ showAdminSetInterviewModal, setShowAdminSetInt
 
     return(
         <Modal
-            open={showAdminSetInterviewModal}
+            open={showAdminReschedInterviewModal}
             onCancel={() => {
-                // form.resetFields();
-                setShowAdminSetInterviewModal(false);
+                setShowAdminReschedInterviewModal(false);
             }}
             centered
             destroyOnHidden
             title={
                 <Space>
-                    <CalendarOutlined style={{ color: '#faad14' }} />
+                    <CalendarOutlined style={{ color: '#2b5dfb' }} />
                     <Title level={4} style={{ margin: 0 }}>
-                        Schedule Interview
+                        Reschedule Interview
                     </Title>
                 </Space>
             }
             footer={[
-                <Button key="back" onClick={() => setShowAdminSetInterviewModal(false)} loading={isPending}>
+                <Button key="back" onClick={() => setShowAdminReschedInterviewModal(false)} disabled={isPending}>
                     Cancel
                 </Button>,
                 <Button
@@ -64,21 +63,21 @@ function AdminSetInterviewModal({ showAdminSetInterviewModal, setShowAdminSetInt
                     loading={isPending}
                     icon={<ClockCircleOutlined />}
                     style={{
-                        backgroundColor: '#fadb14', 
-                        borderColor: '#fadb14', 
-                        color: 'rgba(0, 0, 0, 0.85)',
+                        backgroundColor: '#2b5dfb', 
+                        borderColor: '#2b5dfb', 
+                        color: 'rgba(255, 255, 255)',
                         fontWeight: 500 
                     }}
                     onClick={form.submit}
                 >
-                    Confirm Interview
+                    Confirm Schedule
                 </Button>,
             ]}
         >
             <div style={{ padding: '10px 0' }}>
                 <Text type="secondary">
                     Please select the date and time for the applicant's interview.
-                    This will update the application status to "Interview".
+                    This Will Set the Current Interview To Rescheduled.
                 </Text>
             </div>
 
@@ -109,4 +108,4 @@ function AdminSetInterviewModal({ showAdminSetInterviewModal, setShowAdminSetInt
         </Modal>
     )
 }
-export default AdminSetInterviewModal
+export default AdminReschedInterviewModal

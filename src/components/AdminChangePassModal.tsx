@@ -12,10 +12,10 @@ interface AdminChangePassModal{
 
 function AdminChangePassModal({isPasswordModalVisible, setIsPasswordModalVisible}: AdminChangePassModal){
     const [form] = useForm()
-    const useChangePassword = useAdminChangePassword()
+    const {mutate, isPending} = useAdminChangePassword()
 
     const handleOnFinish = (data: IAdminChangePasswordReq) => {
-        useChangePassword.mutate(data, {
+        mutate(data, {
             onSuccess: () => {
                 notification.success({title: "Password Changed!", description: "Your Password is now Changed!"})
             },
@@ -46,6 +46,7 @@ function AdminChangePassModal({isPasswordModalVisible, setIsPasswordModalVisible
             centered
         >
             <Form
+                disabled={isPending}
                 form={form}
                 layout="vertical"
                 onFinish={(val) => handleOnFinish(val)}

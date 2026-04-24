@@ -20,6 +20,7 @@ interface OtpModal{
 function OtpModal({isModalVisible, setIsModalVisible, username, password, remember}:OtpModal){
     const navigate = useNavigate()
     const loginMutation = useLogin()
+    const [code, setCode] = useState("")
     const { setAdminContext } = useAdminStore()
     const [timerValue, setTimerValue] = useState(60)
 
@@ -88,9 +89,11 @@ function OtpModal({isModalVisible, setIsModalVisible, username, password, rememb
                     length={6} 
                     onChange={(code) => handleSubmit(code)}
                     style={{ justifyContent: 'space-between' }}
+                    onInput={(val) => setCode(val.join(""))}
                 />
                 
                 <Button
+                    disabled={code.length != 6}
                     type="primary"
                     block
                     size="large"
@@ -99,8 +102,9 @@ function OtpModal({isModalVisible, setIsModalVisible, username, password, rememb
                     iconPlacement="end"
                     style={{ fontWeight: 600, boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                     htmlType="submit"
+                    onClick={() => handleSubmit(code)}
                 >
-                Verify Identity
+                    Verify Identity
                 </Button>
             </Flex>
 

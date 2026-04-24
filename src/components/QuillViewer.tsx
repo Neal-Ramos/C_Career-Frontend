@@ -3,11 +3,12 @@ import ReactQuill from "react-quill-new";
 import { Button } from "antd";
 import "react-quill-new/dist/quill.snow.css";
 
-interface QuillViewerProps {
+type ReactQuillProps = React.ComponentProps<typeof ReactQuill>;
+interface QuillViewerProps extends ReactQuillProps {
   value: string;
 }
 
-function QuillViewer({ value }: QuillViewerProps) {
+function QuillViewer({ value, ...props }: QuillViewerProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
@@ -24,6 +25,7 @@ function QuillViewer({ value }: QuillViewerProps) {
           modules={{
             toolbar: null,
           }}
+          {...props}
         />
         {!isExpanded && (
           <div className="absolute bottom-0 left-0 w-full h-8 bg-linear-to-t from-white to-transparent pointer-events-none" />

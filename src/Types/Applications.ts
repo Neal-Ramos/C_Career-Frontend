@@ -1,3 +1,4 @@
+import type { ApplicantInterview } from "./ApplicantInterviewsType"
 import type { Jobs } from "./Jobs"
 
 export type Application = {
@@ -17,6 +18,8 @@ export type Application = {
     dateReviewed: string
     jobId: string
     job: Jobs
+    interviewRemarks: string
+    interviews?: ApplicantInterview[]
 }
 export type ParsedFileSubmittedApplication = {
     DocumentName: string

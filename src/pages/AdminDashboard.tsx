@@ -1,5 +1,5 @@
-import { ArrowUpOutlined, BookOutlined, TeamOutlined, ThunderboltOutlined } from "@ant-design/icons"
-import { Avatar, Button, Card, Row, Space, Spin, Table, Tag } from "antd"
+import { BookOutlined, TeamOutlined, ThunderboltOutlined } from "@ant-design/icons"
+import { Avatar, Button, Card, Row, Space, Spin, Table } from "antd"
 import { Content } from "antd/es/layout/layout"
 import Text from "antd/es/typography/Text"
 import Title from "antd/es/typography/Title"
@@ -8,13 +8,15 @@ import type { ColumnsType } from "antd/es/table"
 import { useApplication } from "../Hooks/useApplications"
 import type { Application } from "../Types/Applications"
 import { useNavigate } from "react-router-dom"
+import { useAdminDashboard } from "../Hooks/useDashboard"
 
 function AdminDashboard(){
     const {data, isLoading, isError} = useApplication(1,10)
+    const useDashboard = useAdminDashboard()
     const navigate = useNavigate()
  
-    if(isLoading) return <Spin size="large" className="flex-1 justify-center"/>
-    if(isError) return <div>Error...</div>
+    if(isLoading || useDashboard.isLoading) return <Spin size="large" className="flex-1 justify-center"/>
+    if(isError || !data || !useDashboard.data) return <div>Error...</div>
     const columns: ColumnsType<Application> = [
         {
             title: 'Applicant',
@@ -89,10 +91,8 @@ function AdminDashboard(){
                 type: "success",
                 style:{ fontSize: '12px' }
             },
-            textValue:"12.5% since last month",
-            TextIcon:<ArrowUpOutlined/>,
             title:"Total Applications",
-            value:123,
+            value:useDashboard.data.data.totalApplication,
             prefix:<TeamOutlined
                 style={{ color: '#1677ff' }}
             />
@@ -102,10 +102,8 @@ function AdminDashboard(){
                 type: "success",
                 style:{ fontSize: '12px' }
             },
-            textValue:"12.5% since last month",
-            TextIcon:<ArrowUpOutlined/>,
             title:"Pending Applications",
-            value:123,
+            value:useDashboard.data.data.totalPendingApplication,
             prefix:<TeamOutlined
                 style={{ color: '#ebe534' }}
             />
@@ -115,10 +113,8 @@ function AdminDashboard(){
                 type: "success",
                 style:{ fontSize: '12px' }
             },
-            textValue:"12.5% since last month",
-            TextIcon:<ArrowUpOutlined/>,
             title:"Accepted Applicants",
-            value:123,
+            value:useDashboard.data.data.totalAcceptedApplication,
             prefix:<TeamOutlined
                 style={{ color: '#5ceb34' }}
             />
@@ -128,10 +124,8 @@ function AdminDashboard(){
                 type: "success",
                 style:{ fontSize: '12px' }
             },
-            textValue:"12.5% since last month",
-            TextIcon:<ArrowUpOutlined/>,
             title:"Jobs Available",
-            value:123,
+            value:useDashboard.data.data.totalJobs,
             prefix:<BookOutlined
                 style={{ color: '#1677ff' }}
             />

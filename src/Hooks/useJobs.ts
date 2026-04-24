@@ -7,7 +7,7 @@ export const useJobs = (Page: number, PageSize: number, Search?: string) => {
     return useQuery<FetchJobs>({
         queryKey: ["Jobs", Page, PageSize, Search],
         queryFn: () => fetchJobs(Page, PageSize, Search),
-        staleTime: Search? 0:1000 * 60 * 5,
+        staleTime: Search? 0: 1000 * 30,
         refetchOnWindowFocus: false,
     })
 }

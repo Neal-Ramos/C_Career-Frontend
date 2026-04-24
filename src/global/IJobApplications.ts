@@ -15,4 +15,5 @@ export interface PatchApplicationStatusReq {
     applicationId: string
     status: string
     dateInterview?: string
+    interviewRemarks?: string
 }

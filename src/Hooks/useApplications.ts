@@ -29,7 +29,7 @@ export const useApplication = (
             Search,
             FilterStatus,
         ),
-        staleTime: 1000 * 60 * 5,
+        staleTime: 1000 * 30,
         refetchOnWindowFocus: false,
     })
 }
@@ -39,7 +39,7 @@ export const useApplicationById = (
     return useQuery<GetApplicationsByIdResponse>({
         queryKey: [["GetApplications"], applicationId],
         queryFn: () => GetApplicationsById(applicationId),
-        staleTime: 1000 * 60 * 5,
+        staleTime: 1000 * 30,
         refetchOnWindowFocus: false,
     })
 }
@@ -47,7 +47,7 @@ export const useGetApplicationFile = (publicId: string, showFileModal: boolean) 
     return useQuery({
         queryKey: ["file", publicId],
         queryFn: () => GetApplicationFile(publicId),
-        staleTime: 1000 * 60 * 5,
+        staleTime: 1000 * 30,
         refetchOnWindowFocus: false,
         enabled: showFileModal && !!publicId
     })

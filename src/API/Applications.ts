@@ -28,8 +28,8 @@ export const GetApplicationsById = async (
 ) => {
     return (await apiClient.get(`/api/Applications/${applicationId}`)).data
 }
-export const PatchApplicationStatus = async ({status, applicationId, dateInterview}: PatchApplicationStatusReq) => {
-    return (await apiClient.patch(`/api/Applications/${applicationId}`,{status, dateInterview})).data
+export const PatchApplicationStatus = async ({status, applicationId, dateInterview, interviewRemarks}: PatchApplicationStatusReq) => {
+    return (await apiClient.patch(`/api/Applications/${applicationId}`,{status, dateInterview, interviewRemarks})).data
 }
 export const GetApplicationFile = async (publicId: string): Promise<Blob> => {
     return (await apiClient.get(`/api/Applications/File`, {

@@ -5,7 +5,6 @@ import Title from "antd/es/typography/Title"
 import Text from "antd/es/typography/Text"
 import { Button, Card, Col, Divider, Form, Input, notification, Popconfirm, Row, Space, Spin } from "antd"
 import { ArrowLeftOutlined, DeleteOutlined, EditOutlined, InfoCircleOutlined, QuestionCircleOutlined } from "@ant-design/icons"
-import TextArea from "antd/es/input/TextArea"
 import TagBox from "../components/TagBox"
 import CustomFieldBox from "../components/CustomFieldBox"
 import DocumentBox from "../components/DocumentBox"
@@ -25,11 +24,11 @@ function AdminViewJob(){
 
     const navigate = useNavigate()
     const deleteJob = useDeleteJob()
-    const updateJob = useUpdateJobMutation()
+    const {mutate, isPending} = useUpdateJobMutation()
     const {data, isLoading, isError} = useJobsById(jobId as string)
 
     const handleOnFinish = (updatedJob: IUpdateJobReq) => {
-        updateJob.mutate({
+        mutate({
             ...updatedJob,
             customFields: JSON.stringify(updatedJob.customFields),
             fileRequirements: JSON.stringify(updatedJob.fileRequirements),
@@ -84,6 +83,8 @@ function AdminViewJob(){
                             size="large" 
                             icon={<DeleteOutlined />} 
                             className="flex items-center rounded-lg border-red-200 bg-white hover:bg-red-50"
+                            loading={deleteJob.isPending}
+                            disabled={isPending}
                         >
                             Delete
                         </Button>
@@ -94,6 +95,8 @@ function AdminViewJob(){
                         icon={<EditOutlined />} 
                         className="flex items-center rounded-lg shadow-sm px-8"
                         onClick={() => form.submit()}
+                        loading={isPending}
+                        disabled={deleteJob.isPending}
                     >
                         Save
                     </Button>
@@ -110,6 +113,7 @@ function AdminViewJob(){
                     layout="vertical"
                     scrollToFirstError
                     requiredMark="optional"
+                    disabled={isPending}
                     onFinish={(val) => {handleOnFinish({editSummary: "Nothing",jobId: jobId, ...val})}}
                 >
                     <Divider className="mt-0!">
@@ -136,7 +140,7 @@ function AdminViewJob(){
                                 rules={[{ required: true, message: 'Please enter the job title' }]}
                                 initialValue={data?.data.description}
                             >
-                                <QuillEditor/>
+                                <QuillEditor readOnly={isPending}/>
                             </Form.Item>
                         </Col>
                     </Row>
