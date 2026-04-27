@@ -1,5 +1,5 @@
 import { CloseOutlined } from "@ant-design/icons"
-import { Button, Divider, Form, Input, Modal, notification, Spin } from "antd"
+import { Button, Col, Divider, Form, Input, Modal, notification, Row, Select } from "antd"
 import Title from "antd/es/typography/Title"
 import TagBox from "./TagBox"
 import DocumentBox from "./DocumentBox"
@@ -104,6 +104,50 @@ function AddJobModal({ showCreateModal, setShowCreateModal, refetch }: AddJobMod
                     >
                         <Input placeholder="Title" size="large"/>
                     </Form.Item>
+                    <Row
+                        gutter={[16, 16]}
+                        align="middle"
+                        justify="space-between"
+                    >
+                        <Col xs={24} md={8}>
+                            <Form.Item
+                                name="salary"
+                                label="Salary"
+                            >
+                                <Input placeholder="Salary (Optional)"></Input>
+                            </Form.Item>
+                        </Col>
+                        <Col xs={24} md={8}>
+                            <Form.Item
+                                name="employmentType"
+                                label="EmploymentType"
+                            >
+                                <Select 
+                                defaultValue={"FullTime"}
+                                options={[
+                                    {value:"FullTime", label:"Full Time"},
+                                    {value:"PartTime", label:"Part Time"},
+                                    {value:"Contract", label:"Contract"},
+                                    {value:"Internship", label:"Internship"},
+                                    {value:"Volunteer", label:"Volunteer"}
+                                ]}/>
+                            </Form.Item>
+                        </Col>
+                        <Col xs={24} md={8}>
+                            <Form.Item
+                                name="workArrangement"
+                                label="Work Arrangement"
+                            >
+                                <Select 
+                                defaultValue={"Onsite"}
+                                options={[
+                                    {value:"Onsite", label:"Onsite"},
+                                    {value:"Remote", label:"Remote"},
+                                    {value:"Hybrid", label:"Hybrid"}
+                                ]}/>
+                            </Form.Item>
+                        </Col>
+                    </Row>
                     <Form.Item
                         name="description"
                         label="Job Description"

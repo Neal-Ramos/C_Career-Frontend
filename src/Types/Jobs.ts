@@ -7,6 +7,9 @@ export type Jobs = {
     dateCreated: string
     adminId: string
     customFields: string
+    salary: string
+    employmentType: "FullTime"|"PartTime"|"Contract"|"Internship"|"Volunteer"
+    workArrangement: "Onsite"|"Remote"|"Hybrid"
 }
 export type ParsedRolesJobs = string[]
 export type ParsedCustomFieldsJobs = {

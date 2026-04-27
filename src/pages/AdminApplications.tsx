@@ -1,5 +1,5 @@
-import { FilterOutlined, SearchOutlined } from "@ant-design/icons"
-import { Avatar, Badge, Button, Card, Col, Input, Row, Select, Space, Spin, Table } from "antd"
+import { SearchOutlined } from "@ant-design/icons"
+import { Avatar, Badge, Button, Card, Col, Input, Row, Select, Space, Table } from "antd"
 import { Option } from "antd/es/mentions"
 import type { ColumnsType } from "antd/es/table"
 import Text from "antd/es/typography/Text"
@@ -29,11 +29,6 @@ function AdminApplications(){
         setPage(page)
         setPageSize(pageSize)
     }
-    const jobTitles = [
-        {label: "test", key: 1},
-        {label: "test", key: 2},
-        {label: "test", key: 3},
-    ]
     const columns: ColumnsType<Application> = [
         {
             title: 'Applicant',

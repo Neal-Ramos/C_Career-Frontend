@@ -20,6 +20,9 @@ export interface IAddJobReq {
     roles: string
     customFields: string
     fileRequirements: string
+    salary: string
+    employmentType: "FullTime"|"PartTime"|"Contract"|"Internship"|"Volunteer"
+    workArrangement: "Onsite"|"Remote"|"Hybrid"
 }
 export interface IUpdateJobReq extends IAddJobReq {
     jobId: string

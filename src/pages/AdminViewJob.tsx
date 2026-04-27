@@ -3,7 +3,7 @@ import { useDeleteJob, useJobsById, useUpdateJobMutation } from "../Hooks/useJob
 import { Content } from "antd/es/layout/layout"
 import Title from "antd/es/typography/Title"
 import Text from "antd/es/typography/Text"
-import { Button, Card, Col, Divider, Form, Input, notification, Popconfirm, Row, Space, Spin } from "antd"
+import { Button, Card, Col, Divider, Form, Input, notification, Popconfirm, Row, Select, Space, Spin } from "antd"
 import { ArrowLeftOutlined, DeleteOutlined, EditOutlined, InfoCircleOutlined, QuestionCircleOutlined } from "@ant-design/icons"
 import TagBox from "../components/TagBox"
 import CustomFieldBox from "../components/CustomFieldBox"
@@ -122,29 +122,69 @@ function AdminViewJob(){
                             <span className="font-bold uppercase tracking-widest text-[11px]">Basic Information</span>
                         </Space>
                     </Divider>
-                    <Row gutter={[24, 0]}>
-                        <Col xs={24} lg={24}>
+                    <Form.Item
+                        name="title"
+                        label={<Text strong className="text-gray-600">Job Title</Text>}
+                        rules={[{ required: true, message: 'Please enter the job title' }]}
+                        initialValue={data?.data.title}
+                    >
+                        <Input placeholder="e.g. Lead Product Designer" size="large" className="rounded-md hover:border-blue-400 focus:border-blue-500 transition-all" />
+                    </Form.Item>
+                    <Row
+                        gutter={[16, 16]}
+                        align="middle"
+                        justify="space-between"
+                    >
+                        <Col xs={24} md={8}>
                             <Form.Item
-                                name="title"
-                                label={<Text strong className="text-gray-600">Job Title</Text>}
-                                rules={[{ required: true, message: 'Please enter the job title' }]}
-                                initialValue={data?.data.title}
+                                name="salary"
+                                label="Salary"
+                                initialValue={data?.data.salary}
                             >
-                                <Input placeholder="e.g. Lead Product Designer" size="large" className="rounded-md hover:border-blue-400 focus:border-blue-500 transition-all" />
+                                <Input placeholder="Salary (Optional)"></Input>
                             </Form.Item>
                         </Col>
-                        <Col xs={24}>
+                        <Col xs={24} md={8}>
                             <Form.Item
-                                name="description"
-                                label={<Text strong className="text-gray-600">Job Description</Text>}
-                                rules={[{ required: true, message: 'Please enter the job title' }]}
-                                initialValue={data?.data.description}
+                                name="employmentType"
+                                label="EmploymentType"
+                                initialValue={data?.data.employmentType}
                             >
-                                <QuillEditor readOnly={isPending}/>
+                                <Select 
+                                defaultValue={"FullTime"}
+                                options={[
+                                    {value:"FullTime", label:"Full Time"},
+                                    {value:"PartTime", label:"Part Time"},
+                                    {value:"Contract", label:"Contract"},
+                                    {value:"Internship", label:"Internship"},
+                                    {value:"Volunteer", label:"Volunteer"}
+                                ]}/>
+                            </Form.Item>
+                        </Col>
+                        <Col xs={24} md={8}>
+                            <Form.Item
+                                name="workArrangement"
+                                label="Work Arrangement"
+                                initialValue={data?.data.workArrangement}
+                            >
+                                <Select 
+                                defaultValue={"Onsite"}
+                                options={[
+                                    {value:"Onsite", label:"Onsite"},
+                                    {value:"Remote", label:"Remote"},
+                                    {value:"Hybrid", label:"Hybrid"}
+                                ]}/>
                             </Form.Item>
                         </Col>
                     </Row>
-
+                    <Form.Item
+                        name="description"
+                        label={<Text strong className="text-gray-600">Job Description</Text>}
+                        rules={[{ required: true, message: 'Please enter the job title' }]}
+                        initialValue={data?.data.description}
+                    >
+                        <QuillEditor readOnly={isPending}/>
+                    </Form.Item>
                     <Divider className="mt-0!">
                         <Space className="text-blue-600">
                             <InfoCircleOutlined /> 
