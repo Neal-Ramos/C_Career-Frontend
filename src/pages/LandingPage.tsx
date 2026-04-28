@@ -1,67 +1,69 @@
-import { Col, Empty, Layout, Pagination, Row, Skeleton } from "antd"
+import { Col, Layout, Pagination, Row, Spin } from "antd"
 import JobsCard from "../components/JobsCards"
 import LandingHero from "../components/LandingHero"
 import { useJobs } from "../Hooks/useJobs"
 import { useRef, useState } from "react"
-import BackTop from "antd/es/float-button/BackTop"
+import Title from "antd/es/typography/Title"
+import Text from "antd/es/typography/Text"
 
 function LandingPage(){
     const [page, setPage] = useState(1)
     const [pageSize, setPageSize] = useState(8)
     const [search, setSearch] = useState<string|undefined>(undefined)
-    const { data, isLoading, isError, error } = useJobs(page, pageSize, search)
+    const { data, isLoading, isError } = useJobs(page, pageSize, search)
     const jobSection = useRef<HTMLDivElement>(null)
+
+    if(isLoading) return <Spin size="large" className="w-dvw h-dvh justify-center"/>
+    if(isError)return "Error..."
 
     return(
         <Layout className="min-h-dvh!">
             <LandingHero setSearch= {setSearch} setPage={setPage}/>
-            <Layout className="max-w-7xl! mx-auto! px-6! pt-10! w-full! min-h-85!" ref={jobSection}>
-                <div className="mb-10 text-center">
-                    <h2 className="text-3xl font-black text-slate-900 tracking-tight">Available Jobs</h2>
+            
+            <div className="max-w-7xl mx-auto px-6 pt-12 pb-24 w-full" ref={jobSection}>
+                <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4 border-l-4 border-slate-900 pl-6">
+                    <div>
+                        <Title level={2} className="m-0! text-2xl! font-black!">Open Positions</Title>
+                        <Text className="text-slate-400">
+                            Displaying <strong>{pageSize}</strong> of {data?.meta.TotalRecords} total opportunities
+                        </Text>
+                    </div>
                 </div>
-                {
-                    isLoading? (<Skeleton className=""/>):
-                    isError || error? (
-                        <Empty description={"No Jobs Available!"}/>
-                    ):
-                    data?.data.length? (
-                        <>
-                            <Row gutter={[24, 24]} align={"top"}>
-                                {data.data.map((job) => (
-                                    <Col xs={24} md={24}>
-                                        <JobsCard
-                                            key={job.jobId}
-                                            title={job.title}
-                                            dateCreated={job.dateCreated}
-                                            roles={JSON.parse(job.roles)}
-                                            description={job.description}
-                                            jobGuid={job.jobId}
-                                        />
-                                    </Col>
-                                ))}
-                            </Row>
-                            <Pagination
-                                responsive={true}
-                                current={page} 
-                                total={data?.meta.TotalRecords} 
-                                pageSize={pageSize} 
-                                showSizeChanger
-                                pageSizeOptions={['4', '8', '12', '20']}
-                                className="justify-center py-4! pb-20!"
-                                onChange={(page, pageSize) => {
-                                    setPage(page)
-                                    setPageSize(pageSize)
-                                    jobSection.current?.scrollIntoView()
-                                }}
+                
+                <Row gutter={[24, 24]}>
+                    {data?.data.map((job) => (
+                        <Col xs={24} md={12} lg={8} key={job.jobId}>
+                            <JobsCard
+                                job={job}
                             />
-                        </>
-                    ):
-                    (
-                        <Empty description={"No Jobs Available!"} className="flex-1"/>
-                    )
-                }
-            </Layout>
-            <BackTop/>
+                        </Col>
+                    ))}
+                </Row>
+                <div className="mt-16 flex justify-center">
+                    <Pagination
+                    responsive
+                    current={page}
+                    total={data?.meta.TotalRecords}
+                    pageSize={pageSize}
+                    pageSizeOptions={['6', '12', '18']}
+                    onChange={(p, ps) => {
+                        setPage(p);
+                        setPageSize(ps);
+                        jobSection.current?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    />
+                </div>
+            </div>
+            <footer className="bg-white border-t border-slate-200 py-12 px-6">
+                <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+                <div className="text-lg font-black text-slate-900 tracking-tighter">C CAREER</div>
+                <p className="text-slate-400 text-sm">© 2026 C Career. All rights reserved.</p>
+                <div className="flex gap-6 text-sm font-semibold text-slate-600">
+                    <a href="#" className="hover:text-blue-600">Privacy</a>
+                    <a href="#" className="hover:text-blue-600">Terms</a>
+                </div>
+                </div>
+            </footer>
         </Layout>
     )
 }

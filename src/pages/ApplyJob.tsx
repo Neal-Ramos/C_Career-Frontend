@@ -44,14 +44,14 @@ function ApplyJob() {
                         type="link" 
                         icon={<ArrowLeftOutlined />} 
                         onClick={() => navigate(-1)}
-                        className="p-0 mb-6 flex items-center"
+                        className="p-0! mb-6! flex! items-center!"
                         style={{ color: 'rgba(255,255,255,0.8)' }}
                     >
                         Back to Available Jobs
                     </Button>
                     <Title 
                         level={1} 
-                        className="m-0 text-white! font-extrabold! wrap-break-word"
+                        className="m-0! text-white! font-extrabold! wrap-break-word!"
                         style={{ fontSize: 'clamp(24px, 5vw, 36px)' }}
                     >
                         {data.data.title}
@@ -62,39 +62,51 @@ function ApplyJob() {
             <div className="max-w-400 mx-auto -mt-10 px-4 mb-10 w-full">
                 <Card 
                     variant="borderless" 
-                    className="rounded-2xl shadow-lg overflow-hidden"
+                    className="rounded-2xl! shadow-lg! overflow-hidden!"
                     styles={{ body: { padding: 'clamp(16px, 4vw, 32px)' } }}
                 >
                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-8">
                         <div className="flex flex-col">
-                            <Text type="secondary" className="text-[12px] font-semibold uppercase tracking-wider">
+                            <Text type="secondary" className="text-[12px]! font-semibold! uppercase tracking-wider!">
                                 Posted Date
                             </Text>
-                            <Text strong className="text-lg">{NormalizeDate(data.data.dateCreated!)}</Text>
+                            <Text strong className="text-lg!">{NormalizeDate(data.data.dateCreated!)}</Text>
+                            <Space size={8}>
+                                <Tag className="m-0! rounded-lg! border-none! bg-blue-100! px-3! py-0.5!">
+                                    <Text strong className="text-[#3b5998]! text-xs!">
+                                        {data.data.workArrangement}
+                                    </Text>
+                                </Tag>
+                                <Tag className="m-0! rounded-lg! border-none! bg-slate-200! px-3! py-0.5!">
+                                    <Text strong className="text-slate-600! text-xs!">
+                                        {data.data.employmentType}
+                                    </Text>
+                                </Tag>
+                            </Space>
                         </div>
                         <Button 
                             type="primary" 
                             size="large" 
                             icon={<SendOutlined />}
-                            className="w-full sm:w-auto h-12 px-10 rounded-lg font-semibold shadow-md"
+                            className="w-full! sm:w-auto! h-12! px-10! rounded-lg! font-semibold! shadow-md!"
                             onClick={() => sesetIsModalVisibletIs(true)}
                         >
                             Apply Now
                         </Button>
                     </div>
 
-                    <Divider className="my-0 mb-8" />
+                    <Divider className="my-0! mb-8!" />
 
                     {/* Description Section */}
                     <section className="mb-10">
-                        <Title level={4} className="font-bold">Description</Title>
+                        <Title level={4} className="font-bold!">Description</Title>
                         <QuillViewer value={data.data.description}/>
                         <div className="flex flex-wrap gap-2 pt-2">
                             {parsedRoles.map((role, idx) => (
                                 <Tag 
                                     key={idx} 
                                     color="blue" 
-                                    className="rounded-full px-4 py-0.5 font-medium border-none bg-blue-50 text-blue-600"
+                                    className="rounded-full! px-4! py-0.5! font-medium! bg-blue-50! text-blue-600!"
                                 >
                                     {role}
                                 </Tag>
@@ -103,14 +115,14 @@ function ApplyJob() {
                     </section>
 
                     <section className="mb-10">
-                        <Title level={4} className="font-bold flex items-center gap-2">
+                        <Title level={4} className="font-bold! flex! items-center! gap-2!">
                             <UserOutlined /> Information Required
                         </Title>
                         <Descriptions 
                             bordered 
                             size="small" 
                             column={1} 
-                            className="bg-white"
+                            className="bg-white!"
                             labelStyle={{ background: '#f8fafc', fontWeight: 600, width: 'clamp(120px, 20%, 200px)', color: '#64748b' }}
                         >
                             <Descriptions.Item label="Identity">FirstName, MiddleName, LastName, BirthDate</Descriptions.Item>
@@ -123,15 +135,15 @@ function ApplyJob() {
                         <Card 
                             size="small" 
                             title={<Space><FileTextOutlined className="text-blue-500" /> <Text strong>File Requirements</Text></Space>}
-                            className="bg-slate-50 border-slate-200 rounded-xl"
+                            className="bg-slate-50! border-slate-200! rounded-xl!"
                         >
                             <List
                                 dataSource={parsedFileReq}
                                 renderItem={(item) => (
-                                    <List.Item className="px-0 py-2 border-none">
+                                    <List.Item className="px-0! py-2!">
                                         <div className="flex items-center gap-3 w-full">
-                                            <CheckCircleOutlined className={item.required ? 'text-blue-500' : 'text-slate-400'} />
-                                            <Text className="flex-1">{item.label}</Text>
+                                            <CheckCircleOutlined className={item.required ? 'text-blue-500!' : 'text-slate-400!'} />
+                                            <Text className="flex-1!">{item.label}</Text>
                                             {item.required && <Tag color="error" className="text-[10px] rounded-md m-0">REQUIRED</Tag>}
                                         </div>
                                     </List.Item>
@@ -142,15 +154,15 @@ function ApplyJob() {
                         <Card 
                             size="small" 
                             title={<Space><InfoCircleOutlined className="text-blue-500" /> <Text strong>Custom Job Questions</Text></Space>}
-                            className="bg-slate-50 border-slate-200 rounded-xl"
+                            className="bg-slate-50! border-slate-200! rounded-xl!"
                         >
                             <List
                                 dataSource={parsedCustomFields}
                                 renderItem={(item) => (
-                                    <List.Item className="px-0 py-2 border-none">
+                                    <List.Item className="px-0! py-2!">
                                         <div className="flex flex-col">
                                             <Text strong>{item.label}</Text>
-                                            <Text type="secondary" className="text-xs">
+                                            <Text type="secondary" className="text-xs!">
                                                 {item.required ? 'This field is mandatory' : 'Optional'}
                                             </Text>
                                         </div>
