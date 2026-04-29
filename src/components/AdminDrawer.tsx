@@ -1,5 +1,5 @@
 import { DashboardOutlined, TeamOutlined, FileTextOutlined, SettingOutlined, UserOutlined, LogoutOutlined } from "@ant-design/icons"
-import { Drawer, Menu, notification } from "antd"
+import { Drawer, Menu } from "antd"
 import type { ItemType, MenuItemType } from "antd/es/menu/interface"
 import { useNavigate, useLocation } from "react-router-dom"
 import { useLogout } from "../Hooks/useAuthentication"

@@ -1,5 +1,5 @@
 import { DashboardOutlined, FileTextOutlined, LogoutOutlined, SettingOutlined, TeamOutlined, ThunderboltOutlined, UserOutlined } from "@ant-design/icons"
-import { Menu, notification } from "antd"
+import { Menu } from "antd"
 import Sider, { type SiderProps } from "antd/es/layout/Sider"
 import type { ItemType, MenuItemType } from "antd/es/menu/interface"
 import Title from "antd/es/typography/Title"

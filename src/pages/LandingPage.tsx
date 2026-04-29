@@ -1,4 +1,4 @@
-import { Col, Layout, Pagination, Row, Spin } from "antd"
+import { Col, Empty, Layout, Pagination, Row, Spin } from "antd"
 import JobsCard from "../components/JobsCards"
 import LandingHero from "../components/LandingHero"
 import { useJobs } from "../Hooks/useJobs"
@@ -13,7 +13,6 @@ function LandingPage(){
     const { data, isLoading, isError } = useJobs(page, pageSize, search)
     const jobSection = useRef<HTMLDivElement>(null)
 
-    if(isLoading) return <Spin size="large" className="w-dvw h-dvh justify-center"/>
     if(isError)return "Error..."
 
     return(
@@ -31,13 +30,22 @@ function LandingPage(){
                 </div>
                 
                 <Row gutter={[24, 24]}>
-                    {data?.data.map((job) => (
-                        <Col xs={24} md={12} lg={8} key={job.jobId}>
-                            <JobsCard
-                                job={job}
-                            />
+                    {
+                        isLoading? 
+                        <Col xs={24} md={24} lg={24}>
+                            <Spin size="large" className="w-full justify-center"/>
+                        </Col>:
+                        data?.data.length? data?.data.map((job) => (
+                            <Col xs={24} md={12} lg={8} key={job.jobId}>
+                                <JobsCard
+                                    job={job}
+                                />
+                            </Col>
+                        )):
+                        <Col xs={24} md={24} lg={24}>
+                            <Empty/>
                         </Col>
-                    ))}
+                    }
                 </Row>
                 <div className="mt-16 flex justify-center">
                     <Pagination

@@ -1,5 +1,5 @@
 import { ArrowRightOutlined, LockOutlined, SafetyCertificateOutlined } from "@ant-design/icons"
-import { Button, Flex, Input, notification } from "antd"
+import { Button, Flex, Input } from "antd"
 import Modal from "antd/es/modal/Modal"
 import Text from "antd/es/typography/Text"
 import Title from "antd/es/typography/Title"
