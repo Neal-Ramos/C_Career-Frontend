@@ -5,9 +5,12 @@ import Text from "antd/es/typography/Text"
 import Title from "antd/es/typography/Title"
 import OtpModal from "./OtpModal"
 import { useState } from "react"
-import { useLogin } from "../Hooks/useAuthentication"
+import { useLogin, useOAuthLogin } from "../Hooks/useAuthentication"
 import type { ILoginData } from "../global/IAuthentication"
 import { handleError } from "../global/ErrorHandler"
+import { GoogleLogin, GoogleOAuthProvider, type CredentialResponse } from "@react-oauth/google"
+import { useNavigate } from "react-router-dom"
+import { useAdminStore } from "../store/useAdminStore"
 
 interface AdminLoginContent{
   showOtpModal: Function
@@ -19,6 +22,9 @@ function AdminLoginContent(){
     const [password, setPassword] = useState("")
     const [remember, setRemeber] = useState(false)
     const {mutate, isPending} = useLogin()
+    const {setAdminContext} = useAdminStore()
+    const oAuthLogin = useOAuthLogin()
+    const navigate = useNavigate()
 
     const onFinish = (data: ILoginData) => {
       mutate(data, {
@@ -28,6 +34,19 @@ function AdminLoginContent(){
           setRemeber(data.remember)
           setOtpModal(true)
           notification.success({title: "Code Sent!", description: "Otp Code is Sent to Your Email!"})
+        },
+        onError: (error) => {
+          handleError(error)
+        }
+      })
+    }
+    const handleOAuthLogin = (credential?: string) => {
+      if(!credential) return
+      oAuthLogin.mutate({credential},{
+        onSuccess: (res) => {
+          setAdminContext(res.data)
+          localStorage.setItem("AccessToken", res.meta.AccessToken)
+          navigate("/admin")
         },
         onError: (error) => {
           handleError(error)
@@ -130,6 +149,12 @@ function AdminLoginContent(){
                   </Button>
                 </Form.Item>
               </Form>
+              <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENTID}>
+                <GoogleLogin
+                  onSuccess={(e: CredentialResponse) => {handleOAuthLogin(e.credential)}}
+                  onError={() => {}}
+                />
+              </GoogleOAuthProvider>
             </Card>
             <div style={{ textAlign: 'center', marginTop: '32px' }}>
               <Text type="secondary" style={{ fontSize: '13px' }}>

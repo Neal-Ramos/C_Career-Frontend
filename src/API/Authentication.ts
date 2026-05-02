@@ -11,3 +11,6 @@ export const rotateToken = async(): Promise<IRotateTokenResponse> => {
 export const logout = async ({}) => {
     return await authClient.post("/api/Authentication/logout")
 }
+export const oAuthLogin = async({credential}: {credential: string}) => {
+    return (await authClient.post("/api/Authentication/OAuthLogin", {credential})).data
+}
