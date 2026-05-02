@@ -4,7 +4,7 @@ import { Option } from "antd/es/mentions"
 import type { ColumnsType } from "antd/es/table"
 import Text from "antd/es/typography/Text"
 import Title from "antd/es/typography/Title"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useApplication } from "../Hooks/useApplications"
 import { Content } from "antd/es/layout/layout"
 import { Outlet, useNavigate, useParams } from "react-router-dom"
@@ -18,6 +18,7 @@ function AdminApplications(){
     const [page, setPage] = useState(1)
     const [pageSize, setPageSize] = useState(10)
     const [search, setSearch] = useState<string|undefined>(undefined)
+    const [debounceSearch, setDebounceSearch] = useState<string|undefined>(undefined)
     const [filterStatus, setFilterStatus] = useState<string|undefined>(undefined)
 
     const {data, isLoading, isError, refetch} = useApplication(page, pageSize, search, filterStatus)
@@ -52,6 +53,18 @@ function AdminApplications(){
                 <Space>
                     <div>
                         <Text strong>{record.email}</Text>
+                    </div>
+                </Space>
+            ),
+            align:"center"
+        },
+        {
+            title: 'Job',
+            width: 200,
+            render: (_, record) => (
+                <Space>
+                    <div>
+                        <Text strong>{record.job.title}</Text>
                     </div>
                 </Space>
             ),
@@ -109,6 +122,14 @@ function AdminApplications(){
             dataIndex: "applicationId"
         }
     ]
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setSearch(debounceSearch)
+        }, 500)
+        return () => {
+            clearTimeout(timer)
+        }
+    }, [debounceSearch])
     return(
         <Content style={{ padding: '32px', maxWidth: '1400px', margin: '0 auto', width: '100%' }}>
             <div style={{ marginBottom: '24px' }}>
@@ -120,8 +141,8 @@ function AdminApplications(){
                             <Input
                                 placeholder="Search Applicant Email..."
                                 prefix={<SearchOutlined style={{ color: '#bfbfbf' }} />}
-                                value={search}
-                                onChange={e => setSearch(e.target.value)}
+                                value={debounceSearch}
+                                onChange={e => setDebounceSearch(e.target.value)}
                                 allowClear
                             />
                         </Col>
@@ -145,7 +166,7 @@ function AdminApplications(){
                                     <Text type="secondary" style={{ marginRight: 8 }}>Results</Text>
                                 </Badge>
                                 <Button onClick={() => {
-                                    setSearch('');
+                                    setDebounceSearch('');
                                     setFilterStatus(undefined);
                                 }}>Reset</Button>
                             </Space>
