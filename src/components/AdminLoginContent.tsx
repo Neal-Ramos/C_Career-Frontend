@@ -1,5 +1,5 @@
 import { ArrowRightOutlined, LockOutlined, SafetyCertificateOutlined, UserOutlined } from "@ant-design/icons"
-import { Badge, Button, Card, Checkbox, Flex, Form, Input, notification } from "antd"
+import { Badge, Button, Card, Checkbox, Divider, Flex, Form, Input, notification } from "antd"
 import { Content } from "antd/es/layout/layout"
 import Text from "antd/es/typography/Text"
 import Title from "antd/es/typography/Title"
@@ -149,6 +149,9 @@ function AdminLoginContent(){
                   </Button>
                 </Form.Item>
               </Form>
+              <Divider>
+                <Text type="secondary">Login Using</Text>
+              </Divider>
               <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENTID}>
                 <GoogleLogin
                   onSuccess={(e: CredentialResponse) => {handleOAuthLogin(e.credential)}}
