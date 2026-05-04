@@ -13,7 +13,9 @@ function LandingPage(){
     const { data, isLoading, isError } = useJobs(page, pageSize, search)
     const jobSection = useRef<HTMLDivElement>(null)
 
-    if(isError)return "Error..."
+    if(isError || !data)return "Error..."
+    const totalJobsCound = data.meta.TotalRecords
+
 
     return(
         <Layout className="min-h-dvh!">
@@ -24,7 +26,7 @@ function LandingPage(){
                     <div>
                         <Title level={2} className="m-0! text-2xl! font-black!">Open Positions</Title>
                         <Text className="text-slate-400">
-                            Displaying <strong>{pageSize}</strong> of {data?.meta.TotalRecords} total opportunities
+                            Displaying <strong>{totalJobsCound>pageSize? pageSize:totalJobsCound}</strong> of {totalJobsCound} total opportunities
                         </Text>
                     </div>
                 </div>

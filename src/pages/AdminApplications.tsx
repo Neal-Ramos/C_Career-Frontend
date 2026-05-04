@@ -23,6 +23,15 @@ function AdminApplications(){
 
     const {data, isLoading, isError, refetch} = useApplication(page, pageSize, search, filterStatus)
 
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setSearch(debounceSearch)
+        }, 500)
+        return () => {
+            clearTimeout(timer)
+        }
+    }, [debounceSearch])
+
     if (applicationId) return <Outlet context={{refetchAppTable: refetch} satisfies AdminApplicationOutletContextType}/>
     if (isError) return <div>Error...</div>
 
@@ -122,14 +131,6 @@ function AdminApplications(){
             dataIndex: "applicationId"
         }
     ]
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setSearch(debounceSearch)
-        }, 500)
-        return () => {
-            clearTimeout(timer)
-        }
-    }, [debounceSearch])
     return(
         <Content style={{ padding: '32px', maxWidth: '1400px', margin: '0 auto', width: '100%' }}>
             <div style={{ marginBottom: '24px' }}>

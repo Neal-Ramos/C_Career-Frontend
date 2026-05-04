@@ -10,6 +10,7 @@ import { useAddApplication } from "../Hooks/useApplications"
 import { getYear } from "../helpers/GetYear"
 import { useNavigate } from "react-router-dom"
 import { handleError } from "../global/ErrorHandler"
+import dayjs from "dayjs"
 
 interface ApplyJobModal {
     isModalVisible: boolean
@@ -158,17 +159,28 @@ function ApplyJobModal({
                         <Form.Item 
                             name="birthDate" 
                             label="Birth Date" 
-                            rules={[{ required: true, message: 'Birth date is required' }]}
-                        
+                            rules={[
+                                {
+                                    required: true, message: 'Birth date is required'
+                                },
+                                {
+                                    validator: (_, val) => {
+                                        const bday = new Date(val)
+                                        const now = new Date(Date.now())
+                                        if(bday.getFullYear()+18 > now.getFullYear())return Promise.reject("Must be 18 Years old and Above")
+                                        return Promise.resolve()
+                                    }
+                                }
+                            ]}
                         >
                             <DatePicker className="w-full" />
                         </Form.Item>
                         <Form.Item 
                             name="contactNumber" 
-                            label="Contact #" 
+                            label="Contact #"
                             rules={[
                                 { 
-                                    required: true, 
+                                    required: true,
                                     message: "Contact Number is required!" 
                                 },
                                 { 
@@ -179,17 +191,22 @@ function ApplyJobModal({
                                     pattern: /^[0-9]+$/, 
                                     message: "Contact Number must contain only numbers (no letters or spaces)!" 
                                 },
+                                {
+                                    validator: (_, val) => {
+                                        if(!val.toString().startsWith("09"))return Promise.reject("Contact Number must Start with 09")
+                                        return Promise.resolve()
+                                    }
+                                }
                             ]}
-                        
                         >
-                            <Input className="w-full" />
+                            <Input className="w-full" placeholder="09*********"/>
                         </Form.Item>
                         <Form.Item 
                             name="location" label="Location" 
                             rules={[{ required: true, message: 'Location is required' }]}
                         
                         >
-                            <Input className="w-full" />
+                            <Input className="w-full" placeholder="City, Provice"/>
                         </Form.Item>
                     </div>
 
@@ -201,8 +218,16 @@ function ApplyJobModal({
                         <Form.Item name="degree" label="Degree" rules={[{ required: true, message: 'Degree is required' }]}>
                             <Input className="w-full" />
                         </Form.Item>
-                        <Form.Item name="graduationYear" label="GraduationYear" rules={[{ required: true, message: 'Graduation Year is required' }]}>
-                            <DatePicker className="w-full" picker="year"/>
+                        <Form.Item name="graduationYear" label="Graduation Year" rules={[
+                            {
+                                required: true, message: 'Graduation Year is required'
+                            }
+                        ]}>
+                            <DatePicker
+                                className="w-full"
+                                picker="year"
+                                disabledDate={(current) => current > dayjs()}
+                            />
                         </Form.Item>
                     </div>
                     {parsedCustomFields.length > 0 && (
@@ -214,9 +239,27 @@ function ApplyJobModal({
                                         key={index} 
                                         name={['customFields', field.label]} 
                                         label={field.label} 
-                                        rules={[{ required: field.required, message: `${field.label} is required` }]}
+                                        rules={[
+                                            { required: field.required, message: `${field.label} is required` },
+                                            {validator: (_, val) => {
+                                                if(field.inputType == "number" && !/^\d+$/.test(val)) return Promise.reject("Only Numbers Are Accepted")
+                                                return Promise.resolve()
+                                            }}
+                                        ]}
                                     >
-                                        <Input placeholder={`Enter ${field.label.toLowerCase()}`} />
+                                        {
+                                            field.inputType == "text"?
+                                            <Input
+                                                placeholder={`Enter ${field.label.toLowerCase()}`}
+                                            />:
+                                            field.inputType == "number"?
+                                            <Input
+                                                placeholder={`Enter ${field.label.toLowerCase()}`}
+                                            />:
+                                            field.inputType == "date"?
+                                            <DatePicker/>:
+                                            <>None</>
+                                        }
                                     </Form.Item>
                                 ))}
                             </div>

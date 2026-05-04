@@ -15,6 +15,7 @@ export type ParsedRolesJobs = string[]
 export type ParsedCustomFieldsJobs = {
     label: string
     required: boolean
+    inputType: "text"|"date"|"number"
 }
 export type ParsedFileRequirementsJobs = {
     label: string

@@ -1,54 +1,68 @@
 import { MinusCircleOutlined } from "@ant-design/icons"
-import { Button, Checkbox, Input, Space } from "antd"
+import { Button, Checkbox, Input, Select, Space } from "antd"
 import Text from "antd/es/typography/Text"
 import { useState } from "react"
+import type { ParsedCustomFieldsJobs } from "../Types/Jobs"
 
 interface CustomFieldBox{
-    value?: {label: string, required: boolean}[]
-    onChange?: (value: {}[]) => void
+    value?: ParsedCustomFieldsJobs[]
+    onChange?: (value: ParsedCustomFieldsJobs[]) => void
 }
 
 function CustomFieldBox({value = [], onChange}: CustomFieldBox){
     const [newFieldLabel, setNewFieldLabel] = useState("")
 
     const handleAddField = () => {
-        onChange?.([...value, {label: newFieldLabel, required: true}])
+        onChange?.([...value, {label: newFieldLabel, required: true, inputType: "text"}])
         setNewFieldLabel("")
     }
     const handleChangeReqButton = (index: number) => {
         onChange?.(value.map((v, i) => {
-            if(i == index)return {label: v.label, required: !v.required}
+            if(i == index)return {...v, required: !v.required}
             return v
         }))
     }
     const handleRemoveReq = (index: number) => {
         onChange?.(value.filter((_, i) => i!=index))
     }
+    const handleChangeInputType = (index: number, type: "text"|"date"|"number") => {
+        onChange?.(value.map((v, i) => {
+            if(i == index)return {...v, inputType: type}
+            return v
+        }))
+    }
 
     return (
         <div className="flex flex-col gap-2">
             {value.map((e, i) => {
                 return(
-                    <>
-                        <Space.Compact className="flex justify-center items-center gap-1">
-                            <div style={{ 
-                                border: '1px solid #d9d9d9', 
-                                borderRadius: '8px',  
-                                background: '#fff',
-                                borderRight: "none",
-                                flex: 1,
-                                padding: 5
-                            }}>
-                                <Text>{e.label}</Text>
-                            </div>
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 w-full">
+                        <div style={{
+                            border: '1px solid #d9d9d9',
+                            borderRadius: '8px',
+                            background: '#fff',
+                            padding: 5,
+                            flex: 1,
+                        }}>
+                            <Text>{e.label}</Text>
+                        </div>
+                        <div className="flex items-center gap-2">
                             <Button
-                                type="text" 
-                                danger 
+                                type="text"
+                                danger
                                 icon={<MinusCircleOutlined />}
-                                style={{
-                                    borderRadius: "0 8px 8px 0"
-                                }}
+                                style={{ borderRadius: '8px' }}
                                 onClick={() => handleRemoveReq(i)}
+                            />
+                            <Select
+                                style={{ width: 100 }}
+                                defaultValue={e.inputType || ""}
+                                options={[
+                                    { value: 'text', label: 'Text' },
+                                    { value: 'date', label: 'Date' },
+                                    { value: 'number', label: 'Number' }
+                                ]}
+                                onChange={(val) => handleChangeInputType(i, val)}
                             />
                             <Checkbox
                                 checked={e.required}
@@ -56,8 +70,8 @@ function CustomFieldBox({value = [], onChange}: CustomFieldBox){
                             >
                                 Required
                             </Checkbox>
-                        </Space.Compact>
-                    </>
+                        </div>
+                    </div>
                 )
             })}
             <Space.Compact>

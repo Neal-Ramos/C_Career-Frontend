@@ -125,9 +125,9 @@ function ApplyJob() {
                             className="bg-white!"
                             labelStyle={{ background: '#f8fafc', fontWeight: 600, width: 'clamp(120px, 20%, 200px)', color: '#64748b' }}
                         >
-                            <Descriptions.Item label="Identity">FirstName, MiddleName, LastName, BirthDate</Descriptions.Item>
-                            <Descriptions.Item label="Contact Info">Email, ContactNumber, Location</Descriptions.Item>
-                            <Descriptions.Item label="Academics">UniversityName, Degree, GraduationYear</Descriptions.Item>
+                            <Descriptions.Item label="Applicant Info">First Name, Middle Name, Last Name, Birth Date</Descriptions.Item>
+                            <Descriptions.Item label="Contact Info">Email, Contact Number, Location</Descriptions.Item>
+                            <Descriptions.Item label="Academics Info">University Name, Degree, Graduation Year</Descriptions.Item>
                         </Descriptions>
                     </section>
 

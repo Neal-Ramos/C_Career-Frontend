@@ -31,7 +31,7 @@ function AdminViewApplication(){
     const {applicationId} = useParams()
 
     const {data, isLoading, isError, refetch} = useApplicationById(applicationId || "")
-
+    
     if(isLoading) return <Spin size="large" className="flex-1 justify-center"/>
     if(isError || !applicationId || !data) return <>Error...</>
 
@@ -44,6 +44,7 @@ function AdminViewApplication(){
         setPublicId(filePublicId);
         setShowFileModal(true);
     }
+
     
     const items = [
         {
@@ -78,6 +79,7 @@ function AdminViewApplication(){
             icon: <UserDeleteOutlined />
         }
     ]
+    
     return(
         <Content
             className="min-h-screen bg-[#f9fafb] h-fit!"
