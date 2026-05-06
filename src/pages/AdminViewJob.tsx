@@ -140,6 +140,9 @@ function AdminViewJob(){
                                 name="salary"
                                 label="Salary"
                                 initialValue={data?.data.salary}
+                                rules={[
+                                    {required: true, message: "This is Required"}
+                                ]}
                             >
                                 <Input placeholder="Salary (Optional)"></Input>
                             </Form.Item>
@@ -147,8 +150,11 @@ function AdminViewJob(){
                         <Col xs={24} md={8}>
                             <Form.Item
                                 name="employmentType"
-                                label="EmploymentType"
+                                label="Employment Type"
                                 initialValue={data?.data.employmentType}
+                                rules={[
+                                    {required: true, message: "This is Required"}
+                                ]}
                             >
                                 <Select 
                                 defaultValue={"FullTime"}
@@ -166,6 +172,9 @@ function AdminViewJob(){
                                 name="workArrangement"
                                 label="Work Arrangement"
                                 initialValue={data?.data.workArrangement}
+                                rules={[
+                                    {required: true, message: "This is Required"}
+                                ]}
                             >
                                 <Select 
                                 defaultValue={"Onsite"}

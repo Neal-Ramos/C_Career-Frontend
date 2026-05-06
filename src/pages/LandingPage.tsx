@@ -13,8 +13,7 @@ function LandingPage(){
     const { data, isLoading, isError } = useJobs(page, pageSize, search)
     const jobSection = useRef<HTMLDivElement>(null)
 
-    if(isError || !data)return "Error..."
-    const totalJobsCound = data.meta.TotalRecords
+    const totalJobsCound = data?.meta.TotalRecords||0
 
 
     return(
