@@ -18,8 +18,15 @@ export type Application = {
     dateReviewed: string
     jobId: string
     job: Jobs
+    aiResults?: string
     interviewRemarks: string
     interviews?: ApplicantInterview[]
+}
+export type ParsedAiResultApplication = {
+    Verdict: "Pass" | "Fail"
+    Score: number
+    Reason: string
+    InterviewSuggestion: string
 }
 export type ParsedFileSubmittedApplication = {
     DocumentName: string

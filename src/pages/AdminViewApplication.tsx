@@ -18,6 +18,7 @@ import AdminReschedInterviewModal from "../components/AdminRescheduleIneterviewM
 import { useNoShowInterview } from "../Hooks/useApplicantInterview"
 import AdminInterviewRemarksModal from "../components/AdminInterviewRemarksModal"
 import AdminViewRemarks from "../components/AdminViewRemarks"
+import AnalyzeApplicationModal from "../components/AnalyzeApplicationModal"
 
 function AdminViewApplication(){
     const [publicId, setPublicId] = useState("")
@@ -26,6 +27,7 @@ function AdminViewApplication(){
     const [showAdminReschedInterviewModal, setShowAdminReschedInterviewModal] = useState(false)
     const [adminInterviewRemarksModalVisible, setAdminInterviewRemarksModalVisible] = useState(false)
     const [adminViewRemarksModalVisible, setAdminViewRemarksModalVisible] = useState(false)
+    const [showAnalyzeApplicationModal, setShowAnalyzeApplicationModal] = useState(false)
     const { refetchAppTable } = useOutletContext<AdminApplicationOutletContextType>()
     const useSetNoShow = useNoShowInterview()
     const {applicationId} = useParams()
@@ -111,6 +113,12 @@ function AdminViewApplication(){
                 setAdminViewRemarksModalVisible={setAdminViewRemarksModalVisible}
                 remarksValue={data.data.interviewRemarks}
             />
+            <AnalyzeApplicationModal
+                application={data.data}
+                showAnalyzeApplicationModal={showAnalyzeApplicationModal}
+                setShowAnalyzeApplicationModal={setShowAnalyzeApplicationModal}
+                refetchApplication={refetch}
+            />
             
             <div className="mb-8 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
                 <div className="flex-1">
@@ -145,10 +153,17 @@ function AdminViewApplication(){
                         applicationStatus == "Pending"?
                         <>
                             <Button
+                                type="default"
+                                size="large" 
+                                icon={<CalendarOutlined />} 
+                                onClick={() => setShowAnalyzeApplicationModal(true)}
+                            >
+                                Analyze Using AI
+                            </Button>
+                            <Button
                                 type="primary"
                                 size="large" 
                                 icon={<CalendarOutlined />} 
-                                className="flex-1 sm:flex-initial flex items-center justify-center rounded-xl font-medium border-red-100 bg-white hover:bg-red-50 h-12 px-6"
                                 onClick={() => setShowAdminSetInterviewModal(true)}
                             >
                                 Set Interview

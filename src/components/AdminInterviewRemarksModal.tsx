@@ -20,7 +20,7 @@ function AdminInterviewRemarksModal({adminInterviewRemarksModalVisible, setAdmin
     const patchApplicationStatus = usePatchApplicationStatus()
     const [remarksValue, setRemarksValue] = useState("")
 
-    const handleProcessApplication = (status: string) => {
+    const handleProcessApplication = (status: "Pending" | "Interview" | "Approved" | "Declined") => {
         patchApplicationStatus.mutate({status: status, applicationId: applicationId, interviewRemarks: remarksValue}, {
             onSuccess: () => {
                 notification.success({title: `Application is now ${status}`})
@@ -39,7 +39,7 @@ function AdminInterviewRemarksModal({adminInterviewRemarksModalVisible, setAdmin
             centered
             open={adminInterviewRemarksModalVisible}
             onCancel={() => setAdminInterviewRemarksModalVisible(false)}
-            width={700} // Increased width for better writing space
+            width={700}
             title={
                 <div className="flex flex-col gap-1 pb-2">
                     <Space size="middle">

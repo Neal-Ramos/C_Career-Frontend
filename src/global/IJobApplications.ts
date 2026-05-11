@@ -13,7 +13,7 @@ export interface GetApplicationsByIdResponse extends IResponse{
 }
 export interface PatchApplicationStatusReq {
     applicationId: string
-    status: string
+    status: "Pending"|"Interview"|"Approved"|"Declined"
     dateInterview?: string
     interviewRemarks?: string
 }
